@@ -179,11 +179,11 @@ private:
     CCompartmentEventSink* _pCompartmentPunctuationEventSink;
 
     // Configuration data
-    BOOL _isWildcard : 1;
-    BOOL _isDisableWildcardAtFirst : 1;
-    BOOL _hasMakePhraseFromText : 1;
-    BOOL _isKeystrokeSort : 1;
-    BOOL _isComLessMode : 1;
+    bool _isWildcard;
+    bool _isDisableWildcardAtFirst;
+    bool _hasMakePhraseFromText;
+    bool _isKeystrokeSort;
+    bool _isComLessMode;
     CCandidateRange _candidateListIndexRange;
     UINT _candidateListPhraseModifier;
     UINT _candidateWndWidth;
