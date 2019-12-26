@@ -30,6 +30,7 @@
     <None Include="SampleIME.def" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\rust\rust-cbindgen.h" />
     <ClInclude Include="BaseDictionaryEngine.h" />
     <ClInclude Include="BaseWindow.h" />
     <ClInclude Include="ButtonWindow.h" />
@@ -212,7 +213,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(MSBuildProgramFiles32)\Windows Kits\8.0\Lib\win8\um\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>shlwapi.lib;$(SolutionDir)../rust/target/debug/dictionary_parser.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>SampleIME.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>

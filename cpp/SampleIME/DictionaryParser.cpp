@@ -8,6 +8,12 @@
 #include "Private.h"
 #include "DictionaryParser.h"
 #include "SampleIMEBaseStructure.h"
+#include "..\..\rust\rust-cbindgen.h"
+
+#pragma comment(lib, "advapi32.lib")
+#pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "userenv.lib")
+#pragma comment(lib, "msvcrt.lib")
 
 //---------------------------------------------------------------------
 //
@@ -83,54 +89,22 @@ BOOL CDictionaryParser::ParseLine(_In_reads_(dwBufLen) LPCWSTR pwszBuffer, DWORD
 _Ret_maybenull_
 LPCWSTR CDictionaryParser::GetToken(_In_reads_(dwBufLen) LPCWSTR pwszBuffer, DWORD_PTR dwBufLen, _In_ const WCHAR chDelimiter, _Out_ CParserStringRange *psrgValue)
 {
-    WCHAR ch = '\0';
-
     psrgValue->Set(pwszBuffer, dwBufLen);
 
-    ch = *pwszBuffer;
-    while ((ch) && (ch != chDelimiter) && dwBufLen)
-    {
-        dwBufLen--;
-        pwszBuffer++;
-
-        if (ch == Global::StringDelimiter)
-        {
-            while (*pwszBuffer && (*pwszBuffer != Global::StringDelimiter) && dwBufLen)
-            {
-                dwBufLen--;
-                pwszBuffer++;
-            }
-            if (*pwszBuffer && dwBufLen)
-            {
-                dwBufLen--;
-                pwszBuffer++;
-            }
-            else
-            {
-                return nullptr;
-            }
-        }
-        ch = *pwszBuffer;
+    LPCWSTR result = (LPCWSTR)get_equalsign((uint16_t*)pwszBuffer, (uintptr_t)dwBufLen);
+    if (!result) {
+        return nullptr;
     }
 
-    if (*pwszBuffer && dwBufLen)
-    {
-        LPCWSTR pwszStart = psrgValue->Get();
+    LPCWSTR pwszStart = psrgValue->Get();
 
-        psrgValue->Set(pwszStart, pwszBuffer - pwszStart);
-
-        RemoveWhiteSpaceFromBegin(psrgValue);
-        RemoveWhiteSpaceFromEnd(psrgValue);
-        RemoveStringDelimiter(psrgValue);
-
-        return pwszBuffer;
-    }
+    psrgValue->Set(pwszStart, result - pwszStart);
 
     RemoveWhiteSpaceFromBegin(psrgValue);
     RemoveWhiteSpaceFromEnd(psrgValue);
     RemoveStringDelimiter(psrgValue);
 
-    return nullptr;
+    return result;
 }
 
 //---------------------------------------------------------------------
