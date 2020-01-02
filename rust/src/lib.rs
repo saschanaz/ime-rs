@@ -23,15 +23,17 @@ pub unsafe extern fn get_equalsign(buffer: *const u16, buffer_len: usize) -> *mu
 
 #[cfg(test)]
 mod tests {
+    fn utf16(s: &str) -> Vec<u16> {
+        s.encode_utf16().collect()
+    }
 
     #[test]
     fn equalsign() {
-        let s = "abc=";
-        let vec: Vec<u16> = s.encode_utf16().collect();
+        let vec = utf16("abc=");
         let ptr = vec.as_ptr();
 
         unsafe {
-            let result = crate::get_equalsign(ptr, 4);
+            let result = crate::get_equalsign(ptr, vec.len());
             assert_eq!(result, ptr.offset(3) as *mut u16);
             let char_code = *result as u16;
             assert_eq!(char_code, b'='.into())
@@ -40,12 +42,11 @@ mod tests {
 
     #[test]
     fn equalsign_wrapped() {
-        let s = "\"abc=\"=";
-        let vec: Vec<u16> = s.encode_utf16().collect();
+        let vec = utf16("\"abc=\"=");
         let ptr = vec.as_ptr();
 
         unsafe {
-            let result = crate::get_equalsign(ptr, 7);
+            let result = crate::get_equalsign(ptr, vec.len());
             assert_eq!(result, ptr.offset(6) as *mut u16);
             let char_code = *result as u16;
             assert_eq!(char_code, b'='.into())
@@ -54,12 +55,11 @@ mod tests {
 
     #[test]
     fn equalsign_wrapped_nomatch() {
-        let s = "\"abc=\"";
-        let vec: Vec<u16> = s.encode_utf16().collect();
+        let vec = utf16("\"abc=\"");
         let ptr = vec.as_ptr();
 
         unsafe {
-            let result = crate::get_equalsign(ptr, 6);
+            let result = crate::get_equalsign(ptr, vec.len());
             assert_eq!(result, 0 as *mut u16);
         }
     }
