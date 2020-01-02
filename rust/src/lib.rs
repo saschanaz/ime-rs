@@ -27,51 +27,55 @@ mod tests {
         s.encode_utf16().collect()
     }
 
-    #[test]
-    fn equalsign() {
-        let encoded = utf16("abc=");
-        let ptr = encoded.as_ptr();
+    mod equalsign_getter {
+        use super::utf16;
 
-        unsafe {
-            let result = crate::get_equalsign(ptr, encoded.len());
-            assert_eq!(result, ptr.offset(3) as *mut u16);
-            let char_code = *result as u16;
-            assert_eq!(char_code, b'='.into());
+        #[test]
+        fn equalsign() {
+            let encoded = utf16("abc=");
+            let ptr = encoded.as_ptr();
+
+            unsafe {
+                let result = crate::get_equalsign(ptr, encoded.len());
+                assert_eq!(result, ptr.offset(3) as *mut u16);
+                let char_code = *result as u16;
+                assert_eq!(char_code, b'='.into());
+            }
         }
-    }
 
-    #[test]
-    fn equalsign_cut() {
-        let encoded = utf16("abc=");
-        let ptr = encoded.as_ptr();
+        #[test]
+        fn equalsign_cut() {
+            let encoded = utf16("abc=");
+            let ptr = encoded.as_ptr();
 
-        unsafe {
-            let result = crate::get_equalsign(ptr, 2);
-            assert_eq!(result, 0 as *mut u16);
+            unsafe {
+                let result = crate::get_equalsign(ptr, 2);
+                assert_eq!(result, 0 as *mut u16);
+            }
         }
-    }
 
-    #[test]
-    fn equalsign_wrapped() {
-        let encoded = utf16("\"abc=\"=");
-        let ptr = encoded.as_ptr();
+        #[test]
+        fn equalsign_wrapped() {
+            let encoded = utf16("\"abc=\"=");
+            let ptr = encoded.as_ptr();
 
-        unsafe {
-            let result = crate::get_equalsign(ptr, encoded.len());
-            assert_eq!(result, ptr.offset(6) as *mut u16);
-            let char_code = *result as u16;
-            assert_eq!(char_code, b'='.into());
+            unsafe {
+                let result = crate::get_equalsign(ptr, encoded.len());
+                assert_eq!(result, ptr.offset(6) as *mut u16);
+                let char_code = *result as u16;
+                assert_eq!(char_code, b'='.into());
+            }
         }
-    }
 
-    #[test]
-    fn equalsign_wrapped_nomatch() {
-        let encoded = utf16("\"abc=\"");
-        let ptr = encoded.as_ptr();
+        #[test]
+        fn equalsign_wrapped_nomatch() {
+            let encoded = utf16("\"abc=\"");
+            let ptr = encoded.as_ptr();
 
-        unsafe {
-            let result = crate::get_equalsign(ptr, encoded.len());
-            assert_eq!(result, 0 as *mut u16);
+            unsafe {
+                let result = crate::get_equalsign(ptr, encoded.len());
+                assert_eq!(result, 0 as *mut u16);
+            }
         }
     }
 }
