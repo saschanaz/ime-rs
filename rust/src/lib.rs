@@ -36,7 +36,7 @@ mod tests {
             let result = crate::get_equalsign(ptr, encoded.len());
             assert_eq!(result, ptr.offset(3) as *mut u16);
             let char_code = *result as u16;
-            assert_eq!(char_code, b'='.into())
+            assert_eq!(char_code, b'='.into());
         }
     }
 
@@ -60,7 +60,7 @@ mod tests {
             let result = crate::get_equalsign(ptr, encoded.len());
             assert_eq!(result, ptr.offset(6) as *mut u16);
             let char_code = *result as u16;
-            assert_eq!(char_code, b'='.into())
+            assert_eq!(char_code, b'='.into());
         }
     }
 
