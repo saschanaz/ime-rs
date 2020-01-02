@@ -41,6 +41,17 @@ mod tests {
     }
 
     #[test]
+    fn equalsign_cut() {
+        let vec = utf16("abc=");
+        let ptr = vec.as_ptr();
+
+        unsafe {
+            let result = crate::get_equalsign(ptr, 2);
+            assert_eq!(result, 0 as *mut u16);
+        }
+    }
+
+    #[test]
     fn equalsign_wrapped() {
         let vec = utf16("\"abc=\"=");
         let ptr = vec.as_ptr();
