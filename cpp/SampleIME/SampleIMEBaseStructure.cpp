@@ -6,6 +6,12 @@
 // Copyright (c) Microsoft Corporation. All rights reserved
 
 #include "Globals.h"
+#include "..\..\rust\rust-cbindgen.h"
+
+#pragma comment(lib, "advapi32.lib")
+#pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "userenv.lib")
+#pragma comment(lib, "msvcrt.lib")
 
 //---------------------------------------------------------------------
 //
@@ -198,34 +204,10 @@ int CStringRange::Compare(LCID locale, _In_ CStringRange* pString1, _In_ CString
 
 BOOL CStringRange::WildcardCompare(LCID locale, _In_ CStringRange* stringWithWildcard, _In_ CStringRange* targetString)
 {
-    if (stringWithWildcard->GetLength() == 0)
-    {
-        return targetString->GetLength() == 0 ? TRUE : FALSE;
-    }
-
-    CStringRange stringWithWildcard_next;
-    CStringRange targetString_next;
-    stringWithWildcard->CharNext(&stringWithWildcard_next);
-    targetString->CharNext(&targetString_next);
-
-    if (*stringWithWildcard->Get() == L'*')
-    {
-        return WildcardCompare(locale, &stringWithWildcard_next, targetString) || ((targetString->GetLength() != 0) && WildcardCompare(locale, stringWithWildcard, &targetString_next));
-    }
-    if (*stringWithWildcard->Get() == L'?')
-    {
-        return ((targetString->GetLength() != 0) && WildcardCompare(locale, &stringWithWildcard_next, &targetString_next));
-    }
-
-    BOOL isSurrogate1 = (IS_HIGH_SURROGATE(*stringWithWildcard->Get()) || IS_LOW_SURROGATE(*stringWithWildcard->Get()));
-    BOOL isSurrogate2 = (IS_HIGH_SURROGATE(*targetString->Get()) || IS_LOW_SURROGATE(*targetString->Get()));
-
-    return ((CompareString(locale,
-        NORM_IGNORECASE,
-        stringWithWildcard->Get(),
-        (isSurrogate1 ? 2 : 1),
-        targetString->Get(),
-        (isSurrogate2 ? 2 : 1)) == CSTR_EQUAL) && WildcardCompare(locale, &stringWithWildcard_next, &targetString_next));
+    // This is expectedly slower than the previous C++ code
+    // as the function now allocates a parsed string object every time
+    // This should be faster when porting the string processing completes.
+    return compare_with_wildcard((uint16_t*)stringWithWildcard->Get(), stringWithWildcard->GetLength(), (uint16_t*)targetString->Get(), targetString->GetLength());
 }
 
 CCandidateRange::CCandidateRange(void)
