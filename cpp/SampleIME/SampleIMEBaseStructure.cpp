@@ -167,31 +167,6 @@ CStringRange& CStringRange::operator =(const CStringRange& sr)
     return *this;
 }
 
-void CStringRange::CharNext(_Inout_ CStringRange* pCharNext)
-{
-    if (!_stringBufLen)
-    {
-        pCharNext->_stringBufLen = 0;
-        pCharNext->_pStringBuf = nullptr;
-    }
-    else
-    {
-        pCharNext->_stringBufLen = _stringBufLen;
-        pCharNext->_pStringBuf = _pStringBuf;
-
-        while (pCharNext->_stringBufLen)
-        {
-            BOOL isSurrogate = (IS_HIGH_SURROGATE(*pCharNext->_pStringBuf) || IS_LOW_SURROGATE(*pCharNext->_pStringBuf));
-            pCharNext->_stringBufLen--;
-            pCharNext->_pStringBuf++;
-            if (!isSurrogate)
-            {
-                break;
-            }
-        }
-    }
-}
-
 int CStringRange::Compare(LCID locale, _In_ CStringRange* pString1, _In_ CStringRange* pString2)
 {
     return CompareString(locale, 
