@@ -28,36 +28,38 @@ pub unsafe extern fn compare_with_wildcard(input_buffer: *const u16, input_len: 
             return target.len() == 0;
         }
 
-        let first_char = input.chars().next().unwrap();
+        let input_char = input.chars().next().unwrap();
+        let input_charlen = input_char.len_utf8();
 
-        if first_char == '*' {
+        let target_char = target.chars().next();
+        let target_charlen = target_char.map(|c| c.len_utf8());
+
+        if input_char == '*' {
             // 1. skip this wildcard and compare remaining characters
             // 2. recursively retry with target[1..]
-            if compare(&input[1..], target) {
+            if compare(&input[input_charlen..], target) {
                 return true;
             }
             if target.len() == 0 {
                 return false;
             }
-            return compare(input, &target[1..]);
+            return compare(input, &target[target_charlen.unwrap()..]);
         }
 
         if target.len() == 0 {
             return false;
         }
 
-        if first_char == '?' {
+        if input_char == '?' {
             // skip this mark and compare with target[1..]
-            return compare(&input[1..], &target[1..]);
+            return compare(&input[input_charlen..], &target[target_charlen.unwrap()..]);
         }
 
-        let target_char = target.chars().next().unwrap();
-
-        if !first_char.eq_ignore_ascii_case(&target_char) {
+        if !input_char.eq_ignore_ascii_case(&target_char.unwrap()) {
             return false;
         }
 
-        compare(&input[1..], &target[1..])
+        compare(&input[input_charlen..], &target[target_charlen.unwrap()..])
     }
 
     let input_slice: &[u16] = std::slice::from_raw_parts(input_buffer, input_len);
@@ -168,6 +170,7 @@ mod tests {
             unsafe {
                 assert_eq!(wrapped_compare("wow", "wow"), true);
                 assert_eq!(wrapped_compare("wow", "wOw"), true);
+                assert_eq!(wrapped_compare("사과", "사과"), true);
             }
         }
 
@@ -176,6 +179,7 @@ mod tests {
             unsafe {
                 assert_eq!(wrapped_compare("wow", "cow"), false);
                 assert_eq!(wrapped_compare("wow", "wot"), false);
+                assert_eq!(wrapped_compare("사과", "수박"), false);
             }
         }
 
@@ -184,6 +188,8 @@ mod tests {
             unsafe {
                 assert_eq!(wrapped_compare("wowwow", "wow"), false);
                 assert_eq!(wrapped_compare("what", "what?"), false);
+                assert_eq!(wrapped_compare("사과", "귤"), false);
+                assert_eq!(wrapped_compare("사과", "바나나"), false);
             }
         }
 
@@ -196,6 +202,7 @@ mod tests {
                 assert_eq!(wrapped_compare("w*t", "wat"), true);
                 assert_eq!(wrapped_compare("w*t", "what"), true);
                 assert_eq!(wrapped_compare("w*t", "wha"), false);
+                assert_eq!(wrapped_compare("사*", "사과"), true);
             }
         }
 
@@ -207,6 +214,7 @@ mod tests {
                 assert_eq!(wrapped_compare("w?t", "wat"), true);
                 assert_eq!(wrapped_compare("w?t", "what"), false);
                 assert_eq!(wrapped_compare("w?t", "wha"), false);
+                assert_eq!(wrapped_compare("사?", "사과"), true);
             }
         }
     }
