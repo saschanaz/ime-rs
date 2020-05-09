@@ -6,12 +6,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved
 
 #include "Globals.h"
-#include "..\..\rust\rust-cbindgen.h"
+#include "..\..\rust\dictionary_parser\rust-cbindgen.h"
 
 #pragma comment(lib, "advapi32.lib")
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "userenv.lib")
-#pragma comment(lib, "msvcrt.lib")
 
 //---------------------------------------------------------------------
 //
@@ -177,7 +176,7 @@ int CStringRange::Compare(LCID locale, _In_ CStringRange* pString1, _In_ CString
         (DWORD)pString2->GetLength());
 }
 
-BOOL CStringRange::WildcardCompare(LCID locale, _In_ CStringRange* stringWithWildcard, _In_ CStringRange* targetString)
+BOOL CStringRange::WildcardCompare(LCID, _In_ CStringRange* stringWithWildcard, _In_ CStringRange* targetString)
 {
     // This is expectedly slower than the previous C++ code
     // as the function now allocates a parsed string object every time

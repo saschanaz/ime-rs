@@ -23,7 +23,7 @@ HFONT defaultlFontHandle;				// Global font object we use everywhere
 // SampleIME CLSID
 //---------------------------------------------------------------------
 // {D2291A80-84D8-4641-9AB2-BDD1472C846B}
-extern const CLSID SampleIMECLSID = { 
+extern const CLSID SampleIMECLSID = {
     0xd2291a80,
     0x84d8,
     0x4641,
@@ -34,7 +34,7 @@ extern const CLSID SampleIMECLSID = {
 // Profile GUID
 //---------------------------------------------------------------------
 // {83955C0E-2C09-47a5-BCF3-F2B98E11EE8B}
-extern const GUID SampleIMEGuidProfile = { 
+extern const GUID SampleIMEGuidProfile = {
     0x83955c0e,
     0x2c09,
     0x47a5,
@@ -46,26 +46,26 @@ extern const GUID SampleIMEGuidProfile = {
 //---------------------------------------------------------------------
 // {4B62B54B-F828-43B5-9095-A96DF9CBDF38}
 extern const GUID SampleIMEGuidImeModePreserveKey = {
-    0x4b62b54b, 
-    0xf828, 
-    0x43b5, 
-    { 0x90, 0x95, 0xa9, 0x6d, 0xf9, 0xcb, 0xdf, 0x38 } 
+    0x4b62b54b,
+    0xf828,
+    0x43b5,
+    { 0x90, 0x95, 0xa9, 0x6d, 0xf9, 0xcb, 0xdf, 0x38 }
 };
 
 // {5A08D6C4-4563-4E46-8DDB-65E75C4E73A3}
 extern const GUID SampleIMEGuidDoubleSingleBytePreserveKey = {
-    0x5a08d6c4, 
-    0x4563, 
-    0x4e46, 
-    { 0x8d, 0xdb, 0x65, 0xe7, 0x5c, 0x4e, 0x73, 0xa3 } 
+    0x5a08d6c4,
+    0x4563,
+    0x4e46,
+    { 0x8d, 0xdb, 0x65, 0xe7, 0x5c, 0x4e, 0x73, 0xa3 }
 };
 
 // {175F062E-B961-4AED-A3DF-59F78A02862D}
 extern const GUID SampleIMEGuidPunctuationPreserveKey = {
-    0x175f062e, 
-    0xb961, 
-    0x4aed, 
-    { 0xa3, 0xdf, 0x59, 0xf7, 0x8a, 0x2, 0x86, 0x2d } 
+    0x175f062e,
+    0xb961,
+    0x4aed,
+    { 0xa3, 0xdf, 0x59, 0xf7, 0x8a, 0x2, 0x86, 0x2d }
 };
 
 //---------------------------------------------------------------------
@@ -219,7 +219,7 @@ extern const WCHAR FullWidthCharTable[] = {
     0xFF20, 0xFF21, 0xFF22, 0xFF23, 0xFF24, 0xFF25, 0xFF26, 0xFF27, 0xFF28, 0xFF29, 0xFF2A, 0xFF2B, 0xFF2C, 0xFF2D, 0xFF2E, 0xFF2F,
     // P       Q       R       S       T       U       V       W       X       Y       Z       [       \       ]       ^       _
     0xFF30, 0xFF31, 0xFF32, 0xFF33, 0xFF34, 0xFF35, 0xFF36, 0xFF37, 0xFF38, 0xFF39, 0xFF3A, 0xFF3B, 0xFF3C, 0xFF3D, 0xFF3E, 0xFF3F,
-    // '       a       b       c       d       e       f       g       h       i       j       k       l       m       n       o       
+    // '       a       b       c       d       e       f       g       h       i       j       k       l       m       n       o
     0xFF40, 0xFF41, 0xFF42, 0xFF43, 0xFF44, 0xFF45, 0xFF46, 0xFF47, 0xFF48, 0xFF49, 0xFF4A, 0xFF4B, 0xFF4C, 0xFF4D, 0xFF4E, 0xFF4F,
     // p       q       r       s       t       u       v       w       x       y       z       {       |       }       ~
     0xFF50, 0xFF51, 0xFF52, 0xFF53, 0xFF54, 0xFF55, 0xFF56, 0xFF57, 0xFF58, 0xFF59, 0xFF5A, 0xFF5B, 0xFF5C, 0xFF5D, 0xFF5E
@@ -365,7 +365,7 @@ BOOL UpdateModifiers(WPARAM wParam, LPARAM lParam)
 
     case VK_CONTROL:
         // is VK_CONTROL down?
-        if (sksCtrl & 0x8000)    
+        if (sksCtrl & 0x8000)
         {
             // is extended key?
             if (lParam & 0x01000000)
@@ -397,7 +397,7 @@ BOOL UpdateModifiers(WPARAM wParam, LPARAM lParam)
 
     case VK_SHIFT:
         // is VK_SHIFT down?
-        if (sksShft & 0x8000)    
+        if (sksShft & 0x8000)
         {
             // is scan code 0x36(right shift)?
             if (((lParam >> 16) & 0x00ff) == 0x36)

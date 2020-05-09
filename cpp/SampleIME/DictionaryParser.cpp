@@ -8,12 +8,11 @@
 #include "Private.h"
 #include "DictionaryParser.h"
 #include "SampleIMEBaseStructure.h"
-#include "..\..\rust\rust-cbindgen.h"
+#include "..\..\rust\dictionary_parser\rust-cbindgen.h"
 
 #pragma comment(lib, "advapi32.lib")
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "userenv.lib")
-#pragma comment(lib, "msvcrt.lib")
 
 //---------------------------------------------------------------------
 //
@@ -87,7 +86,7 @@ BOOL CDictionaryParser::ParseLine(_In_reads_(dwBufLen) LPCWSTR pwszBuffer, DWORD
 //
 //---------------------------------------------------------------------
 _Ret_maybenull_
-LPCWSTR CDictionaryParser::GetToken(_In_reads_(dwBufLen) LPCWSTR pwszBuffer, DWORD_PTR dwBufLen, _In_ const WCHAR chDelimiter, _Out_ CParserStringRange *psrgValue)
+LPCWSTR CDictionaryParser::GetToken(_In_reads_(dwBufLen) LPCWSTR pwszBuffer, DWORD_PTR dwBufLen, _In_ const WCHAR, _Out_ CParserStringRange *psrgValue)
 {
     psrgValue->Set(pwszBuffer, dwBufLen);
 
