@@ -6,7 +6,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved
 
 #include "Globals.h"
-#include "..\..\rust\dictionary_parser\rust-cbindgen.h"
+#include "..\..\rust\dictionary_parser\dictionary_parser.h"
 
 #pragma comment(lib, "advapi32.lib")
 #pragma comment(lib, "ws2_32.lib")

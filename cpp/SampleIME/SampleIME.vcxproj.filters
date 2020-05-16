@@ -152,7 +152,7 @@
     <ClInclude Include="define.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\rust\rust-cbindgen.h">
+    <ClInclude Include="..\..\rust\dictionary_parser\dictionary_parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

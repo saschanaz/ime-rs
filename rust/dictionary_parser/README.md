@@ -1,5 +1,5 @@
-# How to generate rust-cbindgen.h
+# How to generate dictionary_parser.h
 
 ```
-cbindgen --crate ime-rs --output rust-cbindgen.h
+cbindgen --crate dictionary_parser --output dictionary_parser.h
 ```
