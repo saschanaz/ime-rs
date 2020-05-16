@@ -11,6 +11,7 @@
 #include "CandidateListUIPresenter.h"
 #include "CompositionProcessorEngine.h"
 #include "Compartment.h"
+#include "../../rust/globals/globals.h"
 
 //+---------------------------------------------------------------------------
 //
@@ -290,7 +291,7 @@ STDAPI CSampleIME::Deactivate()
 
     ITfContext* pContext = _pContext;
     if (_pContext)
-    {   
+    {
         pContext->AddRef();
         _EndComposition(_pContext);
     }
@@ -322,10 +323,10 @@ STDAPI CSampleIME::Deactivate()
     CCompartment CompartmentKeyboardOpen(_pThreadMgr, _tfClientId, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
     CompartmentKeyboardOpen._ClearCompartment();
 
-    CCompartment CompartmentDoubleSingleByte(_pThreadMgr, _tfClientId, Global::SampleIMEGuidCompartmentDoubleSingleByte);
+    CCompartment CompartmentDoubleSingleByte(_pThreadMgr, _tfClientId, SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE);
     CompartmentDoubleSingleByte._ClearCompartment();
 
-    CCompartment CompartmentPunctuation(_pThreadMgr, _tfClientId, Global::SampleIMEGuidCompartmentPunctuation);
+    CCompartment CompartmentPunctuation(_pThreadMgr, _tfClientId, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION);
     CompartmentDoubleSingleByte._ClearCompartment();
 
     if (_pThreadMgr != nullptr)
@@ -354,7 +355,7 @@ HRESULT CSampleIME::GetType(__RPC__out GUID *pguid)
     HRESULT hr = E_INVALIDARG;
     if (pguid)
     {
-        *pguid = Global::SampleIMECLSID;
+        *pguid = SAMPLEIME_CLSID;
         hr = S_OK;
     }
     return hr;
@@ -385,7 +386,7 @@ HRESULT CSampleIME::GetFunction(__RPC__in REFGUID rguid, __RPC__in REFIID riid, 
 {
     HRESULT hr = E_NOINTERFACE;
 
-    if ((IsEqualGUID(rguid, GUID_NULL)) 
+    if ((IsEqualGUID(rguid, GUID_NULL))
         && (IsEqualGUID(riid, __uuidof(ITfFnSearchCandidateProvider))))
     {
         hr = _pITfFnSearchCandidateProvider->QueryInterface(riid, (void**)ppunk);

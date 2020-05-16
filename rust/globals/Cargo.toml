@@ -1,0 +1,14 @@
+[package]
+name = "globals"
+version = "0.1.0"
+authors = ["Kagami Sascha Rosylight <saschanaz@outlook.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "globals"
+crate-type = ["staticlib"]
+
+[dependencies]
+winapi = "0.3.8"

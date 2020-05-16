@@ -9,10 +9,11 @@
 #include "Globals.h"
 #include "SampleIME.h"
 #include "CompositionProcessorEngine.h"
+#include "../../rust/globals/globals.h"
 
 BOOL CSampleIME::VerifySampleIMECLSID(_In_ REFCLSID clsid)
 {
-    if (IsEqualCLSID(clsid, Global::SampleIMECLSID))
+    if (IsEqualCLSID(clsid, SAMPLEIME_CLSID))
     {
         return TRUE;
     }

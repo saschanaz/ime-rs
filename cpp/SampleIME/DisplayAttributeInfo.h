@@ -6,6 +6,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved
 
 
+#include "../../rust/globals/globals.h"
 #pragma once
 
 //+---------------------------------------------------------------------------
@@ -53,7 +54,7 @@ class CDisplayAttributeInfoInput : public CDisplayAttributeInfo
 public:
     CDisplayAttributeInfoInput()
     {
-        _pguid = &Global::SampleIMEGuidDisplayAttributeInput;
+        _pguid = &SAMPLEIME_GUID_DISPLAY_ATTRIBUTE_INPUT;
         _pDisplayAttribute = &_s_DisplayAttribute;
         _pDescription = _s_szDescription;
         _pValueName = _s_szValueName;
@@ -75,7 +76,7 @@ class CDisplayAttributeInfoConverted : public CDisplayAttributeInfo
 public:
     CDisplayAttributeInfoConverted()
     {
-        _pguid = &Global::SampleIMEGuidDisplayAttributeConverted;
+        _pguid = &SAMPLEIME_GUID_DISPLAY_ATTRIBUTE_CONVERTED;
         _pDisplayAttribute = &_s_DisplayAttribute;
         _pDescription = _s_szDescription;
         _pValueName = _s_szValueName;

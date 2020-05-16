@@ -8,6 +8,7 @@
 #include "Private.h"
 #include "Globals.h"
 #include "SampleIME.h"
+#include "../../rust/globals/globals.h"
 
 // from Register.cpp
 BOOL RegisterProfiles();
@@ -169,7 +170,7 @@ STDAPI CClassFactory::LockServer(BOOL fLock)
 
 void BuildGlobalObjects(void)
 {
-    classFactoryObjects[0] = new (std::nothrow) CClassFactory(Global::SampleIMECLSID, CSampleIME::CreateInstance);
+    classFactoryObjects[0] = new (std::nothrow) CClassFactory(SAMPLEIME_CLSID, CSampleIME::CreateInstance);
 }
 
 //+---------------------------------------------------------------------------
@@ -199,8 +200,8 @@ void FreeGlobalObjects(void)
 //----------------------------------------------------------------------------
 _Check_return_
 STDAPI  DllGetClassObject(
-	_In_ REFCLSID rclsid, 
-	_In_ REFIID riid, 
+	_In_ REFCLSID rclsid,
+	_In_ REFIID riid,
 	_Outptr_ void** ppv)
 {
     if (classFactoryObjects[0] == nullptr)

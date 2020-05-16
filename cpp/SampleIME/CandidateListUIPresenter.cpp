@@ -11,6 +11,7 @@
 #include "CandidateListUIPresenter.h"
 #include "CompositionProcessorEngine.h"
 #include "SampleIMEBaseStructure.h"
+#include "../../rust/globals/globals.h"
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -142,7 +143,7 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
             if (pTempCandListUIPresenter)
             {
                 hrStartCandidateList = pTempCandListUIPresenter->_StartCandidateList(_tfClientId, pDocumentMgr, pContext, ec, pRange, _pCompositionProcessorEngine->GetCandidateWindowWidth());
-            } 
+            }
 
             pRange->Release();
         }
@@ -378,12 +379,12 @@ STDAPI CCandidateListUIPresenter::QueryInterface(REFIID riid, _Outptr_ void **pp
     {
         *ppvObj = (ITfCandidateListUIElement*)this;
     }
-    else if (IsEqualIID(riid, IID_IUnknown) || 
-        IsEqualIID(riid, IID_ITfCandidateListUIElementBehavior)) 
+    else if (IsEqualIID(riid, IID_IUnknown) ||
+        IsEqualIID(riid, IID_ITfCandidateListUIElementBehavior))
     {
         *ppvObj = (ITfCandidateListUIElementBehavior*)this;
     }
-    else if (IsEqualIID(riid, __uuidof(ITfIntegratableCandidateListUIElement))) 
+    else if (IsEqualIID(riid, __uuidof(ITfIntegratableCandidateListUIElement)))
     {
         *ppvObj = (ITfIntegratableCandidateListUIElement*)this;
     }
@@ -454,7 +455,7 @@ STDAPI CCandidateListUIPresenter::GetDescription(BSTR *pbstr)
 
 STDAPI CCandidateListUIPresenter::GetGUID(GUID *pguid)
 {
-    *pguid = Global::SampleIMEGuidCandUIElement;
+    *pguid = SAMPLEIME_GUID_CAND_UIELEMENT;
     return S_OK;
 }
 

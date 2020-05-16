@@ -7,21 +7,22 @@
 
 #include "Private.h"
 #include "Globals.h"
+#include "../../rust/globals/globals.h"
 
 static const WCHAR RegInfo_Prefix_CLSID[] = L"CLSID\\";
 static const WCHAR RegInfo_Key_InProSvr32[] = L"InProcServer32";
 static const WCHAR RegInfo_Key_ThreadModel[] = L"ThreadingModel";
 
-static const WCHAR TEXTSERVICE_DESC[] = L"Sample IME";
+static const WCHAR TEXTSERVICE_DESC[] = L"Sample Rust IME";
 
 static const GUID SupportCategories[] = {
     GUID_TFCAT_TIP_KEYBOARD,
     GUID_TFCAT_DISPLAYATTRIBUTEPROVIDER,
-    GUID_TFCAT_TIPCAP_UIELEMENTENABLED, 
+    GUID_TFCAT_TIPCAP_UIELEMENTENABLED,
     GUID_TFCAT_TIPCAP_SECUREMODE,
     GUID_TFCAT_TIPCAP_COMLESS,
     GUID_TFCAT_TIPCAP_INPUTMODECOMPARTMENT,
-    GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT, 
+    GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT,
     GUID_TFCAT_TIPCAP_SYSTRAYSUPPORT,
 };
 //+---------------------------------------------------------------------------
@@ -54,9 +55,9 @@ BOOL RegisterProfiles()
     {
         goto Exit;
     }
-    hr = pITfInputProcessorProfileMgr->RegisterProfile(Global::SampleIMECLSID,
+    hr = pITfInputProcessorProfileMgr->RegisterProfile(SAMPLEIME_CLSID,
         TEXTSERVICE_LANGID,
-        Global::SampleIMEGuidProfile,
+        SAMPLEIME_GUID_PROFILE,
         TEXTSERVICE_DESC,
         static_cast<ULONG>(lenOfDesc),
         achIconFile,
@@ -95,7 +96,7 @@ void UnregisterProfiles()
         goto Exit;
     }
 
-    hr = pITfInputProcessorProfileMgr->UnregisterProfile(Global::SampleIMECLSID, TEXTSERVICE_LANGID, Global::SampleIMEGuidProfile, 0);
+    hr = pITfInputProcessorProfileMgr->UnregisterProfile(SAMPLEIME_CLSID, TEXTSERVICE_LANGID, SAMPLEIME_GUID_PROFILE, 0);
     if (FAILED(hr))
     {
         goto Exit;
@@ -129,7 +130,7 @@ BOOL RegisterCategories()
 
     for each(GUID guid in SupportCategories)
     {
-        hr = pCategoryMgr->RegisterCategory(Global::SampleIMECLSID, guid, Global::SampleIMECLSID);
+        hr = pCategoryMgr->RegisterCategory(SAMPLEIME_CLSID, guid, SAMPLEIME_CLSID);
     }
 
     pCategoryMgr->Release();
@@ -156,9 +157,9 @@ void UnregisterCategories()
 
     for each(GUID guid in SupportCategories)
     {
-        pCategoryMgr->UnregisterCategory(Global::SampleIMECLSID, guid, Global::SampleIMECLSID);
+        pCategoryMgr->UnregisterCategory(SAMPLEIME_CLSID, guid, SAMPLEIME_CLSID);
     }
-  
+
     pCategoryMgr->Release();
 
     return;
@@ -216,7 +217,7 @@ BOOL RegisterServer()
     WCHAR achIMEKey[ARRAYSIZE(RegInfo_Prefix_CLSID) + CLSID_STRLEN] = {'\0'};
     WCHAR achFileName[MAX_PATH] = {'\0'};
 
-    if (!CLSIDToString(Global::SampleIMECLSID, achIMEKey + ARRAYSIZE(RegInfo_Prefix_CLSID) - 1))
+    if (!CLSIDToString(SAMPLEIME_CLSID, achIMEKey + ARRAYSIZE(RegInfo_Prefix_CLSID) - 1))
     {
         return FALSE;
     }
@@ -272,7 +273,7 @@ void UnregisterServer()
 {
     WCHAR achIMEKey[ARRAYSIZE(RegInfo_Prefix_CLSID) + CLSID_STRLEN] = {'\0'};
 
-    if (!CLSIDToString(Global::SampleIMECLSID, achIMEKey + ARRAYSIZE(RegInfo_Prefix_CLSID) - 1))
+    if (!CLSIDToString(SAMPLEIME_CLSID, achIMEKey + ARRAYSIZE(RegInfo_Prefix_CLSID) - 1))
     {
         return;
     }
