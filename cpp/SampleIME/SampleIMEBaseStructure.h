@@ -150,8 +150,8 @@ public:
         _innerVect.erase(iter + index);
     }
 
-    UINT Count() const 
-    { 
+    UINT Count() const
+    {
         return static_cast<UINT>(_innerVect.size());
     }
 
@@ -187,17 +187,17 @@ public:
     BOOL IsRange(UINT vKey);
     int GetIndex(UINT vKey);
 
-    inline int Count() const 
-    { 
-        return _CandidateListIndexRange.Count(); 
+    inline int Count() const
+    {
+        return _CandidateListIndexRange.Count();
     }
-    inline DWORD *GetAt(int index) 
-    { 
-        return _CandidateListIndexRange.GetAt(index); 
+    inline DWORD *GetAt(int index)
+    {
+        return _CandidateListIndexRange.GetAt(index);
     }
-    inline DWORD *Append() 
-    { 
-        return _CandidateListIndexRange.Append(); 
+    inline DWORD *Append()
+    {
+        return _CandidateListIndexRange.Append();
     }
 
 private:

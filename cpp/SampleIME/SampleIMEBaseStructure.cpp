@@ -128,8 +128,8 @@ CStringRange::CStringRange()
     _pStringBuf = nullptr;
 }
 
-CStringRange::~CStringRange() 
-{ 
+CStringRange::~CStringRange()
+{
 }
 
 const WCHAR *CStringRange::Get() const
@@ -168,11 +168,11 @@ CStringRange& CStringRange::operator =(const CStringRange& sr)
 
 int CStringRange::Compare(LCID locale, _In_ CStringRange* pString1, _In_ CStringRange* pString2)
 {
-    return CompareString(locale, 
-        NORM_IGNORECASE, 
-        pString1->Get(), 
-        (DWORD)pString1->GetLength(), 
-        pString2->Get(), 
+    return CompareString(locale,
+        NORM_IGNORECASE,
+        pString1->Get(),
+        (DWORD)pString1->GetLength(),
+        pString2->Get(),
         (DWORD)pString2->GetLength());
 }
 

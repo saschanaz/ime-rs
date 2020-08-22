@@ -30,13 +30,13 @@ BOOL CSampleIME::_IsRangeCovered(TfEditCookie ec, _In_ ITfRange *pRangeTest, _In
 {
     LONG lResult = 0;;
 
-    if (FAILED(pRangeCover->CompareStart(ec, pRangeTest, TF_ANCHOR_START, &lResult)) 
+    if (FAILED(pRangeCover->CompareStart(ec, pRangeTest, TF_ANCHOR_START, &lResult))
         || (lResult > 0))
     {
         return FALSE;
     }
 
-    if (FAILED(pRangeCover->CompareEnd(ec, pRangeTest, TF_ANCHOR_END, &lResult)) 
+    if (FAILED(pRangeCover->CompareEnd(ec, pRangeTest, TF_ANCHOR_END, &lResult))
         || (lResult < 0))
     {
         return FALSE;
@@ -369,9 +369,9 @@ HRESULT CSampleIME::_HandleCompositionConvert(TfEditCookie ec, _In_ ITfContext *
             _isCandidateWithWildcard = FALSE;
         }
 
-        // 
+        //
         // create an instance of the candidate list class.
-        // 
+        //
         if (_pCandidateListUIPresenter == nullptr)
         {
             _pCandidateListUIPresenter = new (std::nothrow) CCandidateListUIPresenter(this, Global::AtomCandidateWindow,

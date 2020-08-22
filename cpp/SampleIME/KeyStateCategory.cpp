@@ -320,7 +320,7 @@ HRESULT CKeyStateCandidate::HandleKeyConvert(KeyHandlerEditSessionDTO dto)
 }
 
 //_HandleCancel
-HRESULT CKeyStateCandidate::HandleKeyCancel(KeyHandlerEditSessionDTO dto)    
+HRESULT CKeyStateCandidate::HandleKeyCancel(KeyHandlerEditSessionDTO dto)
 {
     return _pTextService->_HandleCancel(dto.ec, dto.pContext);
 }

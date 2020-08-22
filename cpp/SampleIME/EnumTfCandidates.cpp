@@ -17,7 +17,7 @@ HRESULT CEnumTfCandidates::CreateInstance(_Out_ CEnumTfCandidates **ppobj, _In_ 
     *ppobj = nullptr;
 
     *ppobj = new (std::nothrow) CEnumTfCandidates(rgelm, currentNum);
-    if (*ppobj == nullptr) 
+    if (*ppobj == nullptr)
     {
         return E_OUTOFMEMORY;
     }
@@ -34,7 +34,7 @@ HRESULT CEnumTfCandidates::CreateInstance(REFIID riid, _Out_ void **ppvObj, _In_
     *ppvObj = nullptr;
 
     *ppvObj = new (std::nothrow) CEnumTfCandidates(rgelm, currentNum);
-    if (*ppvObj == nullptr) 
+    if (*ppvObj == nullptr)
     {
         return E_OUTOFMEMORY;
     }

@@ -35,7 +35,7 @@ inline void QuickVariantInit(_Inout_ VARIANT *pvar)
 
 inline void QuickVariantClear(_Inout_ VARIANT *pvar)
 {
-    switch (pvar->vt) 
+    switch (pvar->vt)
     {
     // some ovbious VTs that don't need to call VariantClear.
     case VT_EMPTY:

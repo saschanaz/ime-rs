@@ -109,7 +109,7 @@ private:
     void PrivateCompartmentsUpdated(_In_ ITfThreadMgr *pThreadMgr);
     void KeyboardOpenCompartmentUpdated(_In_ ITfThreadMgr *pThreadMgr);
 
-    
+
     BOOL SetupDictionaryFile();
     CFile* GetDictionaryFile();
 

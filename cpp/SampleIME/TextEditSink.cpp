@@ -22,7 +22,7 @@ STDAPI CSampleIME::OnEndEdit(__RPC__in_opt ITfContext *pContext, TfEditCookie ec
 
     //
     // did the selection change?
-    // The selection change includes the movement of caret as well. 
+    // The selection change includes the movement of caret as well.
     // The caret position is represent as the empty selection range when
     // there is no selection.
     //

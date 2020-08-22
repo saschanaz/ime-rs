@@ -56,7 +56,7 @@ STDAPI CSampleIME::OnSetFocus(_In_ ITfDocumentMgr *pDocMgrFocus, _In_ ITfDocumen
     _UpdateLanguageBarOnSetFocus(pDocMgrFocus);
 
     //
-    // We have to hide/unhide candidate list depending on whether they are 
+    // We have to hide/unhide candidate list depending on whether they are
     // associated with pDocMgrFocus.
     //
     if (_pCandidateListUIPresenter)
@@ -69,7 +69,7 @@ STDAPI CSampleIME::OnSetFocus(_In_ ITfDocumentMgr *pDocMgrFocus, _In_ ITfDocumen
             {
                 _pCandidateListUIPresenter->OnKillThreadFocus();
             }
-            else 
+            else
             {
                 _pCandidateListUIPresenter->OnSetThreadFocus();
             }
@@ -165,7 +165,7 @@ void CSampleIME::_UninitThreadMgrEventSink()
 
     if (_threadMgrEventSinkCookie == TF_INVALID_COOKIE)
     {
-        return; 
+        return;
     }
 
     if (SUCCEEDED(_pThreadMgr->QueryInterface(IID_ITfSource, (void **)&pSource)))

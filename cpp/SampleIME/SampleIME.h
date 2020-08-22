@@ -239,7 +239,7 @@ private:
     ITfCompartment* _pSIPIMEOnOffCompartment;
     DWORD _dwSIPIMEOnOffCompartmentSinkCookie;
 
-    HWND _msgWndHandle; 
+    HWND _msgWndHandle;
 
     LONG _refCount;
 

@@ -406,7 +406,7 @@ void CBaseWindow::CalcFitPointAroundTextExtent(_In_ const RECT *prcTextExtent, _
     {
         ppt->y = 0;
     }
-    else 
+    else
     {
         ppt->y = prcWorkArea->bottom - (prcWindow->bottom - prcWindow->top);
     }
@@ -454,7 +454,7 @@ DWORD CBaseWindow::RectInRect(_In_ const RECT *prcLimit, _In_ const RECT *prcTar
         assert(FALSE);
         dwFlags |= RECT_TOO_WIDE;
     }
-    else if (prcTarget->left < prcLimit->left) 
+    else if (prcTarget->left < prcLimit->left)
     {
         dwFlags |= RECT_OVER_LEFT;
     }
@@ -520,7 +520,7 @@ void CBaseWindow::_SetCaptureObject(_In_opt_ CBaseWindow *pUIObj)
 
     pUIWnd->_pUIObjCapture = pUIObj;
     if (pUIObj != nullptr)
-    { 
+    {
         SetCapture(pUIWnd->_GetWnd());
     }
     else

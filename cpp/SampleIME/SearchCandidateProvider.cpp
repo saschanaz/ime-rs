@@ -19,7 +19,7 @@ create instance of CSearchCandidateProvider
 
 ------------------------------------------------------------------------------*/
 HRESULT CSearchCandidateProvider::CreateInstance(_Outptr_ ITfFnSearchCandidateProvider **ppobj, _In_ ITfTextInputProcessorEx *ptip)
-{  
+{
     if (ppobj == nullptr)
     {
         return E_INVALIDARG;
@@ -41,7 +41,7 @@ create instance of CSearchCandidateProvider
 
 ------------------------------------------------------------------------------*/
 HRESULT CSearchCandidateProvider::CreateInstance(REFIID riid, _Outptr_ void **ppvObj, _In_ ITfTextInputProcessorEx *ptip)
-{ 
+{
     if (ppvObj == nullptr)
     {
         return E_INVALIDARG;
@@ -76,7 +76,7 @@ destructor of CSearchCandidateProvider
 
 ------------------------------------------------------------------------------*/
 CSearchCandidateProvider::~CSearchCandidateProvider(void)
-{  
+{
 }
 
 /*------------------------------------------------------------------------------

@@ -158,7 +158,7 @@ STDAPI CEnumDisplayAttributeInfo::Next(ULONG ulCount, __RPC__out_ecount_part(ulC
         ITfDisplayAttributeInfo* pDisplayAttributeInfo = nullptr;
 
         if (_index == 0)
-        {   
+        {
             pDisplayAttributeInfo = new (std::nothrow) CDisplayAttributeInfoInput();
             if ((pDisplayAttributeInfo) == nullptr)
             {

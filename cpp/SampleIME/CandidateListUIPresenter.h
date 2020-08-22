@@ -20,9 +20,9 @@ class CReadingLine;
 //
 // CCandidateListUIPresenter
 //
-// ITfCandidateListUIElement / ITfIntegratableCandidateListUIElement is used for 
+// ITfCandidateListUIElement / ITfIntegratableCandidateListUIElement is used for
 // UILess mode support
-// ITfCandidateListUIElementBehavior sends the Selection behavior message to 
+// ITfCandidateListUIElementBehavior sends the Selection behavior message to
 // 3rd party IME.
 //----------------------------------------------------------------------------
 
@@ -67,7 +67,7 @@ public:
     STDMETHODIMP SetIntegrationStyle(GUID guidIntegrationStyle);
     STDMETHODIMP GetSelectionStyle(_Out_ TfIntegratableCandidateListSelectionStyle *ptfSelectionStyle);
     STDMETHODIMP OnKeyDown(_In_ WPARAM wParam, _In_ LPARAM lParam, _Out_ BOOL *pIsEaten);
-    STDMETHODIMP ShowCandidateNumbers(_Out_ BOOL *pIsShow); 
+    STDMETHODIMP ShowCandidateNumbers(_Out_ BOOL *pIsShow);
     STDMETHODIMP FinalizeExactCompositionString();
 
     virtual HRESULT _StartCandidateList(TfClientId tfClientId, _In_ ITfDocumentMgr *pDocumentMgr, _In_ ITfContext *pContextDocument, TfEditCookie ec, _In_ ITfRange *pRangeComposition, UINT wndWidth);

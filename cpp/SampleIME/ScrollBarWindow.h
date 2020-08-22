@@ -145,9 +145,9 @@ public:
     virtual ~CScrollBarNullWindow() { };
 
     virtual BOOL _Create(ATOM atom, DWORD dwExStyle, DWORD dwStyle, _In_opt_ CBaseWindow *pParent = nullptr, int wndWidth = 0, int wndHeight = 0)
-    { 
+    {
         atom; dwExStyle; dwStyle; pParent; wndWidth; wndHeight;
-        return TRUE; 
+        return TRUE;
     };
 
     virtual void _Destroy() { };
@@ -162,10 +162,10 @@ public:
     virtual BOOL _GetWindowRect(_Out_ LPRECT lpRect) { lpRect->bottom = 0; lpRect->left = 0; lpRect->right = 0; lpRect->top = 0; return TRUE; };
     virtual BOOL _GetClientRect(_Out_ LPRECT lpRect) { lpRect->bottom = 0; lpRect->left = 0; lpRect->right = 0; lpRect->top = 0; return TRUE; };
 
-    virtual LRESULT CALLBACK _WindowProcCallback(_In_ HWND wndHandle, _In_ UINT uMsg, _In_ WPARAM wParam, _In_ LPARAM lParam) 
-    { 
+    virtual LRESULT CALLBACK _WindowProcCallback(_In_ HWND wndHandle, _In_ UINT uMsg, _In_ WPARAM wParam, _In_ LPARAM lParam)
+    {
         wndHandle; uMsg; wParam; lParam;
-        return 0; 
+        return 0;
     };
     virtual void _OnPaint(_In_ HDC dcHandle, _In_ PAINTSTRUCT *pps) { dcHandle;pps; };
     virtual void _OnLButtonDown(POINT pt) { pt; };
@@ -205,10 +205,10 @@ public:
     {
     }
 
-    LRESULT CALLBACK _WindowProcCallback(_In_ HWND wndHandle, UINT uMsg, _In_ WPARAM wParam, _In_ LPARAM lParam) 
-    { 
+    LRESULT CALLBACK _WindowProcCallback(_In_ HWND wndHandle, UINT uMsg, _In_ WPARAM wParam, _In_ LPARAM lParam)
+    {
         wndHandle;uMsg;wParam;lParam;
-        return 0; 
+        return 0;
     }
     virtual void _OnPaint(_In_ HDC dcHandle, _In_ PAINTSTRUCT *pps);
     virtual void _OnLButtonDown(POINT pt);
