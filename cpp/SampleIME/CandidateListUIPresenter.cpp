@@ -842,9 +842,9 @@ void CCandidateListUIPresenter::_SetText(_In_ CSampleImeArray<CCandidateListItem
 
 void CCandidateListUIPresenter::AddCandidateToCandidateListUI(_In_ CSampleImeArray<CCandidateListItem> *pCandidateList, BOOL isAddFindKeyCode)
 {
-    for (UINT index = 0; index < pCandidateList->Count(); index++)
+    for (auto& item : *pCandidateList)
     {
-        _pCandidateWnd->_AddString(pCandidateList->GetAt(index), isAddFindKeyCode);
+        _pCandidateWnd->_AddString(&item, isAddFindKeyCode);
     }
 }
 

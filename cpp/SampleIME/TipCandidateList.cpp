@@ -121,16 +121,15 @@ STDMETHODIMP CTipCandidateList::GetCandidate(ULONG nIndex, _Outptr_result_mayben
         return E_FAIL;
     }
 
-    for (UINT i = 0; i < _tfCandStrList.Count(); i++)
+    for (const auto& pCandStrCur : _tfCandStrList)
     {
-        ITfCandidateString** ppCandStrCur = _tfCandStrList.GetAt(i);
         ULONG indexCur = 0;
-        if ((nullptr != ppCandStrCur) && (SUCCEEDED((*ppCandStrCur)->GetIndex(&indexCur))))
+        if ((nullptr != pCandStrCur) && (SUCCEEDED(pCandStrCur->GetIndex(&indexCur))))
         {
             if (nIndex == indexCur)
             {
                 BSTR bstr;
-                CTipCandidateString* pTipCandidateStrCur = (CTipCandidateString*)(*ppCandStrCur);
+                CTipCandidateString* pTipCandidateStrCur = (CTipCandidateString*)pCandStrCur;
                 pTipCandidateStrCur->GetString(&bstr);
 
                 CTipCandidateString::CreateInstance(IID_ITfCandidateString, (void**)ppCandStr);

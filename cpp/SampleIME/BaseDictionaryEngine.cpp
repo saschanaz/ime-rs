@@ -86,9 +86,9 @@ VOID CBaseDictionaryEngine::MergeSortByFindKeyCode(_Inout_ CSampleImeArray<CCand
         }
 
         leftRangeTemp = leftRange;
-        for (UINT count = 0; count < ListItemTemp.Count(); count++)
+        for (const auto& item : ListItemTemp)
         {
-            *pItemList->GetAt(leftRangeTemp++) = *ListItemTemp.GetAt(count);
+            *pItemList->GetAt(leftRangeTemp++) = item;
         }
     }
     else if (candidateCount == 2)

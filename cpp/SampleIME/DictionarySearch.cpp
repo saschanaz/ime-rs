@@ -205,12 +205,12 @@ TryAgain:
         (*ppdret)->_FindKeyCode = keyword;
         (*ppdret)->_SearchKeyCode = *_pSearchKeyCode;
 
-        for (UINT i = 0; i < valueStrings.Count(); i++)
+        for (const auto& item : valueStrings)
         {
             CStringRange* findPhrase = (*ppdret)->_FindPhraseList.Append();
             if (findPhrase)
             {
-                *findPhrase = *valueStrings.GetAt(i);
+                *findPhrase = item;
             }
         }
 

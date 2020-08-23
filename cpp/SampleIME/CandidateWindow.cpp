@@ -769,12 +769,10 @@ void CCandidateWindow::_AddString(_Inout_ CCandidateListItem *pCandidateItem, _I
 
 void CCandidateWindow::_ClearList()
 {
-    for (UINT index = 0; index < _candidateList.Count(); index++)
+    for (auto& item : _candidateList)
     {
-        CCandidateListItem* pItemList = nullptr;
-        pItemList = _candidateList.GetAt(index);
-        delete [] pItemList->_ItemString.Get();
-        delete [] pItemList->_FindKeyCode.Get();
+        delete [] item._ItemString.Get();
+        delete [] item._FindKeyCode.Get();
     }
     _currentSelection = 0;
     _candidateList.Clear();

@@ -178,9 +178,9 @@ HRESULT CSampleIME::_HandleCompositionInputWorker(_In_ CCompositionProcessorEngi
     //
     pCompositionProcessorEngine->GetReadingStrings(&readingStrings, &isWildcardIncluded);
 
-    for (UINT index = 0; index < readingStrings.Count(); index++)
+    for (auto& item : readingStrings)
     {
-        hr = _AddComposingAndChar(ec, pContext, readingStrings.GetAt(index));
+        hr = _AddComposingAndChar(ec, pContext, &item);
         if (FAILED(hr))
         {
             return hr;

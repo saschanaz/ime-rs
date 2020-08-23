@@ -22,13 +22,13 @@ VOID CTableDictionaryEngine::CollectWord(_In_ CStringRange *pKeyCode, _Inout_ CS
 
     while (dshSearch.FindPhrase(&pdret))
     {
-        for (UINT index = 0; index < pdret->_FindPhraseList.Count(); index++)
+        for (const auto& item : pdret->_FindPhraseList)
         {
             CStringRange* pPhrase = nullptr;
             pPhrase = pWordStrings->Append();
             if (pPhrase)
             {
-                *pPhrase = *pdret->_FindPhraseList.GetAt(index);
+                *pPhrase = item;
             }
         }
 
@@ -44,13 +44,13 @@ VOID CTableDictionaryEngine::CollectWord(_In_ CStringRange *pKeyCode, _Inout_ CS
 
     while (dshSearch.FindPhrase(&pdret))
     {
-        for (UINT iIndex = 0; iIndex < pdret->_FindPhraseList.Count(); iIndex++)
+        for (auto& item : pdret->_FindPhraseList)
         {
             CCandidateListItem* pLI = nullptr;
             pLI = pItemList->Append();
             if (pLI)
             {
-                pLI->_ItemString.Set(*pdret->_FindPhraseList.GetAt(iIndex));
+                pLI->_ItemString.Set(item);
                 pLI->_FindKeyCode.Set(pdret->_FindKeyCode.Get(), pdret->_FindKeyCode.GetLength());
             }
         }
@@ -73,13 +73,13 @@ VOID CTableDictionaryEngine::CollectWordForWildcard(_In_ CStringRange *pKeyCode,
 
     while (dshSearch.FindPhraseForWildcard(&pdret))
     {
-        for (UINT iIndex = 0; iIndex < pdret->_FindPhraseList.Count(); iIndex++)
+        for (auto& item : pdret->_FindPhraseList)
         {
             CCandidateListItem* pLI = nullptr;
             pLI = pItemList->Append();
             if (pLI)
             {
-                pLI->_ItemString.Set(*pdret->_FindPhraseList.GetAt(iIndex));
+                pLI->_ItemString.Set(item);
                 pLI->_FindKeyCode.Set(pdret->_FindKeyCode.Get(), pdret->_FindKeyCode.GetLength());
             }
         }
@@ -102,13 +102,13 @@ VOID CTableDictionaryEngine::CollectWordFromConvertedStringForWildcard(_In_ CStr
 
     while (dshSearch.FindConvertedStringForWildcard(&pdret)) // TAIL ALL CHAR MATCH
     {
-        for (UINT index = 0; index < pdret->_FindPhraseList.Count(); index++)
+        for (auto& item : pdret->_FindPhraseList)
         {
             CCandidateListItem* pLI = nullptr;
             pLI = pItemList->Append();
             if (pLI)
             {
-                pLI->_ItemString.Set(*pdret->_FindPhraseList.GetAt(index));
+                pLI->_ItemString.Set(item);
                 pLI->_FindKeyCode.Set(pdret->_FindKeyCode.Get(), pdret->_FindKeyCode.GetLength());
             }
         }

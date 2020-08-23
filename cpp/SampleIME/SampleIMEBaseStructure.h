@@ -174,6 +174,14 @@ public:
         _innerVect.clear();
     }
 
+    auto begin() {
+        return _innerVect.begin();
+    }
+
+    auto end() {
+        return _innerVect.end();
+    }
+
 private:
     CSampleImeInnerArray _innerVect;
 };

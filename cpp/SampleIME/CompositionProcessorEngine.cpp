@@ -446,9 +446,8 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
 
         // Incremental search would show keystroke data from all candidate list items
         // but wont show identical keystroke data for user inputted.
-        for (UINT index = 0; index < pCandidateList->Count(); index++)
+        for (auto& item : *pCandidateList)
         {
-            CCandidateListItem *pLI = pCandidateList->GetAt(index);
             DWORD_PTR keystrokeBufferLen = 0;
 
             if (IsWildcard())
@@ -461,8 +460,8 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
             }
 
             CStringRange newFindKeyCode;
-            newFindKeyCode.Set(pLI->_FindKeyCode.Get() + keystrokeBufferLen, pLI->_FindKeyCode.GetLength() - keystrokeBufferLen);
-            pLI->_FindKeyCode.Set(newFindKeyCode);
+            newFindKeyCode.Set(item._FindKeyCode.Get() + keystrokeBufferLen, item._FindKeyCode.GetLength() - keystrokeBufferLen);
+            item._FindKeyCode.Set(newFindKeyCode);
         }
 
         delete [] pwch;
@@ -476,16 +475,14 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
         _pTableDictionaryEngine->CollectWord(&_keystrokeBuffer, pCandidateList);
     }
 
-    for (UINT index = 0; index < pCandidateList->Count();)
+    // XXX(krosylight): This does nothing, right?
+    for (const auto& item : *pCandidateList)
     {
-        CCandidateListItem *pLI = pCandidateList->GetAt(index);
         CStringRange startItemString;
         CStringRange endItemString;
 
-        startItemString.Set(pLI->_ItemString.Get(), 1);
-        endItemString.Set(pLI->_ItemString.Get() + pLI->_ItemString.GetLength() - 1, 1);
-
-        index++;
+        startItemString.Set(item._ItemString.Get(), 1);
+        endItemString.Set(item._ItemString.Get() + item._ItemString.GetLength() - 1, 1);
     }
 }
 
@@ -549,25 +546,21 @@ BOOL CCompositionProcessorEngine::IsPunctuation(WCHAR wch)
         }
     }
 
-    for (UINT j = 0; j < _PunctuationPair.Count(); j++)
+    for (const auto& puncPair : _PunctuationPair)
     {
-        CPunctuationPair* pPuncPair = _PunctuationPair.GetAt(j);
-
-        if (pPuncPair->_punctuation._Code == wch)
+        if (puncPair._punctuation._Code == wch)
         {
             return TRUE;
         }
     }
 
-    for (UINT k = 0; k < _PunctuationNestPair.Count(); k++)
+    for (const auto& puncNestPair : _PunctuationNestPair)
     {
-        CPunctuationNestPair* pPuncNestPair = _PunctuationNestPair.GetAt(k);
-
-        if (pPuncNestPair->_punctuation_begin._Code == wch)
+        if (puncNestPair._punctuation_begin._Code == wch)
         {
             return TRUE;
         }
-        if (pPuncNestPair->_punctuation_end._Code == wch)
+        if (puncNestPair._punctuation_end._Code == wch)
         {
             return TRUE;
         }
@@ -591,49 +584,45 @@ WCHAR CCompositionProcessorEngine::GetPunctuation(WCHAR wch)
         }
     }
 
-    for (UINT j = 0; j < _PunctuationPair.Count(); j++)
+    for (auto& puncPair : _PunctuationPair)
     {
-        CPunctuationPair* pPuncPair = _PunctuationPair.GetAt(j);
-
-        if (pPuncPair->_punctuation._Code == wch)
+        if (puncPair._punctuation._Code == wch)
         {
-            if (! pPuncPair->_isPairToggle)
+            if (!puncPair._isPairToggle)
             {
-                pPuncPair->_isPairToggle = TRUE;
-                return pPuncPair->_punctuation._Punctuation;
+                puncPair._isPairToggle = TRUE;
+                return puncPair._punctuation._Punctuation;
             }
             else
             {
-                pPuncPair->_isPairToggle = FALSE;
-                return pPuncPair->_pairPunctuation;
+                puncPair._isPairToggle = FALSE;
+                return puncPair._pairPunctuation;
             }
         }
     }
 
-    for (UINT k = 0; k < _PunctuationNestPair.Count(); k++)
+    for (auto& puncNestPair : _PunctuationNestPair)
     {
-        CPunctuationNestPair* pPuncNestPair = _PunctuationNestPair.GetAt(k);
-
-        if (pPuncNestPair->_punctuation_begin._Code == wch)
+        if (puncNestPair._punctuation_begin._Code == wch)
         {
-            if (pPuncNestPair->_nestCount++ == 0)
+            if (puncNestPair._nestCount++ == 0)
             {
-                return pPuncNestPair->_punctuation_begin._Punctuation;
+                return puncNestPair._punctuation_begin._Punctuation;
             }
             else
             {
-                return pPuncNestPair->_pairPunctuation_begin;
+                return puncNestPair._pairPunctuation_begin;
             }
         }
-        if (pPuncNestPair->_punctuation_end._Code == wch)
+        if (puncNestPair._punctuation_end._Code == wch)
         {
-            if (--pPuncNestPair->_nestCount == 0)
+            if (--puncNestPair._nestCount == 0)
             {
-                return pPuncNestPair->_punctuation_end._Punctuation;
+                return puncNestPair._punctuation_end._Punctuation;
             }
             else
             {
-                return pPuncNestPair->_pairPunctuation_end;
+                return puncNestPair._pairPunctuation_end;
             }
         }
     }
@@ -772,9 +761,9 @@ BOOL CCompositionProcessorEngine::InitPreservedKey(_In_ XPreservedKey *pXPreserv
         return FALSE;
     }
 
-    for (UINT i = 0; i < pXPreservedKey->TSFPreservedKeyTable.Count(); i++)
+    for (const auto& item : pXPreservedKey->TSFPreservedKeyTable)
     {
-        TF_PRESERVEDKEY preservedKey = *pXPreservedKey->TSFPreservedKeyTable.GetAt(i);
+        TF_PRESERVEDKEY preservedKey = item;
         preservedKey.uModifiers &= 0xffff;
 
 		size_t lenOfDesc = 0;
@@ -798,13 +787,11 @@ BOOL CCompositionProcessorEngine::InitPreservedKey(_In_ XPreservedKey *pXPreserv
 
 BOOL CCompositionProcessorEngine::CheckShiftKeyOnly(_In_ CSampleImeArray<TF_PRESERVEDKEY> *pTSFPreservedKeyTable)
 {
-    for (UINT i = 0; i < pTSFPreservedKeyTable->Count(); i++)
+    for (const auto& tfPsvKey : *pTSFPreservedKeyTable)
     {
-        TF_PRESERVEDKEY *ptfPsvKey = pTSFPreservedKeyTable->GetAt(i);
-
-        if (((ptfPsvKey->uModifiers & (_TF_MOD_ON_KEYUP_SHIFT_ONLY & 0xffff0000)) && !Global::IsShiftKeyDownOnly) ||
-            ((ptfPsvKey->uModifiers & (_TF_MOD_ON_KEYUP_CONTROL_ONLY & 0xffff0000)) && !Global::IsControlKeyDownOnly) ||
-            ((ptfPsvKey->uModifiers & (_TF_MOD_ON_KEYUP_ALT_ONLY & 0xffff0000)) && !Global::IsAltKeyDownOnly)         )
+        if (((tfPsvKey.uModifiers & (_TF_MOD_ON_KEYUP_SHIFT_ONLY & 0xffff0000)) && !Global::IsShiftKeyDownOnly) ||
+            ((tfPsvKey.uModifiers & (_TF_MOD_ON_KEYUP_CONTROL_ONLY & 0xffff0000)) && !Global::IsControlKeyDownOnly) ||
+            ((tfPsvKey.uModifiers & (_TF_MOD_ON_KEYUP_ALT_ONLY & 0xffff0000)) && !Global::IsAltKeyDownOnly)         )
         {
             return FALSE;
         }
@@ -1318,12 +1305,12 @@ BOOL CCompositionProcessorEngine::XPreservedKey::UninitPreservedKey(_In_ ITfThre
         return FALSE;
     }
 
-    for (UINT i = 0; i < TSFPreservedKeyTable.Count(); i++)
+    for (const auto& item : TSFPreservedKeyTable)
     {
-        TF_PRESERVEDKEY pPreservedKey = *TSFPreservedKeyTable.GetAt(i);
-        pPreservedKey.uModifiers &= 0xffff;
+        TF_PRESERVEDKEY preservedKey = item;
+        preservedKey.uModifiers &= 0xffff;
 
-        pKeystrokeMgr->UnpreserveKey(Guid, &pPreservedKey);
+        pKeystrokeMgr->UnpreserveKey(Guid, &preservedKey);
     }
 
     pKeystrokeMgr->Release();
@@ -1824,24 +1811,20 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode, _
     pKeyState->Category = CATEGORY_NONE;
     pKeyState->Function = FUNCTION_NONE;
 
-    for (UINT i = 0; i < _KeystrokeComposition.Count(); i++)
+    for (const auto& keystroke : _KeystrokeComposition)
     {
-        _KEYSTROKE *pKeystroke = nullptr;
-
-        pKeystroke = _KeystrokeComposition.GetAt(i);
-
-        if ((pKeystroke->VirtualKey == uCode) && Global::CheckModifiers(Global::ModifiersValue, pKeystroke->Modifiers))
+        if ((keystroke.VirtualKey == uCode) && Global::CheckModifiers(Global::ModifiersValue, keystroke.Modifiers))
         {
             if (function == FUNCTION_NONE)
             {
                 pKeyState->Category = CATEGORY_COMPOSING;
-                pKeyState->Function = pKeystroke->Function;
+                pKeyState->Function = keystroke.Function;
                 return TRUE;
             }
-            else if (function == pKeystroke->Function)
+            else if (function == keystroke.Function)
             {
                 pKeyState->Category = CATEGORY_COMPOSING;
-                pKeyState->Function = pKeystroke->Function;
+                pKeyState->Function = keystroke.Function;
                 return TRUE;
             }
         }
@@ -1864,13 +1847,10 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeCandidate(UINT uCode, _In
     }
     *pfRetCode = FALSE;
 
-    for (UINT i = 0; i < pKeystrokeMetric->Count(); i++)
+    for (const auto& keystroke : *pKeystrokeMetric)
     {
-        _KEYSTROKE *pKeystroke = nullptr;
 
-        pKeystroke = pKeystrokeMetric->GetAt(i);
-
-        if ((pKeystroke->VirtualKey == uCode) && Global::CheckModifiers(Global::ModifiersValue, pKeystroke->Modifiers))
+        if ((keystroke.VirtualKey == uCode) && Global::CheckModifiers(Global::ModifiersValue, keystroke.Modifiers))
         {
             *pfRetCode = TRUE;
             if (pKeyState)
@@ -1878,7 +1858,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeCandidate(UINT uCode, _In
                 pKeyState->Category = (candidateMode == CANDIDATE_ORIGINAL ? CATEGORY_CANDIDATE :
                     candidateMode == CANDIDATE_PHRASE ? CATEGORY_PHRASE : CATEGORY_CANDIDATE);
 
-                pKeyState->Function = pKeystroke->Function;
+                pKeyState->Function = keystroke.Function;
             }
             return TRUE;
         }

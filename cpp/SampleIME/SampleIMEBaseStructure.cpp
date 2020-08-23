@@ -198,15 +198,15 @@ BOOL CCandidateRange::IsRange(UINT vKey)
 {
     DWORD value = vKey - L'0';
 
-    for (UINT i = 0; i < _CandidateListIndexRange.Count(); i++)
+    for (const auto& item : _CandidateListIndexRange)
     {
-        if (value == *_CandidateListIndexRange.GetAt(i))
+        if (value == item)
         {
             return TRUE;
         }
         else if ((VK_NUMPAD0 <= vKey) && (vKey <= VK_NUMPAD9))
         {
-            if ((vKey-VK_NUMPAD0) == *_CandidateListIndexRange.GetAt(i))
+            if ((vKey-VK_NUMPAD0) == item)
             {
                 return TRUE;
             }
