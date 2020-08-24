@@ -250,12 +250,12 @@ HRESULT CSampleIME::_HandlePhraseFinalize(TfEditCookie ec, _In_ ITfContext *pCon
 
     phraseLen = (DWORD)_pCandidateListUIPresenter->_GetSelectedCandidateString(&pPhraseString);
 
-    CStringRange phraseString;
-    phraseString.Set(pPhraseString, phraseLen);
+    CStringRangeSmart phraseString;
+    phraseString.Set(std::shared_ptr<const WCHAR>(pPhraseString), phraseLen);
 
     if (phraseLen)
     {
-        if ((hr = _AddCharAndFinalize(ec, pContext, &phraseString)) != S_OK)
+        if ((hr = _AddCharAndFinalize(ec, pContext, phraseString)) != S_OK)
         {
             return hr;
         }

@@ -137,7 +137,12 @@ const WCHAR *CStringRange::Get() const
     return _pStringBuf;
 }
 
-const DWORD_PTR CStringRange::GetLength() const
+const WCHAR *CStringRange::GetRaw() const
+{
+    return Get();
+}
+
+const DWORD_PTR CStringRangeBase::GetLength() const
 {
     return _stringBufLen;
 }
@@ -166,22 +171,88 @@ CStringRange& CStringRange::operator =(const CStringRange& sr)
     return *this;
 }
 
-int CStringRange::Compare(LCID locale, const CStringRange* pString1, const CStringRange* pString2)
+const std::shared_ptr<const WCHAR> CStringRangeSmart::Get() const
+{
+    return _pStringBuf;
+}
+
+const WCHAR *CStringRangeSmart::GetRaw() const
+{
+    return Get().get();
+}
+
+void CStringRangeSmart::Clear()
+{
+    _stringBufLen = 0;
+    _pStringBuf.reset();
+}
+
+void CStringRangeSmart::Set(const std::shared_ptr<const WCHAR> pwch, DWORD_PTR dwLength)
+{
+    _stringBufLen = dwLength;
+    _pStringBuf = pwch;
+}
+
+void CStringRangeSmart::Set(WCHAR wch)
+{
+    _stringBufLen = 1;
+    _pStringBuf = std::make_shared<WCHAR>(wch);
+}
+
+void CStringRangeSmart::Set(CStringRange &sr)
+{
+    *this = sr;
+}
+
+void CStringRangeSmart::Set(CStringRangeSmart &sr)
+{
+    *this = sr;
+}
+
+CStringRangeSmart& CStringRangeSmart::operator =(const CStringRange& sr)
+{
+    _stringBufLen = sr.GetLength();
+    _pStringBuf = std::shared_ptr<WCHAR>(Clone(sr.Get(), _stringBufLen));
+    return *this;
+}
+
+CStringRangeSmart& CStringRangeSmart::operator =(const CStringRangeSmart& sr)
+{
+    _stringBufLen = sr.GetLength();
+    _pStringBuf = sr.Get();
+    return *this;
+}
+
+int CStringRangeBase::Compare(LCID locale, const CStringRangeBase* pString1, const CStringRangeBase* pString2)
 {
     return CompareString(locale,
         NORM_IGNORECASE,
-        pString1->Get(),
+        pString1->GetRaw(),
         (DWORD)pString1->GetLength(),
-        pString2->Get(),
+        pString2->GetRaw(),
         (DWORD)pString2->GetLength());
 }
 
-BOOL CStringRange::WildcardCompare(LCID, const CStringRange* stringWithWildcard, const CStringRange* targetString)
+BOOL CStringRangeBase::WildcardCompare(LCID, const CStringRangeBase* stringWithWildcard, const CStringRangeBase* targetString)
 {
     // This is expectedly slower than the previous C++ code
     // as the function now allocates a parsed string object every time
     // This should be faster when porting the string processing completes.
-    return compare_with_wildcard((uint16_t*)stringWithWildcard->Get(), stringWithWildcard->GetLength(), (uint16_t*)targetString->Get(), targetString->GetLength());
+    return compare_with_wildcard((uint16_t*)stringWithWildcard->GetRaw(), stringWithWildcard->GetLength(), (uint16_t*)targetString->GetRaw(), targetString->GetLength());
+}
+
+WCHAR* CStringRangeSmart::Clone(const WCHAR* pwch, DWORD_PTR dwLength)
+{
+    if (!dwLength) {
+        return nullptr;
+    }
+    WCHAR* pwchString = new (std::nothrow) WCHAR[ dwLength ];
+    if (!pwchString)
+    {
+        return nullptr;
+    }
+    memcpy((void*)pwchString, pwch, dwLength * sizeof(WCHAR));
+    return pwchString;
 }
 
 CCandidateRange::CCandidateRange(void)

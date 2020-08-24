@@ -212,24 +212,57 @@ private:
     CSampleImeArray<DWORD> _CandidateListIndexRange;
 };
 
-class CStringRange
+class CStringRangeBase {
+public:
+    const DWORD_PTR GetLength() const;
+    static int Compare(LCID locale, const CStringRangeBase* pString1, const CStringRangeBase* pString2);
+    static BOOL WildcardCompare(LCID locale, const CStringRangeBase* stringWithWildcard, const CStringRangeBase* targetString);
+
+    virtual const WCHAR *GetRaw() const = 0;
+
+protected:
+    DWORD_PTR _stringBufLen = 0;         // Length is in character count.
+};
+
+class CStringRange : public CStringRangeBase
 {
 public:
     CStringRange();
     ~CStringRange();
 
     const WCHAR *Get() const;
-    const DWORD_PTR GetLength() const;
+    const WCHAR *GetRaw() const override;
     void Clear();
     void Set(const WCHAR *pwch, DWORD_PTR dwLength);
     void Set(const CStringRange &sr);
     CStringRange& operator=(const CStringRange& sr);
-    static int Compare(LCID locale, const CStringRange* pString1, const CStringRange* pString2);
-    static BOOL WildcardCompare(LCID locale, const CStringRange* stringWithWildcard, const CStringRange* targetString);
 
 protected:
-    DWORD_PTR _stringBufLen;         // Length is in character count.
     const WCHAR *_pStringBuf;    // Buffer which is not add zero terminate.
+};
+
+class CStringRangeSmart : public CStringRangeBase
+{
+public:
+
+public:
+    CStringRangeSmart() {};
+    ~CStringRangeSmart() {};
+
+    const std::shared_ptr<const WCHAR> Get() const;
+    const WCHAR *GetRaw() const override;
+    void Clear();
+    void Set(const std::shared_ptr<const WCHAR> pwch, DWORD_PTR dwLength);
+    void Set(WCHAR wch);
+    void Set(CStringRange &sr);
+    void Set(CStringRangeSmart &sr);
+    CStringRangeSmart& operator=(const CStringRange& sr);
+    CStringRangeSmart& operator=(const CStringRangeSmart& sr);
+
+protected:
+    static WCHAR* Clone(const WCHAR* pwch, DWORD_PTR dwLength);
+
+    std::shared_ptr<const WCHAR> _pStringBuf;    // Buffer which is not add zero terminate.
 };
 
 //---------------------------------------------------------------------

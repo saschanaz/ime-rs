@@ -289,13 +289,13 @@ HRESULT CSampleIME::_HandleCompositionFinalize(TfEditCookie ec, _In_ ITfContext 
 
         candidateLen = _pCandidateListUIPresenter->_GetSelectedCandidateString(&pCandidateString);
 
-        CStringRange candidateString;
-        candidateString.Set(pCandidateString, candidateLen);
+        CStringRangeSmart candidateString;
+        candidateString.Set(std::shared_ptr<const WCHAR>(pCandidateString), candidateLen);
 
         if (candidateLen)
         {
             // Finalize character
-            hr = _AddCharAndFinalize(ec, pContext, &candidateString);
+            hr = _AddCharAndFinalize(ec, pContext, candidateString);
             if (FAILED(hr))
             {
                 return hr;
@@ -551,11 +551,11 @@ HRESULT CSampleIME::_HandleCompositionPunctuation(TfEditCookie ec, _In_ ITfConte
 
     WCHAR punctuation = pCompositionProcessorEngine->GetPunctuation(wch);
 
-    CStringRange punctuationString;
-    punctuationString.Set(&punctuation, 1);
+    CStringRangeSmart punctuationString;
+    punctuationString.Set(punctuation);
 
     // Finalize character
-    hr = _AddCharAndFinalize(ec, pContext, &punctuationString);
+    hr = _AddCharAndFinalize(ec, pContext, punctuationString);
     if (FAILED(hr))
     {
         return hr;
@@ -578,11 +578,11 @@ HRESULT CSampleIME::_HandleCompositionDoubleSingleByte(TfEditCookie ec, _In_ ITf
 
     WCHAR fullWidth = Global::FullWidthCharTable[wch - 0x20];
 
-    CStringRange fullWidthString;
-    fullWidthString.Set(&fullWidth, 1);
+    CStringRangeSmart fullWidthString;
+    fullWidthString.Set(fullWidth);
 
     // Finalize character
-    hr = _AddCharAndFinalize(ec, pContext, &fullWidthString);
+    hr = _AddCharAndFinalize(ec, pContext, fullWidthString);
     if (FAILED(hr))
     {
         return hr;
