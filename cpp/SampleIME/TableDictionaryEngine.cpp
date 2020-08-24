@@ -51,7 +51,7 @@ VOID CTableDictionaryEngine::CollectWord(_In_ CStringRange *pKeyCode, _Inout_ CS
             if (pLI)
             {
                 pLI->_ItemString.Set(item);
-                pLI->_FindKeyCode.Set(pdret->_FindKeyCode.Get(), pdret->_FindKeyCode.GetLength());
+                pLI->_FindKeyCode.Set(pdret->_FindKeyCode);
             }
         }
 
@@ -80,7 +80,7 @@ VOID CTableDictionaryEngine::CollectWordForWildcard(_In_ CStringRange *pKeyCode,
             if (pLI)
             {
                 pLI->_ItemString.Set(item);
-                pLI->_FindKeyCode.Set(pdret->_FindKeyCode.Get(), pdret->_FindKeyCode.GetLength());
+                pLI->_FindKeyCode.Set(pdret->_FindKeyCode);
             }
         }
 
@@ -109,7 +109,7 @@ VOID CTableDictionaryEngine::CollectWordFromConvertedStringForWildcard(_In_ CStr
             if (pLI)
             {
                 pLI->_ItemString.Set(item);
-                pLI->_FindKeyCode.Set(pdret->_FindKeyCode.Get(), pdret->_FindKeyCode.GetLength());
+                pLI->_FindKeyCode.Set(pdret->_FindKeyCode);
             }
         }
 
