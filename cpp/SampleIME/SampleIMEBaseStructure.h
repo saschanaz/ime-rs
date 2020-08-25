@@ -257,8 +257,8 @@ public:
     void Clear();
     void Set(const std::shared_ptr<const WCHAR> pwch, DWORD_PTR dwLength);
     void Set(WCHAR wch);
-    void Set(CStringRange &sr);
-    void Set(CStringRangeSmart &sr);
+    void Set(const CStringRange &sr);
+    void Set(const CStringRangeSmart &sr);
     CStringRangeSmart& operator=(const CStringRange& sr);
     CStringRangeSmart& operator=(const CStringRangeSmart& sr);
 

@@ -199,12 +199,12 @@ void CStringRangeSmart::Set(WCHAR wch)
     _pStringBuf = std::make_shared<WCHAR>(wch);
 }
 
-void CStringRangeSmart::Set(CStringRange &sr)
+void CStringRangeSmart::Set(const CStringRange &sr)
 {
     *this = sr;
 }
 
-void CStringRangeSmart::Set(CStringRangeSmart &sr)
+void CStringRangeSmart::Set(const CStringRangeSmart &sr)
 {
     *this = sr;
 }
