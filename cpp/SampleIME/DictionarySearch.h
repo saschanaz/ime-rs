@@ -23,7 +23,7 @@ class CDictionaryResult;
 class CDictionarySearch : CDictionaryParser
 {
 public:
-    CDictionarySearch(LCID locale, _In_ CFile *pFile, _In_ CStringRange *pSearchKeyCode);
+    CDictionarySearch(LCID locale, _In_ CFile *pFile, const CStringRangeSmart& searchKeyCode);
     virtual ~CDictionarySearch();
 
     BOOL FindPhrase(_Out_ CDictionaryResult **ppdret);
@@ -31,7 +31,7 @@ public:
 
     BOOL FindConvertedStringForWildcard(CDictionaryResult **ppdret);
 
-    CStringRange* _pSearchKeyCode;
+    CStringRangeSmart _searchKeyCode;
 
     DWORD_PTR _charIndex;      // in character. Always point start of line in dictionary file.
 
@@ -70,7 +70,7 @@ public:
         return *this;
     }
 
-    CStringRange _SearchKeyCode;
+    CStringRangeSmart _SearchKeyCode;
     CStringRange _FindKeyCode;
     CSampleImeArray<CStringRange> _FindPhraseList;
 };

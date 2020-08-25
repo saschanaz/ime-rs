@@ -247,6 +247,9 @@ public:
 
 public:
     CStringRangeSmart() {};
+    CStringRangeSmart(const CStringRange& sr) {
+        Set(sr);
+    };
     ~CStringRangeSmart() {};
 
     const std::shared_ptr<const WCHAR> Get() const;

@@ -15,10 +15,10 @@
 //
 //----------------------------------------------------------------------------
 
-CDictionarySearch::CDictionarySearch(LCID locale, _In_ CFile *pFile, _In_ CStringRange *pSearchKeyCode) : CDictionaryParser(locale)
+CDictionarySearch::CDictionarySearch(LCID locale, _In_ CFile *pFile, const CStringRangeSmart& searchKeyCode) : CDictionaryParser(locale)
 {
     _pFile = pFile;
-    _pSearchKeyCode = pSearchKeyCode;
+    _searchKeyCode = searchKeyCode;
     _charIndex = 0;
 }
 
@@ -107,7 +107,7 @@ TryAgain:
             // Compare Dictionary key code and input key code
             if (!isWildcardSearch)
             {
-                if (CStringRange::Compare(_locale, &keyword, _pSearchKeyCode) != CSTR_EQUAL)
+                if (CStringRange::Compare(_locale, &keyword, &_searchKeyCode) != CSTR_EQUAL)
                 {
                     if (bufLen)
                     {
@@ -119,7 +119,7 @@ TryAgain:
             else
             {
                 // Wildcard search
-                if (!CStringRange::WildcardCompare(_locale, _pSearchKeyCode, &keyword))
+                if (!CStringRange::WildcardCompare(_locale, &_searchKeyCode, &keyword))
                 {
                     if (bufLen)
                     {
@@ -145,7 +145,7 @@ TryAgain:
             {
                 if (!isWildcardSearch)
                 {
-                    if (CStringRange::Compare(_locale, &tempString, _pSearchKeyCode) != CSTR_EQUAL)
+                    if (CStringRange::Compare(_locale, &tempString, &_searchKeyCode) != CSTR_EQUAL)
                     {
                         if (bufLen)
                         {
@@ -157,7 +157,7 @@ TryAgain:
                 else
                 {
                     // Wildcard search
-                    if (!CStringRange::WildcardCompare(_locale, _pSearchKeyCode, &tempString))
+                    if (!CStringRange::WildcardCompare(_locale, &_searchKeyCode, &tempString))
                     {
                         if (bufLen)
                         {
@@ -201,7 +201,7 @@ TryAgain:
         }
 
         (*ppdret)->_FindKeyCode = keyword;
-        (*ppdret)->_SearchKeyCode = *_pSearchKeyCode;
+        (*ppdret)->_SearchKeyCode = _searchKeyCode;
 
         CStringRange* findPhrase = (*ppdret)->_FindPhraseList.Append();
         if (findPhrase)
