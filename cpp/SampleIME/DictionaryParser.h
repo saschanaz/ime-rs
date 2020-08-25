@@ -13,31 +13,17 @@
 //////////////////////////////////////////////////////////////////////
 //
 
-class CParserStringRange : public CStringRange
-{
-public:
-    CParserStringRange() : CStringRange()
-    {
-        _fEscapeIncluded = FALSE;
-    }
-
-    BOOL _fEscapeIncluded;         // flag. This string range included escape sequence.
-};
-
-//////////////////////////////////////////////////////////////////////
-//
-
 class CDictionaryParser
 {
 public:
     CDictionaryParser(LCID locale);
     virtual ~CDictionaryParser();
 
-    BOOL ParseLine(_In_reads_(dwBufLen) LPCWSTR pwszBuffer, DWORD_PTR dwBufLen, _Out_ CParserStringRange *psrgKeyword, _Inout_opt_ CSampleImeArray<CParserStringRange> *pValue = nullptr);
+    BOOL ParseLine(_In_reads_(dwBufLen) LPCWSTR pwszBuffer, DWORD_PTR dwBufLen, _Out_ CStringRange *psrgKeyword, _Inout_opt_ CSampleImeArray<CStringRange> *pValue = nullptr);
 
     // dwBufLen - in character count
     _Ret_maybenull_
-    LPCWSTR GetToken(_In_reads_(dwBufLen) LPCWSTR pwszBuffer, DWORD_PTR dwBufLen, _In_ const WCHAR chDelimiter, _Out_ CParserStringRange *srgKeyWord);
+    LPCWSTR GetToken(_In_reads_(dwBufLen) LPCWSTR pwszBuffer, DWORD_PTR dwBufLen, _In_ const WCHAR chDelimiter, _Out_ CStringRange *srgKeyWord);
 
 protected:
     BOOL RemoveWhiteSpaceFromBegin(_Inout_opt_ CStringRange *pString);

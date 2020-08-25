@@ -93,7 +93,7 @@ TryAgain:
     }
     else
     {
-        CParserStringRange keyword;
+        CStringRange keyword;
         DWORD_PTR bufLen = 0;
         LPWSTR pText = nullptr;
 
@@ -132,7 +132,7 @@ TryAgain:
         else
         {
             // Compare Dictionary converted string and input string
-            CSampleImeArray<CParserStringRange> convertedStrings;
+            CSampleImeArray<CStringRange> convertedStrings;
             if (!ParseLine(&pwch[indexTrace], bufLenOneLine, &keyword, &convertedStrings))
             {
                 if (bufLen)
@@ -191,7 +191,7 @@ TryAgain:
             return FALSE;
         }
 
-        CSampleImeArray<CParserStringRange> valueStrings;
+        CSampleImeArray<CStringRange> valueStrings;
         if (!ParseLine(&pwch[indexTrace], bufLenOneLine, &keyword, &valueStrings))
         {
             if (*ppdret)
