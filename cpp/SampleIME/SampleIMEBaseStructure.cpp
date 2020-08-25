@@ -154,7 +154,7 @@ void CStringRange::Set(const WCHAR *pwch, DWORD_PTR dwLength)
     _pStringBuf = pwch;
 }
 
-void CStringRange::Set(CStringRange &sr)
+void CStringRange::Set(const CStringRange &sr)
 {
     *this = sr;
 }
