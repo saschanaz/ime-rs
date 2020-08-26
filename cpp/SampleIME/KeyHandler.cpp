@@ -180,7 +180,7 @@ HRESULT CSampleIME::_HandleCompositionInputWorker(_In_ CCompositionProcessorEngi
 
     for (auto& item : readingStrings)
     {
-        hr = _AddComposingAndChar(ec, pContext, &item);
+        hr = _AddComposingAndChar(ec, pContext, CStringRangeSmart(item));
         if (FAILED(hr))
         {
             return hr;
@@ -540,7 +540,7 @@ HRESULT CSampleIME::_HandleCompositionPunctuation(TfEditCookie ec, _In_ ITfConte
 
         if (candidateLen)
         {
-            _AddComposingAndChar(ec, pContext, &candidateString);
+            _AddComposingAndChar(ec, pContext, CStringRangeSmart(candidateString));
         }
     }
     //

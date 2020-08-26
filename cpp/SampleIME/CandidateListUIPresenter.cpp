@@ -47,7 +47,7 @@ HRESULT CSampleIME::_HandleCandidateFinalize(TfEditCookie ec, _In_ ITfContext *p
 
     if (candidateLen)
     {
-        hr = _AddComposingAndChar(ec, pContext, &candidateString);
+        hr = _AddComposingAndChar(ec, pContext, CStringRangeSmart(candidateString));
 
         if (FAILED(hr))
         {
@@ -158,7 +158,7 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
         pTempCandListUIPresenter->_SetText(&candidatePhraseList, FALSE);
 
         // Add composing character
-        hrReturn = _AddComposingAndChar(ec, pContext, &candidateString);
+        hrReturn = _AddComposingAndChar(ec, pContext, CStringRangeSmart(candidateString));
 
         // close candidate list
         if (_pCandidateListUIPresenter)

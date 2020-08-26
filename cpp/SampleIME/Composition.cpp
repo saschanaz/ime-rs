@@ -71,7 +71,7 @@ void CSampleIME::_SetComposition(_In_ ITfComposition *pComposition)
 //
 //----------------------------------------------------------------------------
 
-HRESULT CSampleIME::_AddComposingAndChar(TfEditCookie ec, _In_ ITfContext *pContext, _In_ CStringRange *pstrAddString)
+HRESULT CSampleIME::_AddComposingAndChar(TfEditCookie ec, _In_ ITfContext *pContext, const CStringRangeSmart& strAddString)
 {
     HRESULT hr = S_OK;
 
@@ -94,7 +94,7 @@ HRESULT CSampleIME::_AddComposingAndChar(TfEditCookie ec, _In_ ITfContext *pCont
             ITfRange* pRange = nullptr;
             BOOL exist_composing = _FindComposingRange(ec, pContext, pAheadSelection, &pRange);
 
-            _SetInputString(ec, pContext, pRange, CStringRangeSmart(*pstrAddString), exist_composing);
+            _SetInputString(ec, pContext, pRange, strAddString, exist_composing);
 
             if (pRange)
             {
