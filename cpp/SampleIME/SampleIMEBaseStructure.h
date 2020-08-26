@@ -247,7 +247,7 @@ public:
 
 public:
     CStringRangeSmart() {};
-    CStringRangeSmart(const CStringRange& sr) {
+    explicit CStringRangeSmart(const CStringRange& sr) {
         Set(sr);
     };
     ~CStringRangeSmart() {};
