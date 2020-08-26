@@ -281,7 +281,7 @@ protected:
 //---------------------------------------------------------------------
 struct CCandidateListItem
 {
-    CStringRange _ItemString;
+    CStringRangeSmart _ItemString;
     CStringRangeSmart _FindKeyCode;
 
 	CCandidateListItem& CCandidateListItem::operator =( const CCandidateListItem& rhs)

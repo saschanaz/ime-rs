@@ -32,22 +32,18 @@ const int MOVETO_BOTTOM = -1;
 HRESULT CSampleIME::_HandleCandidateFinalize(TfEditCookie ec, _In_ ITfContext *pContext)
 {
     HRESULT hr = S_OK;
-    DWORD_PTR candidateLen = 0;
-    const WCHAR* pCandidateString = nullptr;
-    CStringRange candidateString;
+    CStringRangeSmart candidateString;
 
     if (nullptr == _pCandidateListUIPresenter)
     {
         goto NoPresenter;
     }
 
-    candidateLen = _pCandidateListUIPresenter->_GetSelectedCandidateString(&pCandidateString);
+    candidateString = _pCandidateListUIPresenter->_GetSelectedCandidateString();
 
-    candidateString.Set(pCandidateString, candidateLen);
-
-    if (candidateLen)
+    if (candidateString.GetLength())
     {
-        hr = _AddComposingAndChar(ec, pContext, CStringRangeSmart(candidateString));
+        hr = _AddComposingAndChar(ec, pContext, candidateString);
 
         if (FAILED(hr))
         {
@@ -85,7 +81,7 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
     DWORD_PTR candidateLen = 0;
     const WCHAR* pCandidateString = nullptr;
     BSTR pbstr = nullptr;
-    CStringRange candidateString;
+    CStringRangeSmart candidateString;
     CSampleImeArray<CCandidateListItem> candidatePhraseList;
 
     if (nullptr == _pCandidateListUIPresenter)
@@ -94,19 +90,16 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
         goto Exit;
     }
 
-    candidateLen = _pCandidateListUIPresenter->_GetSelectedCandidateString(&pCandidateString);
-    if (0 == candidateLen)
-    {
+    candidateString = _pCandidateListUIPresenter->_GetSelectedCandidateString();
+    if (0 == candidateString.GetLength()) {
         hrReturn = S_FALSE;
         goto Exit;
     }
 
-    candidateString.Set(pCandidateString, candidateLen);
-
     BOOL fMakePhraseFromText = _pCompositionProcessorEngine->IsMakePhraseFromText();
     if (fMakePhraseFromText)
     {
-        _pCompositionProcessorEngine->GetCandidateStringInConverted(candidateString, &candidatePhraseList);
+        _pCompositionProcessorEngine->GetCandidateStringInConverted(candidateString.ToRaw(), &candidatePhraseList);
         LCID locale = _pCompositionProcessorEngine->GetLocale();
 
         _pCandidateListUIPresenter->RemoveSpecificCandidateFromList(locale, candidatePhraseList, candidateString);
@@ -158,7 +151,7 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
         pTempCandListUIPresenter->_SetText(&candidatePhraseList, FALSE);
 
         // Add composing character
-        hrReturn = _AddComposingAndChar(ec, pContext, CStringRangeSmart(candidateString));
+        hrReturn = _AddComposingAndChar(ec, pContext, candidateString);
 
         // close candidate list
         if (_pCandidateListUIPresenter)
@@ -245,15 +238,9 @@ HRESULT CSampleIME::_HandlePhraseFinalize(TfEditCookie ec, _In_ ITfContext *pCon
 {
     HRESULT hr = S_OK;
 
-    DWORD phraseLen = 0;
-    const WCHAR* pPhraseString = nullptr;
+    CStringRangeSmart phraseString = _pCandidateListUIPresenter->_GetSelectedCandidateString();
 
-    phraseLen = (DWORD)_pCandidateListUIPresenter->_GetSelectedCandidateString(&pPhraseString);
-
-    CStringRangeSmart phraseString;
-    phraseString.Set(std::shared_ptr<const WCHAR>(pPhraseString), phraseLen);
-
-    if (phraseLen)
+    if (phraseString.GetLength())
     {
         if ((hr = _AddCharAndFinalize(ec, pContext, phraseString)) != S_OK)
         {
@@ -901,9 +888,9 @@ void CCandidateListUIPresenter::_SetFillColor(HBRUSH hBrush)
 //
 //----------------------------------------------------------------------------
 
-DWORD_PTR CCandidateListUIPresenter::_GetSelectedCandidateString(_Outptr_result_maybenull_ const WCHAR **ppwchCandidateString)
+CStringRangeSmart CCandidateListUIPresenter::_GetSelectedCandidateString()
 {
-    return _pCandidateWnd->_GetSelectedCandidateString(ppwchCandidateString);
+    return _pCandidateWnd->_GetSelectedCandidateString();
 }
 
 //+---------------------------------------------------------------------------
@@ -1158,7 +1145,7 @@ HRESULT CCandidateListUIPresenter::OnKillThreadFocus()
     return S_OK;
 }
 
-void CCandidateListUIPresenter::RemoveSpecificCandidateFromList(_In_ LCID Locale, _Inout_ CSampleImeArray<CCandidateListItem> &candidateList, _In_ CStringRange &candidateString)
+void CCandidateListUIPresenter::RemoveSpecificCandidateFromList(_In_ LCID Locale, _Inout_ CSampleImeArray<CCandidateListItem> &candidateList, const CStringRangeSmart &candidateString)
 {
     for (UINT index = 0; index < candidateList.Count();)
     {

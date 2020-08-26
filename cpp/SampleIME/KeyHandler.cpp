@@ -284,15 +284,9 @@ HRESULT CSampleIME::_HandleCompositionFinalize(TfEditCookie ec, _In_ ITfContext 
     if (isCandidateList && _pCandidateListUIPresenter)
     {
         // Finalize selected candidate string from CCandidateListUIPresenter
-        DWORD_PTR candidateLen = 0;
-        const WCHAR *pCandidateString = nullptr;
+        CStringRangeSmart candidateString = _pCandidateListUIPresenter->_GetSelectedCandidateString();
 
-        candidateLen = _pCandidateListUIPresenter->_GetSelectedCandidateString(&pCandidateString);
-
-        CStringRangeSmart candidateString;
-        candidateString.Set(std::shared_ptr<const WCHAR>(pCandidateString), candidateLen);
-
-        if (candidateLen)
+        if (candidateString.GetLength())
         {
             // Finalize character
             hr = _AddCharAndFinalize(ec, pContext, candidateString);
@@ -530,17 +524,11 @@ HRESULT CSampleIME::_HandleCompositionPunctuation(TfEditCookie ec, _In_ ITfConte
 
     if (_candidateMode != CANDIDATE_NONE && _pCandidateListUIPresenter)
     {
-        DWORD_PTR candidateLen = 0;
-        const WCHAR* pCandidateString = nullptr;
+        CStringRangeSmart candidateString = _pCandidateListUIPresenter->_GetSelectedCandidateString();
 
-        candidateLen = _pCandidateListUIPresenter->_GetSelectedCandidateString(&pCandidateString);
-
-        CStringRange candidateString;
-        candidateString.Set(pCandidateString, candidateLen);
-
-        if (candidateLen)
+        if (candidateString.GetLength())
         {
-            _AddComposingAndChar(ec, pContext, CStringRangeSmart(candidateString));
+            _AddComposingAndChar(ec, pContext, candidateString);
         }
     }
     //

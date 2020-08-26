@@ -55,7 +55,7 @@ public:
     void _SetScrollInfo(_In_ int nMax, _In_ int nPage);
 
     DWORD _GetCandidateString(_In_ int iIndex, _Outptr_result_maybenull_z_ const WCHAR **ppwchCandidateString);
-    DWORD _GetSelectedCandidateString(_Outptr_result_maybenull_ const WCHAR **ppwchCandidateString);
+    CStringRangeSmart _GetSelectedCandidateString();
 
     BOOL _MoveSelection(_In_ int offSet, _In_ BOOL isNotify);
     BOOL _SetSelection(_In_ int iPage, _In_ BOOL isNotify);

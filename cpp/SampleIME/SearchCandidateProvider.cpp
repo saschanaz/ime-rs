@@ -185,7 +185,7 @@ STDMETHODIMP CSearchCandidateProvider::GetSearchCandidates(BSTR bstrQuery, BSTR 
             CTipCandidateString::CreateInstance(IID_ITfCandidateString, (void**)&pCandStr);
 
             ((CTipCandidateString*)pCandStr)->SetIndex(iCand);
-            ((CTipCandidateString*)pCandStr)->SetString(candidateList.GetAt(iCand)->_ItemString.Get(), candidateList.GetAt(iCand)->_ItemString.GetLength());
+            ((CTipCandidateString*)pCandStr)->SetString(candidateList.GetAt(iCand)->_ItemString.GetRaw(), candidateList.GetAt(iCand)->_ItemString.GetLength());
 
             ((CTipCandidateList*)(*pplist))->SetCandidate(&pCandStr);
         }
