@@ -474,16 +474,6 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
     {
         _pTableDictionaryEngine->CollectWord(&_keystrokeBuffer, pCandidateList);
     }
-
-    // XXX(krosylight): This does nothing, right?
-    for (const auto& item : *pCandidateList)
-    {
-        CStringRange startItemString;
-        CStringRange endItemString;
-
-        startItemString.Set(item._ItemString.Get(), 1);
-        endItemString.Set(item._ItemString.Get() + item._ItemString.GetLength() - 1, 1);
-    }
 }
 
 //+---------------------------------------------------------------------------
