@@ -251,6 +251,14 @@ CStringRangeSmart CStringRangeSmart::Substr(DWORD_PTR start, DWORD_PTR end) cons
     return range;
 }
 
+CStringRange CStringRangeSmart::ToRaw() const
+{
+    CStringRange range;
+    range.Set(_pStringBuf.get(), _stringBufLen);
+    return range;
+}
+
+
 WCHAR* CStringRangeSmart::Clone(const WCHAR* pwch, DWORD_PTR dwLength)
 {
     if (!dwLength) {

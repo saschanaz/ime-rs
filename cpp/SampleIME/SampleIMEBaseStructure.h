@@ -264,6 +264,9 @@ public:
     CStringRangeSmart Substr(DWORD_PTR start) const;
     CStringRangeSmart Substr(DWORD_PTR start, DWORD_PTR end) const;
 
+    /** For when the result can be disposed together with the base instance */
+    CStringRange ToRaw() const;
+
 protected:
     static WCHAR* Clone(const WCHAR* pwch, DWORD_PTR dwLength);
 
