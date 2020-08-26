@@ -94,7 +94,7 @@ HRESULT CSampleIME::_AddComposingAndChar(TfEditCookie ec, _In_ ITfContext *pCont
             ITfRange* pRange = nullptr;
             BOOL exist_composing = _FindComposingRange(ec, pContext, pAheadSelection, &pRange);
 
-            _SetInputString(ec, pContext, pRange, pstrAddString, exist_composing);
+            _SetInputString(ec, pContext, pRange, CStringRangeSmart(*pstrAddString), exist_composing);
 
             if (pRange)
             {
@@ -208,12 +208,12 @@ BOOL CSampleIME::_FindComposingRange(TfEditCookie ec, _In_ ITfContext *pContext,
 //
 //----------------------------------------------------------------------------
 
-HRESULT CSampleIME::_SetInputString(TfEditCookie ec, _In_ ITfContext *pContext, _Out_opt_ ITfRange *pRange, _In_ CStringRange *pstrAddString, BOOL exist_composing)
+HRESULT CSampleIME::_SetInputString(TfEditCookie ec, _In_ ITfContext *pContext, _Out_opt_ ITfRange *pRange, const CStringRangeSmart& strAddString, BOOL exist_composing)
 {
     ITfRange* pRangeInsert = nullptr;
     if (!exist_composing)
     {
-        _InsertAtSelection(ec, pContext, CStringRangeSmart(*pstrAddString), &pRangeInsert);
+        _InsertAtSelection(ec, pContext, strAddString, &pRangeInsert);
         if (pRangeInsert == nullptr)
         {
             return S_OK;
@@ -222,7 +222,7 @@ HRESULT CSampleIME::_SetInputString(TfEditCookie ec, _In_ ITfContext *pContext, 
     }
     if (pRange != nullptr)
     {
-        pRange->SetText(ec, 0, pstrAddString->Get(), (LONG)pstrAddString->GetLength());
+        pRange->SetText(ec, 0, strAddString.GetRaw(), (LONG)strAddString.GetLength());
     }
 
     _SetCompositionLanguage(ec, pContext);
