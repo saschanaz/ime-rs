@@ -213,7 +213,7 @@ HRESULT CSampleIME::_SetInputString(TfEditCookie ec, _In_ ITfContext *pContext, 
     ITfRange* pRangeInsert = nullptr;
     if (!exist_composing)
     {
-        _InsertAtSelection(ec, pContext, pstrAddString, &pRangeInsert);
+        _InsertAtSelection(ec, pContext, CStringRangeSmart(*pstrAddString), &pRangeInsert);
         if (pRangeInsert == nullptr)
         {
             return S_OK;
@@ -260,7 +260,7 @@ HRESULT CSampleIME::_SetInputString(TfEditCookie ec, _In_ ITfContext *pContext, 
 //
 //----------------------------------------------------------------------------
 
-HRESULT CSampleIME::_InsertAtSelection(TfEditCookie ec, _In_ ITfContext *pContext, _In_ CStringRange *pstrAddString, _Outptr_ ITfRange **ppCompRange)
+HRESULT CSampleIME::_InsertAtSelection(TfEditCookie ec, _In_ ITfContext *pContext, const CStringRangeSmart& strAddString, _Outptr_ ITfRange **ppCompRange)
 {
     ITfRange* rangeInsert = nullptr;
     ITfInsertAtSelection* pias = nullptr;
@@ -280,7 +280,7 @@ HRESULT CSampleIME::_InsertAtSelection(TfEditCookie ec, _In_ ITfContext *pContex
         goto Exit;
     }
 
-    hr = pias->InsertTextAtSelection(ec, TF_IAS_QUERYONLY, pstrAddString->Get(), (LONG)pstrAddString->GetLength(), &rangeInsert);
+    hr = pias->InsertTextAtSelection(ec, TF_IAS_QUERYONLY, strAddString.GetRaw(), (LONG)strAddString.GetLength(), &rangeInsert);
 
     if ( FAILED(hr) || rangeInsert == nullptr)
     {
