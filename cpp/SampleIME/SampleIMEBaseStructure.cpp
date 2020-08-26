@@ -166,7 +166,7 @@ CStringRange& CStringRange::operator =(const CStringRange& sr)
     return *this;
 }
 
-int CStringRange::Compare(LCID locale, _In_ CStringRange* pString1, _In_ CStringRange* pString2)
+int CStringRange::Compare(LCID locale, const CStringRange* pString1, const CStringRange* pString2)
 {
     return CompareString(locale,
         NORM_IGNORECASE,
@@ -176,7 +176,7 @@ int CStringRange::Compare(LCID locale, _In_ CStringRange* pString1, _In_ CString
         (DWORD)pString2->GetLength());
 }
 
-BOOL CStringRange::WildcardCompare(LCID, _In_ CStringRange* stringWithWildcard, _In_ CStringRange* targetString)
+BOOL CStringRange::WildcardCompare(LCID, const CStringRange* stringWithWildcard, const CStringRange* targetString)
 {
     // This is expectedly slower than the previous C++ code
     // as the function now allocates a parsed string object every time

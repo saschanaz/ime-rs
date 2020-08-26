@@ -224,8 +224,8 @@ public:
     void Set(const WCHAR *pwch, DWORD_PTR dwLength);
     void Set(const CStringRange &sr);
     CStringRange& operator=(const CStringRange& sr);
-    static int Compare(LCID locale, _In_ CStringRange* pString1, _In_ CStringRange* pString2);
-    static BOOL WildcardCompare(LCID locale, _In_ CStringRange* stringWithWildcard, _In_ CStringRange* targetString);
+    static int Compare(LCID locale, const CStringRange* pString1, const CStringRange* pString2);
+    static BOOL WildcardCompare(LCID locale, const CStringRange* stringWithWildcard, const CStringRange* targetString);
 
 protected:
     DWORD_PTR _stringBufLen;         // Length is in character count.
