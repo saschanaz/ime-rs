@@ -716,22 +716,6 @@ void CCandidateWindow::_AddString(_Inout_ CCandidateListItem *pCandidateItem, _I
         memcpy((void*)pwchString, pCandidateItem->_ItemString.Get(), dwItemString * sizeof(WCHAR));
     }
 
-    DWORD_PTR itemWildcard = pCandidateItem->_FindKeyCode.GetLength();
-    const WCHAR* pwchWildcard = nullptr;
-    if (itemWildcard && isAddFindKeyCode)
-    {
-        pwchWildcard = new (std::nothrow) WCHAR[ itemWildcard ];
-        if (!pwchWildcard)
-        {
-            if (pwchString)
-            {
-                delete [] pwchString;
-            }
-            return;
-        }
-        memcpy((void*)pwchWildcard, pCandidateItem->_FindKeyCode.Get(), itemWildcard * sizeof(WCHAR));
-    }
-
     CCandidateListItem* pLI = nullptr;
     pLI = _candidateList.Append();
     if (!pLI)
@@ -741,11 +725,6 @@ void CCandidateWindow::_AddString(_Inout_ CCandidateListItem *pCandidateItem, _I
             delete [] pwchString;
             pwchString = nullptr;
         }
-        if (pwchWildcard)
-        {
-            delete [] pwchWildcard;
-            pwchWildcard = nullptr;
-        }
         return;
     }
 
@@ -753,9 +732,9 @@ void CCandidateWindow::_AddString(_Inout_ CCandidateListItem *pCandidateItem, _I
     {
         pLI->_ItemString.Set(pwchString, dwItemString);
     }
-    if (pwchWildcard)
+    if (pCandidateItem->_FindKeyCode.GetLength() && isAddFindKeyCode)
     {
-        pLI->_FindKeyCode.Set(pwchWildcard, itemWildcard);
+        pLI->_FindKeyCode.Set(pCandidateItem->_FindKeyCode);
     }
 
     return;
@@ -772,7 +751,6 @@ void CCandidateWindow::_ClearList()
     for (auto& item : _candidateList)
     {
         delete [] item._ItemString.Get();
-        delete [] item._FindKeyCode.Get();
     }
     _currentSelection = 0;
     _candidateList.Clear();

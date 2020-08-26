@@ -279,7 +279,7 @@ protected:
 struct CCandidateListItem
 {
     CStringRange _ItemString;
-    CStringRange _FindKeyCode;
+    CStringRangeSmart _FindKeyCode;
 
 	CCandidateListItem& CCandidateListItem::operator =( const CCandidateListItem& rhs)
 	{

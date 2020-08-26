@@ -459,9 +459,7 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
                 keystrokeBufferLen = _keystrokeBuffer.GetLength();
             }
 
-            CStringRange newFindKeyCode;
-            newFindKeyCode.Set(item._FindKeyCode.Get() + keystrokeBufferLen, item._FindKeyCode.GetLength() - keystrokeBufferLen);
-            item._FindKeyCode.Set(newFindKeyCode);
+            item._FindKeyCode = item._FindKeyCode.Substr(keystrokeBufferLen);
         }
 
         delete [] pwch;
