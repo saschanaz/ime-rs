@@ -252,7 +252,6 @@ public:
     };
     ~CStringRangeSmart() {};
 
-    const std::shared_ptr<const WCHAR> Get() const;
     const WCHAR *GetRaw() const override;
     void Clear();
     void Set(const std::shared_ptr<const WCHAR> pwch, DWORD_PTR dwLength);
@@ -262,10 +261,14 @@ public:
     CStringRangeSmart& operator=(const CStringRange& sr);
     CStringRangeSmart& operator=(const CStringRangeSmart& sr);
 
+    CStringRangeSmart Substr(DWORD_PTR start) const;
+    CStringRangeSmart Substr(DWORD_PTR start, DWORD_PTR end) const;
+
 protected:
     static WCHAR* Clone(const WCHAR* pwch, DWORD_PTR dwLength);
 
     std::shared_ptr<const WCHAR> _pStringBuf;    // Buffer which is not add zero terminate.
+    DWORD_PTR _startOffset = 0;
 };
 
 //---------------------------------------------------------------------

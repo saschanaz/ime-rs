@@ -131,7 +131,7 @@ HRESULT CSampleIME::_AddCharAndFinalize(TfEditCookie ec, _In_ ITfContext *pConte
 
     // we use SetText here instead of InsertTextAtSelection because we've already started a composition
     // we don't want to the app to adjust the insertion point inside our composition
-    hr = tfSelection.range->SetText(ec, 0, strAddString.Get().get(), (LONG)strAddString.GetLength());
+    hr = tfSelection.range->SetText(ec, 0, strAddString.GetRaw(), (LONG)strAddString.GetLength());
     if (hr == S_OK)
     {
         // update the selection, we'll make it an insertion point just past

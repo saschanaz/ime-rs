@@ -171,14 +171,9 @@ CStringRange& CStringRange::operator =(const CStringRange& sr)
     return *this;
 }
 
-const std::shared_ptr<const WCHAR> CStringRangeSmart::Get() const
-{
-    return _pStringBuf;
-}
-
 const WCHAR *CStringRangeSmart::GetRaw() const
 {
-    return Get().get();
+    return _pStringBuf.get() + _startOffset;
 }
 
 void CStringRangeSmart::Clear()
@@ -219,7 +214,8 @@ CStringRangeSmart& CStringRangeSmart::operator =(const CStringRange& sr)
 CStringRangeSmart& CStringRangeSmart::operator =(const CStringRangeSmart& sr)
 {
     _stringBufLen = sr.GetLength();
-    _pStringBuf = sr.Get();
+    _pStringBuf = sr._pStringBuf;
+    _startOffset = sr._startOffset;
     return *this;
 }
 
@@ -239,6 +235,20 @@ BOOL CStringRangeBase::WildcardCompare(LCID, const CStringRangeBase* stringWithW
     // as the function now allocates a parsed string object every time
     // This should be faster when porting the string processing completes.
     return compare_with_wildcard((uint16_t*)stringWithWildcard->GetRaw(), stringWithWildcard->GetLength(), (uint16_t*)targetString->GetRaw(), targetString->GetLength());
+}
+
+CStringRangeSmart CStringRangeSmart::Substr(DWORD_PTR start) const {
+    return Substr(start, GetLength());
+}
+
+CStringRangeSmart CStringRangeSmart::Substr(DWORD_PTR start, DWORD_PTR end) const {
+    assert(start >= 0 && start <= end);
+    assert(end <= GetLength());
+
+    CStringRangeSmart range = *this;
+    range._startOffset = start;
+    range._stringBufLen = end - start;
+    return range;
 }
 
 WCHAR* CStringRangeSmart::Clone(const WCHAR* pwch, DWORD_PTR dwLength)
