@@ -19,7 +19,7 @@ public:
     CDictionaryParser(LCID locale);
     virtual ~CDictionaryParser();
 
-    BOOL ParseLine(_In_reads_(dwBufLen) LPCWSTR pwszBuffer, DWORD_PTR dwBufLen, _Out_ CStringRange *psrgKeyword, _Inout_opt_ CSampleImeArray<CStringRange> *pValue = nullptr);
+    BOOL ParseLine(_In_reads_(dwBufLen) LPCWSTR pwszBuffer, DWORD_PTR dwBufLen, _Out_ CStringRange *psrgKeyword, _Out_ CStringRange *psrgValue = nullptr);
 
     // dwBufLen - in character count
     _Ret_maybenull_

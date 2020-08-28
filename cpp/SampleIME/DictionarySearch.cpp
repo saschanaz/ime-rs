@@ -132,8 +132,8 @@ TryAgain:
         else
         {
             // Compare Dictionary converted string and input string
-            CSampleImeArray<CStringRange> convertedStrings;
-            if (!ParseLine(&pwch[indexTrace], bufLenOneLine, &keyword, &convertedStrings))
+            CStringRange tempString;
+            if (!ParseLine(&pwch[indexTrace], bufLenOneLine, &keyword, &tempString))
             {
                 if (bufLen)
                 {
@@ -141,13 +141,11 @@ TryAgain:
                 }
                 return FALSE;
             }
-            if (convertedStrings.Count() == 1)
+            if (tempString.GetLength())
             {
-                CStringRange* pTempString = convertedStrings.GetAt(0);
-
                 if (!isWildcardSearch)
                 {
-                    if (CStringRange::Compare(_locale, pTempString, _pSearchKeyCode) != CSTR_EQUAL)
+                    if (CStringRange::Compare(_locale, &tempString, _pSearchKeyCode) != CSTR_EQUAL)
                     {
                         if (bufLen)
                         {
@@ -159,7 +157,7 @@ TryAgain:
                 else
                 {
                     // Wildcard search
-                    if (!CStringRange::WildcardCompare(_locale, _pSearchKeyCode, pTempString))
+                    if (!CStringRange::WildcardCompare(_locale, _pSearchKeyCode, &tempString))
                     {
                         if (bufLen)
                         {
@@ -191,8 +189,8 @@ TryAgain:
             return FALSE;
         }
 
-        CSampleImeArray<CStringRange> valueStrings;
-        if (!ParseLine(&pwch[indexTrace], bufLenOneLine, &keyword, &valueStrings))
+        CStringRange valueString;
+        if (!ParseLine(&pwch[indexTrace], bufLenOneLine, &keyword, &valueString))
         {
             if (*ppdret)
             {
@@ -205,13 +203,10 @@ TryAgain:
         (*ppdret)->_FindKeyCode = keyword;
         (*ppdret)->_SearchKeyCode = *_pSearchKeyCode;
 
-        for (const auto& item : valueStrings)
+        CStringRange* findPhrase = (*ppdret)->_FindPhraseList.Append();
+        if (findPhrase)
         {
-            CStringRange* findPhrase = (*ppdret)->_FindPhraseList.Append();
-            if (findPhrase)
-            {
-                *findPhrase = item;
-            }
+            *findPhrase = valueString;
         }
 
         // Seek to next line

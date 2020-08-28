@@ -43,7 +43,7 @@ CDictionaryParser::~CDictionaryParser()
 //
 //---------------------------------------------------------------------
 
-BOOL CDictionaryParser::ParseLine(_In_reads_(dwBufLen) LPCWSTR pwszBuffer, DWORD_PTR dwBufLen, _Out_ CStringRange *psrgKeyword, _Inout_opt_ CSampleImeArray<CStringRange> *pValue)
+BOOL CDictionaryParser::ParseLine(_In_reads_(dwBufLen) LPCWSTR pwszBuffer, DWORD_PTR dwBufLen, _Out_ CStringRange *psrgKeyword, _Out_ CStringRange *psrgValue)
 {
     LPCWSTR pwszKeyWordDelimiter = nullptr;
     pwszKeyWordDelimiter = GetToken(pwszBuffer, dwBufLen, Global::KeywordDelimiter, psrgKeyword);
@@ -57,20 +57,12 @@ BOOL CDictionaryParser::ParseLine(_In_reads_(dwBufLen) LPCWSTR pwszBuffer, DWORD
     dwBufLen--;
 
     // Get value.
-    if (pValue)
+    if (psrgValue && dwBufLen)
     {
-        if (dwBufLen)
-        {
-            CStringRange* psrgValue = pValue->Append();
-            if (!psrgValue)
-            {
-                return FALSE;
-            }
-            psrgValue->Set(pwszBuffer, dwBufLen);
-            RemoveWhiteSpaceFromBegin(psrgValue);
-            RemoveWhiteSpaceFromEnd(psrgValue);
-            RemoveStringDelimiter(psrgValue);
-        }
+        psrgValue->Set(pwszBuffer, dwBufLen);
+        RemoveWhiteSpaceFromBegin(psrgValue);
+        RemoveWhiteSpaceFromEnd(psrgValue);
+        RemoveStringDelimiter(psrgValue);
     }
 
     return TRUE;
