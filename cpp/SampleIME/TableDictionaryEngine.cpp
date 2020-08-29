@@ -73,10 +73,10 @@ VOID CTableDictionaryEngine::CollectWordForWildcard(_In_ CStringRange *pKeyCode,
 //
 //----------------------------------------------------------------------------
 
-VOID CTableDictionaryEngine::CollectWordFromConvertedStringForWildcard(_In_ CStringRange *pString, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList)
+VOID CTableDictionaryEngine::CollectWordFromConvertedStringForWildcard(const CStringRangeSmart& string, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList)
 {
     CDictionaryResult* pdret = nullptr;
-    CDictionarySearch dshSearch(_locale, _pDictionaryFile, CStringRangeSmart(*pString));
+    CDictionarySearch dshSearch(_locale, _pDictionaryFile, string);
 
     while (dshSearch.FindConvertedStringForWildcard(&pdret)) // TAIL ALL CHAR MATCH
     {

@@ -254,6 +254,7 @@ public:
 
     const WCHAR *GetRaw() const override;
     void Clear();
+    void SetClone(const WCHAR *pwch, DWORD_PTR dwLength);
     void Set(const std::shared_ptr<const WCHAR> pwch, DWORD_PTR dwLength);
     void Set(WCHAR wch);
     void Set(const CStringRange &sr);
@@ -264,6 +265,8 @@ public:
     CStringRangeSmart Substr(DWORD_PTR start) const;
     CStringRangeSmart Substr(DWORD_PTR start, DWORD_PTR end) const;
 
+    CStringRangeSmart Concat(const CStringRangeSmart& postfix) const;
+
     /** For when the result can be disposed together with the base instance */
     CStringRange ToRaw() const;
 
@@ -273,6 +276,8 @@ protected:
     std::shared_ptr<const WCHAR> _pStringBuf;    // Buffer which is not add zero terminate.
     DWORD_PTR _startOffset = 0;
 };
+
+CStringRangeSmart operator""_sr(const wchar_t* aStr, std::size_t aLen);
 
 //---------------------------------------------------------------------
 // CCandidateListItem

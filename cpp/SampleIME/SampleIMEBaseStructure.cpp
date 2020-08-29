@@ -182,6 +182,12 @@ void CStringRangeSmart::Clear()
     _pStringBuf.reset();
 }
 
+void CStringRangeSmart::SetClone(const WCHAR *pwch, DWORD_PTR dwLength)
+{
+    _stringBufLen = dwLength;
+    _pStringBuf = std::shared_ptr<WCHAR>(Clone(pwch, _stringBufLen));
+}
+
 void CStringRangeSmart::Set(const std::shared_ptr<const WCHAR> pwch, DWORD_PTR dwLength)
 {
     _stringBufLen = dwLength;
@@ -206,8 +212,7 @@ void CStringRangeSmart::Set(const CStringRangeSmart &sr)
 
 CStringRangeSmart& CStringRangeSmart::operator =(const CStringRange& sr)
 {
-    _stringBufLen = sr.GetLength();
-    _pStringBuf = std::shared_ptr<WCHAR>(Clone(sr.Get(), _stringBufLen));
+    SetClone(sr.GetRaw(), sr.GetLength());
     return *this;
 }
 
@@ -251,6 +256,15 @@ CStringRangeSmart CStringRangeSmart::Substr(DWORD_PTR start, DWORD_PTR end) cons
     return range;
 }
 
+CStringRangeSmart CStringRangeSmart::Concat(const CStringRangeSmart& postfix) const {
+    DWORD_PTR resultLength = GetLength() + postfix.GetLength();
+    auto pwch = std::shared_ptr<WCHAR>(Clone(GetRaw(), resultLength));
+    memcpy((void*)(pwch.get() + GetLength()), postfix.GetRaw(), postfix.GetLength() * sizeof(WCHAR));
+    CStringRangeSmart range;
+    range.Set(pwch, resultLength);
+    return range;
+}
+
 CStringRange CStringRangeSmart::ToRaw() const
 {
     CStringRange range;
@@ -271,6 +285,12 @@ WCHAR* CStringRangeSmart::Clone(const WCHAR* pwch, DWORD_PTR dwLength)
     }
     memcpy((void*)pwchString, pwch, dwLength * sizeof(WCHAR));
     return pwchString;
+}
+
+CStringRangeSmart operator""_sr(const wchar_t* aStr, std::size_t aLen) {
+  CStringRangeSmart range;
+  range.SetClone(aStr, aLen);
+  return range;
 }
 
 CCandidateRange::CCandidateRange(void)

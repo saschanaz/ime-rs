@@ -99,7 +99,7 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
     BOOL fMakePhraseFromText = _pCompositionProcessorEngine->IsMakePhraseFromText();
     if (fMakePhraseFromText)
     {
-        _pCompositionProcessorEngine->GetCandidateStringInConverted(candidateString.ToRaw(), &candidatePhraseList);
+        _pCompositionProcessorEngine->GetCandidateStringInConverted(candidateString, &candidatePhraseList);
         LCID locale = _pCompositionProcessorEngine->GetLocale();
 
         _pCandidateListUIPresenter->RemoveSpecificCandidateFromList(locale, candidatePhraseList, candidateString);
