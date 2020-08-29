@@ -21,7 +21,6 @@ public:
     //     [out] pasrgWordString - Specified returns pointer of word as CStringRange.
     // returns
     //     none.
-    VOID CollectWord(_In_ CStringRange *pKeyCode, _Inout_ CSampleImeArray<CStringRange> *pWordStrings);
     VOID CollectWord(_In_ CStringRange *pKeyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList);
 
     VOID CollectWordForWildcard(_In_ CStringRange *psrgKeyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList);

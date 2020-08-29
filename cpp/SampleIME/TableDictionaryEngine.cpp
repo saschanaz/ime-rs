@@ -15,28 +15,6 @@
 //
 //----------------------------------------------------------------------------
 
-VOID CTableDictionaryEngine::CollectWord(_In_ CStringRange *pKeyCode, _Inout_ CSampleImeArray<CStringRange> *pWordStrings)
-{
-    CDictionaryResult* pdret = nullptr;
-    CDictionarySearch dshSearch(_locale, _pDictionaryFile, pKeyCode);
-
-    while (dshSearch.FindPhrase(&pdret))
-    {
-        for (const auto& item : pdret->_FindPhraseList)
-        {
-            CStringRange* pPhrase = nullptr;
-            pPhrase = pWordStrings->Append();
-            if (pPhrase)
-            {
-                *pPhrase = item;
-            }
-        }
-
-        delete pdret;
-        pdret = nullptr;
-    }
-}
-
 VOID CTableDictionaryEngine::CollectWord(_In_ CStringRange *pKeyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList)
 {
     CDictionaryResult* pdret = nullptr;
