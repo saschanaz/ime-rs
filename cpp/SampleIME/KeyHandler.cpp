@@ -170,7 +170,7 @@ Exit:
 HRESULT CSampleIME::_HandleCompositionInputWorker(_In_ CCompositionProcessorEngine *pCompositionProcessorEngine, TfEditCookie ec, _In_ ITfContext *pContext)
 {
     HRESULT hr = S_OK;
-    CSampleImeArray<CStringRange> readingStrings;
+    CSampleImeArray<CStringRangeSmart> readingStrings;
     BOOL isWildcardIncluded = TRUE;
 
     //

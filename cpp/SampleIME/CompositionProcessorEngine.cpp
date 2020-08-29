@@ -345,15 +345,14 @@ WCHAR CCompositionProcessorEngine::GetVirtualKey(DWORD_PTR dwIndex)
 //
 //----------------------------------------------------------------------------
 
-void CCompositionProcessorEngine::GetReadingStrings(_Inout_ CSampleImeArray<CStringRange> *pReadingStrings, _Out_ BOOL *pIsWildcardIncluded)
+void CCompositionProcessorEngine::GetReadingStrings(_Inout_ CSampleImeArray<CStringRangeSmart> *pReadingStrings, _Out_ BOOL *pIsWildcardIncluded)
 {
-    CStringRange oneKeystroke;
-
+    CStringRangeSmart oneKeystroke;
     _hasWildcardIncludedInKeystrokeBuffer = FALSE;
 
     if (pReadingStrings->Count() == 0 && _keystrokeBuffer.GetLength())
     {
-        CStringRange* pNewString = nullptr;
+        CStringRangeSmart* pNewString = nullptr;
 
         pNewString = pReadingStrings->Append();
         if (pNewString)
@@ -361,11 +360,12 @@ void CCompositionProcessorEngine::GetReadingStrings(_Inout_ CSampleImeArray<CStr
             *pNewString = _keystrokeBuffer;
         }
 
-        for (DWORD index = 0; index < _keystrokeBuffer.GetLength(); index++)
+        CStringRangeSmart keystrokeBuffer(_keystrokeBuffer);
+        for (DWORD index = 0; index < keystrokeBuffer.GetLength(); index++)
         {
-            oneKeystroke.Set(_keystrokeBuffer.Get() + index, 1);
+            oneKeystroke = keystrokeBuffer.Substr(index, index + 1);
 
-            if (IsWildcard() && IsWildcardChar(*oneKeystroke.Get()))
+            if (IsWildcard() && IsWildcardChar(*oneKeystroke.GetRaw()))
             {
                 _hasWildcardIncludedInKeystrokeBuffer = TRUE;
             }

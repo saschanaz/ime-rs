@@ -45,7 +45,7 @@ public:
     DWORD_PTR GetVirtualKeyLength() { return _keystrokeBuffer.GetLength(); }
     WCHAR GetVirtualKey(DWORD_PTR dwIndex);
 
-    void GetReadingStrings(_Inout_ CSampleImeArray<CStringRange> *pReadingStrings, _Out_ BOOL *pIsWildcardIncluded);
+    void GetReadingStrings(_Inout_ CSampleImeArray<CStringRangeSmart> *pReadingStrings, _Out_ BOOL *pIsWildcardIncluded);
     void GetCandidateList(_Inout_ CSampleImeArray<CCandidateListItem> *pCandidateList, BOOL isIncrementalWordSearch, BOOL isWildcardSearch);
     void GetCandidateStringInConverted(CStringRange &searchString, _In_ CSampleImeArray<CCandidateListItem> *pCandidateList);
 
