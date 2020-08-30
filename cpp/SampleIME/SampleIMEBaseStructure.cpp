@@ -180,24 +180,28 @@ void CStringRangeSmart::Clear()
 {
     _stringBufLen = 0;
     _pStringBuf.reset();
+    _startOffset = 0;
 }
 
 void CStringRangeSmart::SetClone(const WCHAR *pwch, DWORD_PTR dwLength)
 {
     _stringBufLen = dwLength;
     _pStringBuf = std::shared_ptr<WCHAR>(Clone(pwch, _stringBufLen));
+    _startOffset = 0;
 }
 
 void CStringRangeSmart::Set(const std::shared_ptr<const WCHAR> pwch, DWORD_PTR dwLength)
 {
     _stringBufLen = dwLength;
     _pStringBuf = pwch;
+    _startOffset = 0;
 }
 
 void CStringRangeSmart::Set(WCHAR wch)
 {
     _stringBufLen = 1;
     _pStringBuf = std::make_shared<WCHAR>(wch);
+    _startOffset = 0;
 }
 
 void CStringRangeSmart::Set(const CStringRange &sr)
@@ -251,7 +255,7 @@ CStringRangeSmart CStringRangeSmart::Substr(DWORD_PTR start, DWORD_PTR end) cons
     assert(end <= GetLength());
 
     CStringRangeSmart range = *this;
-    range._startOffset = start;
+    range._startOffset += start;
     range._stringBufLen = end - start;
     return range;
 }
@@ -268,7 +272,7 @@ CStringRangeSmart CStringRangeSmart::Concat(const CStringRangeSmart& postfix) co
 CStringRange CStringRangeSmart::ToRaw() const
 {
     CStringRange range;
-    range.Set(_pStringBuf.get(), _stringBufLen);
+    range.Set(GetRaw(), GetLength());
     return range;
 }
 
