@@ -72,5 +72,5 @@ public:
 
     CStringRangeSmart _SearchKeyCode;
     CStringRangeSmart _FindKeyCode;
-    CSampleImeArray<CStringRange> _FindPhraseList;
+    CSampleImeArray<CStringRangeSmart> _FindPhraseList;
 };

@@ -43,26 +43,28 @@ CDictionaryParser::~CDictionaryParser()
 //
 //---------------------------------------------------------------------
 
-BOOL CDictionaryParser::ParseLine(_In_reads_(dwBufLen) LPCWSTR pwszBuffer, DWORD_PTR dwBufLen, _Out_ CStringRange *psrgKeyword, _Out_ CStringRange *psrgValue)
+BOOL CDictionaryParser::ParseLine(const CStringRangeSmart& input, _Out_ CStringRangeSmart* psrgKeyword, _Out_ CStringRangeSmart *psrgValue)
 {
     LPCWSTR pwszKeyWordDelimiter = nullptr;
-    pwszKeyWordDelimiter = GetToken(pwszBuffer, dwBufLen, Global::KeywordDelimiter, psrgKeyword);
+    CStringRange psrgKeywordRaw;
+    pwszKeyWordDelimiter = GetToken(input.GetRaw(), input.GetLength(), Global::KeywordDelimiter, &psrgKeywordRaw);
+    *psrgKeyword = psrgKeywordRaw;
     if (!(pwszKeyWordDelimiter))
     {
         return FALSE;    // End of file
     }
 
-    dwBufLen -= (pwszKeyWordDelimiter - pwszBuffer);
-    pwszBuffer = pwszKeyWordDelimiter + 1;
-    dwBufLen--;
+    CStringRangeSmart value = input.Substr(pwszKeyWordDelimiter - input.GetRaw() + 1);
 
     // Get value.
-    if (psrgValue && dwBufLen)
+    if (psrgValue && value.GetLength())
     {
-        psrgValue->Set(pwszBuffer, dwBufLen);
-        RemoveWhiteSpaceFromBegin(psrgValue);
-        RemoveWhiteSpaceFromEnd(psrgValue);
-        RemoveStringDelimiter(psrgValue);
+        CStringRange valueRaw = value.ToRaw();
+
+        RemoveWhiteSpaceFromBegin(&valueRaw);
+        RemoveWhiteSpaceFromEnd(&valueRaw);
+        RemoveStringDelimiter(&valueRaw);
+        *psrgValue = valueRaw;
     }
 
     return TRUE;

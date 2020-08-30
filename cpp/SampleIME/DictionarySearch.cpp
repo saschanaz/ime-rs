@@ -93,11 +93,14 @@ TryAgain:
     }
     else
     {
-        CStringRange keyword;
+        CStringRangeSmart line;
+        CStringRangeSmart keyword;
         DWORD_PTR bufLen = 0;
         LPWSTR pText = nullptr;
 
-        if (!ParseLine(&pwch[indexTrace], bufLenOneLine, &keyword))
+        line.SetClone(&pwch[indexTrace], bufLenOneLine);
+
+        if (!ParseLine(line, &keyword))
         {
             return FALSE;    // error
         }
@@ -132,8 +135,8 @@ TryAgain:
         else
         {
             // Compare Dictionary converted string and input string
-            CStringRange tempString;
-            if (!ParseLine(&pwch[indexTrace], bufLenOneLine, &keyword, &tempString))
+            CStringRangeSmart tempString;
+            if (!ParseLine(line, &keyword, &tempString))
             {
                 if (bufLen)
                 {
@@ -189,8 +192,8 @@ TryAgain:
             return FALSE;
         }
 
-        CStringRange valueString;
-        if (!ParseLine(&pwch[indexTrace], bufLenOneLine, &keyword, &valueString))
+        CStringRangeSmart valueString;
+        if (!ParseLine(line, &keyword, &valueString))
         {
             if (*ppdret)
             {
@@ -203,7 +206,7 @@ TryAgain:
         (*ppdret)->_FindKeyCode = keyword;
         (*ppdret)->_SearchKeyCode = _searchKeyCode;
 
-        CStringRange* findPhrase = (*ppdret)->_FindPhraseList.Append();
+        CStringRangeSmart* findPhrase = (*ppdret)->_FindPhraseList.Append();
         if (findPhrase)
         {
             *findPhrase = valueString;
