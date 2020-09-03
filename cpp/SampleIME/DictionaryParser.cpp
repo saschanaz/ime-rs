@@ -57,12 +57,10 @@ BOOL CDictionaryParser::ParseLine(const CStringRangeSmart& input, _Out_ CStringR
     // Get value.
     if (psrgValue && value.GetLength())
     {
-        CStringRange valueRaw = value.ToRaw();
-
-        RemoveWhiteSpaceFromBegin(&valueRaw);
-        RemoveWhiteSpaceFromEnd(&valueRaw);
-        RemoveStringDelimiter(&valueRaw);
-        *psrgValue = valueRaw;
+        RemoveWhiteSpaceFromBegin(value);
+        RemoveWhiteSpaceFromEnd(value);
+        RemoveStringDelimiter(value);
+        *psrgValue = value;
     }
 
     return TRUE;
@@ -90,11 +88,9 @@ LPCWSTR CDictionaryParser::GetToken(const CStringRangeSmart& input, _In_ const W
     LPCWSTR pwszStart = psrgValue->GetRaw();
     *psrgValue = psrgValue->Substr(0, result - pwszStart);
 
-    CStringRange psrgValueRaw = psrgValue->ToRaw();
-    RemoveWhiteSpaceFromBegin(&psrgValueRaw);
-    RemoveWhiteSpaceFromEnd(&psrgValueRaw);
-    RemoveStringDelimiter(&psrgValueRaw);
-    *psrgValue = psrgValueRaw;
+    RemoveWhiteSpaceFromBegin(*psrgValue);
+    RemoveWhiteSpaceFromEnd(*psrgValue);
+    RemoveStringDelimiter(*psrgValue);
 
     return result;
 }
@@ -107,33 +103,23 @@ LPCWSTR CDictionaryParser::GetToken(const CStringRangeSmart& input, _In_ const W
 //
 //---------------------------------------------------------------------
 
-BOOL CDictionaryParser::RemoveWhiteSpaceFromBegin(_Inout_opt_ CStringRange *pString)
+BOOL CDictionaryParser::RemoveWhiteSpaceFromBegin(CStringRangeSmart& string)
 {
     DWORD_PTR dwIndexTrace = 0;  // in char
 
-    if (pString == nullptr)
+    if (SkipWhiteSpace(_locale, string.GetRaw(), string.GetLength(), &dwIndexTrace) != S_OK)
     {
         return FALSE;
     }
 
-    if (SkipWhiteSpace(_locale, pString->Get(), pString->GetLength(), &dwIndexTrace) != S_OK)
-    {
-        return FALSE;
-    }
-
-    pString->Set(pString->Get() + dwIndexTrace, pString->GetLength() - dwIndexTrace);
+    string = string.Substr(dwIndexTrace);
     return TRUE;
 }
 
-BOOL CDictionaryParser::RemoveWhiteSpaceFromEnd(_Inout_opt_ CStringRange *pString)
+BOOL CDictionaryParser::RemoveWhiteSpaceFromEnd(CStringRangeSmart& string)
 {
-    if (pString == nullptr)
-    {
-        return FALSE;
-    }
-
-    DWORD_PTR dwTotalBufLen = pString->GetLength();
-    LPCWSTR pwszEnd = pString->Get() + dwTotalBufLen - 1;
+    DWORD_PTR dwTotalBufLen = string.GetLength();
+    LPCWSTR pwszEnd = string.GetRaw() + dwTotalBufLen - 1;
 
     while (dwTotalBufLen && (IsSpace(_locale, *pwszEnd) || *pwszEnd == L'\r' || *pwszEnd == L'\n'))
     {
@@ -141,22 +127,17 @@ BOOL CDictionaryParser::RemoveWhiteSpaceFromEnd(_Inout_opt_ CStringRange *pStrin
         dwTotalBufLen--;
     }
 
-    pString->Set(pString->Get(), dwTotalBufLen);
+    string = string.Substr(0, dwTotalBufLen);
     return TRUE;
 }
 
-BOOL CDictionaryParser::RemoveStringDelimiter(_Inout_opt_ CStringRange *pString)
+BOOL CDictionaryParser::RemoveStringDelimiter(CStringRangeSmart& string)
 {
-    if (pString == nullptr)
+    if (string.GetLength() >= 2)
     {
-        return FALSE;
-    }
-
-    if (pString->GetLength() >= 2)
-    {
-        if ((*pString->Get() == Global::StringDelimiter) && (*(pString->Get()+pString->GetLength()-1) == Global::StringDelimiter))
+        if ((*string.GetRaw() == Global::StringDelimiter) && (*(string.GetRaw()+string.GetLength()-1) == Global::StringDelimiter))
         {
-            pString->Set(pString->Get()+1, pString->GetLength()-2);
+            string = string.Substr(1, string.GetLength() - 1);
             return TRUE;
         }
     }

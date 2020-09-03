@@ -26,9 +26,9 @@ public:
     LPCWSTR GetToken(const CStringRangeSmart& input, _In_ const WCHAR chDelimiter, _Out_ CStringRangeSmart *psrgKeyWord);
 
 protected:
-    BOOL RemoveWhiteSpaceFromBegin(_Inout_opt_ CStringRange *pString);
-    BOOL RemoveWhiteSpaceFromEnd(_Inout_opt_ CStringRange *pString);
-    BOOL RemoveStringDelimiter(_Inout_opt_ CStringRange *pString);
+    BOOL RemoveWhiteSpaceFromBegin(CStringRangeSmart& string);
+    BOOL RemoveWhiteSpaceFromEnd(CStringRangeSmart& string);
+    BOOL RemoveStringDelimiter(CStringRangeSmart& string);
 
     DWORD_PTR GetOneLine(_In_z_ LPCWSTR pwszBuffer, DWORD_PTR dwBufLen);
 
