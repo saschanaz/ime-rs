@@ -17,13 +17,7 @@ public:
     CBaseDictionaryEngine(LCID locale, _In_ CFile *pDictionaryFile);
     virtual ~CBaseDictionaryEngine();
 
-    virtual VOID CollectWord(_In_ CStringRange *psrgKeyCode, _Out_ CSampleImeArray<CCandidateListItem> *pItemList)
-    {
-        psrgKeyCode;
-        pItemList = nullptr;
-    }
-
-    virtual VOID SortListItemByFindKeyCode(_Inout_ CSampleImeArray<CCandidateListItem> *pItemList);
+    VOID SortListItemByFindKeyCode(_Inout_ CSampleImeArray<CCandidateListItem> *pItemList);
 
 protected:
     CFile* _pDictionaryFile;
