@@ -23,7 +23,7 @@ public:
 
     // dwBufLen - in character count
     _Ret_maybenull_
-    LPCWSTR GetToken(_In_reads_(dwBufLen) LPCWSTR pwszBuffer, DWORD_PTR dwBufLen, _In_ const WCHAR chDelimiter, _Out_ CStringRange *srgKeyWord);
+    LPCWSTR GetToken(const CStringRangeSmart& input, _In_ const WCHAR chDelimiter, _Out_ CStringRangeSmart *psrgKeyWord);
 
 protected:
     BOOL RemoveWhiteSpaceFromBegin(_Inout_opt_ CStringRange *pString);
