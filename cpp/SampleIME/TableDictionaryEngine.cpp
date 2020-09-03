@@ -15,10 +15,10 @@
 //
 //----------------------------------------------------------------------------
 
-VOID CTableDictionaryEngine::CollectWord(_In_ CStringRange *pKeyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList)
+VOID CTableDictionaryEngine::CollectWord(const CStringRangeSmart& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList)
 {
     CDictionaryResult* pdret = nullptr;
-    CDictionarySearch dshSearch(_locale, _pDictionaryFile, CStringRangeSmart(*pKeyCode));
+    CDictionarySearch dshSearch(_locale, _pDictionaryFile, keyCode);
 
     while (dshSearch.FindPhrase(&pdret))
     {
@@ -44,10 +44,10 @@ VOID CTableDictionaryEngine::CollectWord(_In_ CStringRange *pKeyCode, _Inout_ CS
 //
 //----------------------------------------------------------------------------
 
-VOID CTableDictionaryEngine::CollectWordForWildcard(_In_ CStringRange *pKeyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList)
+VOID CTableDictionaryEngine::CollectWordForWildcard(const CStringRangeSmart& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList)
 {
     CDictionaryResult* pdret = nullptr;
-    CDictionarySearch dshSearch(_locale, _pDictionaryFile, CStringRangeSmart(*pKeyCode));
+    CDictionarySearch dshSearch(_locale, _pDictionaryFile, keyCode);
 
     while (dshSearch.FindPhraseForWildcard(&pdret))
     {

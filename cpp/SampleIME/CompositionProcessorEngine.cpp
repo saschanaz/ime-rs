@@ -432,7 +432,7 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
             return;
         }
 
-        _pTableDictionaryEngine->CollectWordForWildcard(&wildcardSearch, pCandidateList);
+        _pTableDictionaryEngine->CollectWordForWildcard(CStringRangeSmart(wildcardSearch), pCandidateList);
 
         if (0 >= pCandidateList->Count())
         {
@@ -466,11 +466,11 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
     }
     else if (isWildcardSearch)
     {
-        _pTableDictionaryEngine->CollectWordForWildcard(&_keystrokeBuffer, pCandidateList);
+        _pTableDictionaryEngine->CollectWordForWildcard(CStringRangeSmart(_keystrokeBuffer), pCandidateList);
     }
     else
     {
-        _pTableDictionaryEngine->CollectWord(&_keystrokeBuffer, pCandidateList);
+        _pTableDictionaryEngine->CollectWord(CStringRangeSmart(_keystrokeBuffer), pCandidateList);
     }
 }
 
