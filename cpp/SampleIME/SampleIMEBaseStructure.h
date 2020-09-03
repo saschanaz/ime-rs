@@ -224,23 +224,6 @@ protected:
     DWORD_PTR _stringBufLen = 0;         // Length is in character count.
 };
 
-class CStringRange : public CStringRangeBase
-{
-public:
-    CStringRange();
-    ~CStringRange();
-
-    const WCHAR *Get() const;
-    const WCHAR *GetRaw() const override;
-    void Clear();
-    void Set(const WCHAR *pwch, DWORD_PTR dwLength);
-    void Set(const CStringRange &sr);
-    CStringRange& operator=(const CStringRange& sr);
-
-protected:
-    const WCHAR *_pStringBuf;    // Buffer which is not add zero terminate.
-};
-
 class CStringRangeSmart : public CStringRangeBase
 {
 public:
@@ -249,9 +232,6 @@ public:
     CStringRangeSmart() {};
     CStringRangeSmart(WCHAR wch) {
         Set(wch);
-    };
-    explicit CStringRangeSmart(const CStringRange& sr) {
-        Set(sr);
     };
     ~CStringRangeSmart() {};
 
@@ -263,18 +243,13 @@ public:
     void SetClone(const WCHAR *pwch, DWORD_PTR dwLength);
     void Set(const std::shared_ptr<const WCHAR> pwch, DWORD_PTR dwLength);
     void Set(WCHAR wch);
-    void Set(const CStringRange &sr);
     void Set(const CStringRangeSmart &sr);
-    CStringRangeSmart& operator=(const CStringRange& sr);
     CStringRangeSmart& operator=(const CStringRangeSmart& sr);
 
     CStringRangeSmart Substr(DWORD_PTR start) const;
     CStringRangeSmart Substr(DWORD_PTR start, DWORD_PTR end) const;
 
     CStringRangeSmart Concat(const CStringRangeSmart& postfix) const;
-
-    /** For when the result can be disposed together with the base instance */
-    CStringRange ToRaw() const;
 
 protected:
     static WCHAR* Clone(const WCHAR* pwch, DWORD_PTR dwLength);

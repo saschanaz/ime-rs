@@ -122,53 +122,9 @@ BOOL IsSpace(LCID locale, WCHAR wch)
     return (wCharType & C1_SPACE);
 }
 
-CStringRange::CStringRange()
-{
-    _stringBufLen = 0;
-    _pStringBuf = nullptr;
-}
-
-CStringRange::~CStringRange()
-{
-}
-
-const WCHAR *CStringRange::Get() const
-{
-    return _pStringBuf;
-}
-
-const WCHAR *CStringRange::GetRaw() const
-{
-    return Get();
-}
-
 const DWORD_PTR CStringRangeBase::GetLength() const
 {
     return _stringBufLen;
-}
-
-void CStringRange::Clear()
-{
-    _stringBufLen = 0;
-    _pStringBuf = nullptr;
-}
-
-void CStringRange::Set(const WCHAR *pwch, DWORD_PTR dwLength)
-{
-    _stringBufLen = dwLength;
-    _pStringBuf = pwch;
-}
-
-void CStringRange::Set(const CStringRange &sr)
-{
-    *this = sr;
-}
-
-CStringRange& CStringRange::operator =(const CStringRange& sr)
-{
-    _stringBufLen = sr._stringBufLen;
-    _pStringBuf = sr._pStringBuf;
-    return *this;
 }
 
 const WCHAR *CStringRangeSmart::GetRaw() const
@@ -209,20 +165,9 @@ void CStringRangeSmart::Set(WCHAR wch)
     _startOffset = 0;
 }
 
-void CStringRangeSmart::Set(const CStringRange &sr)
-{
-    *this = sr;
-}
-
 void CStringRangeSmart::Set(const CStringRangeSmart &sr)
 {
     *this = sr;
-}
-
-CStringRangeSmart& CStringRangeSmart::operator =(const CStringRange& sr)
-{
-    SetClone(sr.GetRaw(), sr.GetLength());
-    return *this;
 }
 
 CStringRangeSmart& CStringRangeSmart::operator =(const CStringRangeSmart& sr)
@@ -276,14 +221,6 @@ CStringRangeSmart CStringRangeSmart::Concat(const CStringRangeSmart& postfix) co
     range.Set(pwch, resultLength);
     return range;
 }
-
-CStringRange CStringRangeSmart::ToRaw() const
-{
-    CStringRange range;
-    range.Set(GetRaw(), GetLength());
-    return range;
-}
-
 
 WCHAR* CStringRangeSmart::Clone(const WCHAR* pwch, DWORD_PTR dwLength)
 {
