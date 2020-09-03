@@ -323,12 +323,4 @@ BOOL UpdateModifiers(WPARAM wParam, LPARAM lParam)
 
     return TRUE;
 }
-
-//---------------------------------------------------------------------
-// override CompareElements
-//---------------------------------------------------------------------
-BOOL CompareElements(LCID locale, const CStringRange* pElement1, const CStringRange* pElement2)
-{
-    return (CStringRange::Compare(locale, (CStringRange*)pElement1, (CStringRange*)pElement2) == CSTR_EQUAL) ? TRUE : FALSE;
-}
 }
