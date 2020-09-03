@@ -247,6 +247,9 @@ public:
 
 public:
     CStringRangeSmart() {};
+    CStringRangeSmart(WCHAR wch) {
+        Set(wch);
+    };
     explicit CStringRangeSmart(const CStringRange& sr) {
         Set(sr);
     };
