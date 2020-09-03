@@ -366,13 +366,7 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
 
     if (isIncrementalWordSearch)
     {
-        CStringRange wildcardSearch;
-        DWORD_PTR keystrokeBufLen = _keystrokeBuffer.GetLength() + 2;
-        PWCHAR pwch = new (std::nothrow) WCHAR[ keystrokeBufLen ];
-        if (!pwch)
-        {
-            return;
-        }
+        CStringRangeSmart wildcardSearch = _keystrokeBuffer;
 
         // check keystroke buffer already has wildcard char which end user want wildcard serach
         DWORD wildcardIndex = 0;
@@ -390,25 +384,13 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
             }
         }
 
-        StringCchCopyN(pwch, keystrokeBufLen, _keystrokeBuffer.GetRaw(), _keystrokeBuffer.GetLength());
-
         if (!isFindWildcard)
         {
             // add wildcard char for incremental search
-            StringCchCat(pwch, keystrokeBufLen, L"*");
+            wildcardSearch = wildcardSearch.Concat(L"*"_sr);
         }
 
-        size_t len = 0;
-        if (StringCchLength(pwch, STRSAFE_MAX_CCH, &len) == S_OK)
-        {
-            wildcardSearch.Set(pwch, len);
-        }
-        else
-        {
-            return;
-        }
-
-        _pTableDictionaryEngine->CollectWordForWildcard(CStringRangeSmart(wildcardSearch), pCandidateList);
+        _pTableDictionaryEngine->CollectWordForWildcard(wildcardSearch, pCandidateList);
 
         if (0 >= pCandidateList->Count())
         {
@@ -437,8 +419,6 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
 
             item._FindKeyCode = item._FindKeyCode.Substr(keystrokeBufferLen);
         }
-
-        delete [] pwch;
     }
     else if (isWildcardSearch)
     {
