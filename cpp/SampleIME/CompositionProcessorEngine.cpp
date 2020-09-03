@@ -259,25 +259,7 @@ BOOL CCompositionProcessorEngine::AddVirtualKey(WCHAR wch)
         return FALSE;
     }
 
-    //
-    // append one keystroke in buffer.
-    //
-    DWORD_PTR srgKeystrokeBufLen = _keystrokeBuffer.GetLength();
-    PWCHAR pwch = new (std::nothrow) WCHAR[ srgKeystrokeBufLen + 1 ];
-    if (!pwch)
-    {
-        return FALSE;
-    }
-
-    memcpy(pwch, _keystrokeBuffer.Get(), srgKeystrokeBufLen * sizeof(WCHAR));
-    pwch[ srgKeystrokeBufLen ] = wch;
-
-    if (_keystrokeBuffer.Get())
-    {
-        delete [] _keystrokeBuffer.Get();
-    }
-
-    _keystrokeBuffer.Set(pwch, srgKeystrokeBufLen + 1);
+    _keystrokeBuffer = _keystrokeBuffer.Concat(CStringRangeSmart(wch));
 
     return TRUE;
 }
@@ -299,12 +281,10 @@ void CCompositionProcessorEngine::RemoveVirtualKey(DWORD_PTR dwIndex)
     if (dwIndex + 1 < srgKeystrokeBufLen)
     {
         // shift following eles left
-        memmove((BYTE*)_keystrokeBuffer.Get() + (dwIndex * sizeof(WCHAR)),
-            (BYTE*)_keystrokeBuffer.Get() + ((dwIndex + 1) * sizeof(WCHAR)),
-            (srgKeystrokeBufLen - dwIndex - 1) * sizeof(WCHAR));
+        _keystrokeBuffer = _keystrokeBuffer.Substr(0, dwIndex).Concat(_keystrokeBuffer.Substr(dwIndex + 1));
+    } else {
+        _keystrokeBuffer = _keystrokeBuffer.Substr(0, srgKeystrokeBufLen - 1);
     }
-
-    _keystrokeBuffer.Set(_keystrokeBuffer.Get(), srgKeystrokeBufLen - 1);
 }
 
 //+---------------------------------------------------------------------------
@@ -319,18 +299,14 @@ void CCompositionProcessorEngine::RemoveVirtualKey(DWORD_PTR dwIndex)
 
 void CCompositionProcessorEngine::PurgeVirtualKey()
 {
-    if (_keystrokeBuffer.Get())
-    {
-        delete [] _keystrokeBuffer.Get();
-        _keystrokeBuffer.Set(NULL, 0);
-    }
+    _keystrokeBuffer.Clear();
 }
 
 WCHAR CCompositionProcessorEngine::GetVirtualKey(DWORD_PTR dwIndex)
 {
     if (dwIndex < _keystrokeBuffer.GetLength())
     {
-        return *(_keystrokeBuffer.Get() + dwIndex);
+        return _keystrokeBuffer.CharAt(dwIndex);
     }
     return 0;
 }
@@ -406,7 +382,7 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
         {
             for (wildcardIndex = 0; wildcardIndex < _keystrokeBuffer.GetLength(); wildcardIndex++)
             {
-                if (IsWildcardChar(*(_keystrokeBuffer.Get() + wildcardIndex)))
+                if (IsWildcardChar(_keystrokeBuffer.CharAt(wildcardIndex)))
                 {
                     isFindWildcard = TRUE;
                     break;
@@ -414,7 +390,7 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
             }
         }
 
-        StringCchCopyN(pwch, keystrokeBufLen, _keystrokeBuffer.Get(), _keystrokeBuffer.GetLength());
+        StringCchCopyN(pwch, keystrokeBufLen, _keystrokeBuffer.GetRaw(), _keystrokeBuffer.GetLength());
 
         if (!isFindWildcard)
         {

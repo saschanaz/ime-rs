@@ -130,7 +130,7 @@ private:
     _KEYSTROKE _keystrokeTable[26];
 
     CTableDictionaryEngine* _pTableDictionaryEngine;
-    CStringRange _keystrokeBuffer;
+    CStringRangeSmart _keystrokeBuffer;
 
     BOOL _hasWildcardIncludedInKeystrokeBuffer;
 
