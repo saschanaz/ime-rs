@@ -119,12 +119,12 @@ BOOL CDictionaryParser::RemoveWhiteSpaceFromBegin(CStringRangeSmart& string)
 BOOL CDictionaryParser::RemoveWhiteSpaceFromEnd(CStringRangeSmart& string)
 {
     DWORD_PTR dwTotalBufLen = string.GetLength();
-    LPCWSTR pwszEnd = string.GetRaw() + dwTotalBufLen - 1;
+    WCHAR lastChar = string.CharAt(dwTotalBufLen - 1);
 
-    while (dwTotalBufLen && (IsSpace(_locale, *pwszEnd) || *pwszEnd == L'\r' || *pwszEnd == L'\n'))
+    while (dwTotalBufLen && (IsSpace(_locale, lastChar) || lastChar == L'\r' || lastChar == L'\n'))
     {
-        pwszEnd--;
         dwTotalBufLen--;
+        lastChar = string.CharAt(dwTotalBufLen - 1);
     }
 
     string = string.Substr(0, dwTotalBufLen);
@@ -135,7 +135,7 @@ BOOL CDictionaryParser::RemoveStringDelimiter(CStringRangeSmart& string)
 {
     if (string.GetLength() >= 2)
     {
-        if ((*string.GetRaw() == Global::StringDelimiter) && (*(string.GetRaw()+string.GetLength()-1) == Global::StringDelimiter))
+        if ((string.CharAt(0) == Global::StringDelimiter) && (string.CharAt(string.GetLength()-1) == Global::StringDelimiter))
         {
             string = string.Substr(1, string.GetLength() - 1);
             return TRUE;

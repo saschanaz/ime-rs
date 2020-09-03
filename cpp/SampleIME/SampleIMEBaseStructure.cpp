@@ -176,6 +176,11 @@ const WCHAR *CStringRangeSmart::GetRaw() const
     return _pStringBuf.get() + _startOffset;
 }
 
+WCHAR CStringRangeSmart::CharAt(DWORD_PTR index) const
+{
+    return *(GetRaw() + index);
+}
+
 void CStringRangeSmart::Clear()
 {
     _stringBufLen = 0;
