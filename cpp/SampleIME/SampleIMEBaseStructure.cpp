@@ -266,6 +266,9 @@ CStringRangeSmart CStringRangeSmart::Substr(DWORD_PTR start, DWORD_PTR end) cons
 }
 
 CStringRangeSmart CStringRangeSmart::Concat(const CStringRangeSmart& postfix) const {
+    if (!GetLength()) {
+        return postfix;
+    }
     DWORD_PTR resultLength = GetLength() + postfix.GetLength();
     auto pwch = std::shared_ptr<WCHAR>(Clone(GetRaw(), resultLength));
     memcpy((void*)(pwch.get() + GetLength()), postfix.GetRaw(), postfix.GetLength() * sizeof(WCHAR));
