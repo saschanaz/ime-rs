@@ -323,7 +323,6 @@ WCHAR CCompositionProcessorEngine::GetVirtualKey(DWORD_PTR dwIndex)
 
 void CCompositionProcessorEngine::GetReadingStrings(_Inout_ CSampleImeArray<CStringRangeSmart> *pReadingStrings, _Out_ BOOL *pIsWildcardIncluded)
 {
-    CStringRangeSmart oneKeystroke;
     _hasWildcardIncludedInKeystrokeBuffer = FALSE;
 
     if (pReadingStrings->Count() == 0 && _keystrokeBuffer.GetLength())
@@ -336,12 +335,9 @@ void CCompositionProcessorEngine::GetReadingStrings(_Inout_ CSampleImeArray<CStr
             *pNewString = _keystrokeBuffer;
         }
 
-        CStringRangeSmart keystrokeBuffer(_keystrokeBuffer);
-        for (DWORD index = 0; index < keystrokeBuffer.GetLength(); index++)
+        for (DWORD index = 0; index < _keystrokeBuffer.GetLength(); index++)
         {
-            oneKeystroke = keystrokeBuffer.Substr(index, index + 1);
-
-            if (IsWildcard() && IsWildcardChar(*oneKeystroke.GetRaw()))
+            if (IsWildcard() && IsWildcardChar(_keystrokeBuffer.CharAt(index)))
             {
                 _hasWildcardIncludedInKeystrokeBuffer = TRUE;
             }
