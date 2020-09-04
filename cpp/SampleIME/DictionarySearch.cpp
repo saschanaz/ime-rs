@@ -110,7 +110,7 @@ TryAgain:
             // Compare Dictionary key code and input key code
             if (!isWildcardSearch)
             {
-                if (CStringRangeSmart::Compare(_locale, &keyword, &_searchKeyCode) != CSTR_EQUAL)
+                if (CStringRangeSmart::Compare(_locale, keyword, _searchKeyCode) != CSTR_EQUAL)
                 {
                     if (bufLen)
                     {
@@ -122,7 +122,7 @@ TryAgain:
             else
             {
                 // Wildcard search
-                if (!CStringRangeSmart::WildcardCompare(_locale, &_searchKeyCode, &keyword))
+                if (!CStringRangeSmart::WildcardCompare(_locale, _searchKeyCode, keyword))
                 {
                     if (bufLen)
                     {
@@ -148,7 +148,7 @@ TryAgain:
             {
                 if (!isWildcardSearch)
                 {
-                    if (CStringRangeSmart::Compare(_locale, &tempString, &_searchKeyCode) != CSTR_EQUAL)
+                    if (CStringRangeSmart::Compare(_locale, tempString, _searchKeyCode) != CSTR_EQUAL)
                     {
                         if (bufLen)
                         {
@@ -160,7 +160,7 @@ TryAgain:
                 else
                 {
                     // Wildcard search
-                    if (!CStringRangeSmart::WildcardCompare(_locale, &_searchKeyCode, &tempString))
+                    if (!CStringRangeSmart::WildcardCompare(_locale, _searchKeyCode, tempString))
                     {
                         if (bufLen)
                         {

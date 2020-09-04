@@ -1151,7 +1151,7 @@ void CCandidateListUIPresenter::RemoveSpecificCandidateFromList(_In_ LCID Locale
     {
         CCandidateListItem* pLI = candidateList.GetAt(index);
 
-        if (CStringRangeSmart::Compare(Locale, &candidateString, &pLI->_ItemString) == CSTR_EQUAL)
+        if (CStringRangeSmart::Compare(Locale, candidateString, pLI->_ItemString) == CSTR_EQUAL)
         {
             candidateList.RemoveAt(index);
             continue;

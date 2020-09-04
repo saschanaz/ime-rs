@@ -74,7 +74,7 @@ VOID CBaseDictionaryEngine::MergeSortByFindKeyCode(_Inout_ CSampleImeArray<CCand
                 {
                     *pLI = *pItemList->GetAt(midTemp++);
                 }
-                else if (midTemp == rightRange || CStringRangeSmart::Compare(_locale, &srgLeftTemp, &srgMidTemp) != CSTR_GREATER_THAN)
+                else if (midTemp == rightRange || CStringRangeSmart::Compare(_locale, srgLeftTemp, srgMidTemp) != CSTR_GREATER_THAN)
                 {
                     *pLI = *pItemList->GetAt(leftRangeTemp++);
                 }
@@ -99,7 +99,7 @@ VOID CBaseDictionaryEngine::MergeSortByFindKeyCode(_Inout_ CSampleImeArray<CCand
         srgLeft = pItemList->GetAt(leftRange )->_FindKeyCode;
         srgLeftNext = pItemList->GetAt(leftRange+1)->_FindKeyCode;
 
-        if (CStringRangeSmart::Compare(_locale, &srgLeft, &srgLeftNext) == CSTR_GREATER_THAN)
+        if (CStringRangeSmart::Compare(_locale, srgLeft, srgLeftNext) == CSTR_GREATER_THAN)
         {
             CCandidateListItem ListItem;
             ListItem = *pItemList->GetAt(leftRange);

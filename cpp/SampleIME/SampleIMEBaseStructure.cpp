@@ -178,22 +178,22 @@ CStringRangeSmart& CStringRangeSmart::operator =(const CStringRangeSmart& sr)
     return *this;
 }
 
-int CStringRangeBase::Compare(LCID locale, const CStringRangeBase* pString1, const CStringRangeBase* pString2)
+int CStringRangeBase::Compare(LCID locale, const CStringRangeBase& string1, const CStringRangeBase& string2)
 {
     return CompareString(locale,
         NORM_IGNORECASE,
-        pString1->GetRaw(),
-        (DWORD)pString1->GetLength(),
-        pString2->GetRaw(),
-        (DWORD)pString2->GetLength());
+        string1.GetRaw(),
+        (DWORD)string1.GetLength(),
+        string2.GetRaw(),
+        (DWORD)string2.GetLength());
 }
 
-BOOL CStringRangeBase::WildcardCompare(LCID, const CStringRangeBase* stringWithWildcard, const CStringRangeBase* targetString)
+BOOL CStringRangeBase::WildcardCompare(LCID, const CStringRangeBase& stringWithWildcard, const CStringRangeBase& targetString)
 {
     // This is expectedly slower than the previous C++ code
     // as the function now allocates a parsed string object every time
     // This should be faster when porting the string processing completes.
-    return compare_with_wildcard((uint16_t*)stringWithWildcard->GetRaw(), stringWithWildcard->GetLength(), (uint16_t*)targetString->GetRaw(), targetString->GetLength());
+    return compare_with_wildcard((uint16_t*)stringWithWildcard.GetRaw(), stringWithWildcard.GetLength(), (uint16_t*)targetString.GetRaw(), targetString.GetLength());
 }
 
 CStringRangeSmart CStringRangeSmart::Substr(DWORD_PTR start) const {
