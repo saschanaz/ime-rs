@@ -2,5 +2,6 @@
 members = [
     "compare_with_wildcard",
     "dictionary_parser",
-    "globals"
+    "globals",
+    "ruststringrange"
 ]

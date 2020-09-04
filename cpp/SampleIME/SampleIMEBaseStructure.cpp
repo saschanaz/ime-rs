@@ -6,7 +6,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved
 
 #include "Globals.h"
-#include "..\..\rust\compare_with_wildcard\compare_with_wildcard.h"
+#include "RustStringRange.h"
 
 #pragma comment(lib, "advapi32.lib")
 #pragma comment(lib, "ws2_32.lib")
@@ -193,7 +193,9 @@ BOOL CStringRangeBase::WildcardCompare(LCID, const CStringRangeBase& stringWithW
     // This is expectedly slower than the previous C++ code
     // as the function now allocates a parsed string object every time
     // This should be faster when porting the string processing completes.
-    return compare_with_wildcard_utf16((uint16_t*)stringWithWildcard.GetRaw(), stringWithWildcard.GetLength(), (uint16_t*)targetString.GetRaw(), targetString.GetLength());
+    CRustStringRange base(stringWithWildcard);
+    CRustStringRange target(targetString);
+    return base.CompareWithWildCard(target);
 }
 
 CStringRangeSmart CStringRangeSmart::Substr(DWORD_PTR start) const {
