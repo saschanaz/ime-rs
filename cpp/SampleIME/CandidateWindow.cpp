@@ -761,30 +761,24 @@ void CCandidateWindow::_SetScrollInfo(_In_ int nMax, _In_ int nPage)
 //
 //----------------------------------------------------------------------------
 
-DWORD CCandidateWindow::_GetCandidateString(_In_ int iIndex, _Outptr_result_maybenull_z_ const WCHAR **ppwchCandidateString)
+CStringRangeSmart CCandidateWindow::_GetCandidateString(_In_ int iIndex)
 {
     CCandidateListItem* pItemList = nullptr;
 
     if (iIndex < 0 )
     {
-        *ppwchCandidateString = nullptr;
-        return 0;
+        return CStringRangeSmart();
     }
 
     UINT index = static_cast<UINT>(iIndex);
 
 	if (index >= _candidateList.Count())
     {
-        *ppwchCandidateString = nullptr;
-        return 0;
+        return CStringRangeSmart();
     }
 
     pItemList = _candidateList.GetAt(iIndex);
-    if (ppwchCandidateString)
-    {
-        *ppwchCandidateString = pItemList->_ItemString.GetRaw();
-    }
-    return (DWORD)pItemList->_ItemString.GetLength();
+    return pItemList->_ItemString;
 }
 
 //+---------------------------------------------------------------------------

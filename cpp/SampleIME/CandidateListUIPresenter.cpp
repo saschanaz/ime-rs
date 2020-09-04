@@ -582,12 +582,10 @@ STDAPI CCandidateListUIPresenter::GetString(UINT uIndex, BSTR *pbstr)
         return E_FAIL;
     }
 
-    DWORD candidateLen = 0;
-    const WCHAR* pCandidateString = nullptr;
+    CStringRangeSmart candidateString = _pCandidateWnd->_GetCandidateString(uIndex);
+    DWORD candidateLen = candidateString.GetLength();
 
-    candidateLen = _pCandidateWnd->_GetCandidateString(uIndex, &pCandidateString);
-
-    *pbstr = (candidateLen == 0) ? nullptr : SysAllocStringLen(pCandidateString, candidateLen);
+    *pbstr = (candidateLen == 0) ? nullptr : SysAllocStringLen(candidateString.GetRaw(), candidateLen);
 
     return S_OK;
 }
