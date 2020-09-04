@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "compare_with_wildcard",
     "dictionary_parser",
     "globals"
 ]
