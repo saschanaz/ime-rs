@@ -193,7 +193,7 @@ BOOL CStringRangeBase::WildcardCompare(LCID, const CStringRangeBase& stringWithW
     // This is expectedly slower than the previous C++ code
     // as the function now allocates a parsed string object every time
     // This should be faster when porting the string processing completes.
-    return compare_with_wildcard((uint16_t*)stringWithWildcard.GetRaw(), stringWithWildcard.GetLength(), (uint16_t*)targetString.GetRaw(), targetString.GetLength());
+    return compare_with_wildcard_utf16((uint16_t*)stringWithWildcard.GetRaw(), stringWithWildcard.GetLength(), (uint16_t*)targetString.GetRaw(), targetString.GetLength());
 }
 
 CStringRangeSmart CStringRangeSmart::Substr(DWORD_PTR start) const {

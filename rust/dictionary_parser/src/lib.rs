@@ -21,46 +21,47 @@ pub unsafe extern fn get_equalsign(buffer: *const u16, buffer_len: usize) -> *mu
     }
 }
 
-#[no_mangle]
-pub unsafe extern fn compare_with_wildcard(input_buffer: *const u16, input_len: usize, target_buffer: *const u16, target_len: usize) -> bool {
-    fn compare(input: &str, target: &str) -> bool {
-        if input.len() == 0 {
-            return target.len() == 0;
+pub fn compare_with_wildcard(input: &str, target: &str) -> bool {
+    if input.len() == 0 {
+        return target.len() == 0;
+    }
+
+    let input_char = input.chars().next().unwrap();
+    let input_charlen = input_char.len_utf8();
+
+    let target_char = target.chars().next();
+    let target_charlen = target_char.map(|c| c.len_utf8());
+
+    if input_char == '*' {
+        // 1. skip this wildcard and compare remaining characters
+        // 2. recursively retry with target[1..]
+        if compare_with_wildcard(&input[input_charlen..], target) {
+            return true;
         }
-
-        let input_char = input.chars().next().unwrap();
-        let input_charlen = input_char.len_utf8();
-
-        let target_char = target.chars().next();
-        let target_charlen = target_char.map(|c| c.len_utf8());
-
-        if input_char == '*' {
-            // 1. skip this wildcard and compare remaining characters
-            // 2. recursively retry with target[1..]
-            if compare(&input[input_charlen..], target) {
-                return true;
-            }
-            if target.len() == 0 {
-                return false;
-            }
-            return compare(input, &target[target_charlen.unwrap()..]);
-        }
-
         if target.len() == 0 {
             return false;
         }
-
-        if input_char == '?' {
-            // skip this mark and compare with target[1..]
-            return compare(&input[input_charlen..], &target[target_charlen.unwrap()..]);
-        }
-
-        if !input_char.eq_ignore_ascii_case(&target_char.unwrap()) {
-            return false;
-        }
-
-        compare(&input[input_charlen..], &target[target_charlen.unwrap()..])
+        return compare_with_wildcard(input, &target[target_charlen.unwrap()..]);
     }
+
+    if target.len() == 0 {
+        return false;
+    }
+
+    if input_char == '?' {
+        // skip this mark and compare with target[1..]
+        return compare_with_wildcard(&input[input_charlen..], &target[target_charlen.unwrap()..]);
+    }
+
+    if !input_char.eq_ignore_ascii_case(&target_char.unwrap()) {
+        return false;
+    }
+
+    compare_with_wildcard(&input[input_charlen..], &target[target_charlen.unwrap()..])
+}
+
+#[no_mangle]
+pub unsafe extern fn compare_with_wildcard_utf16(input_buffer: *const u16, input_len: usize, target_buffer: *const u16, target_len: usize) -> bool {
 
     let input_slice: &[u16] = std::slice::from_raw_parts(input_buffer, input_len);
     let target_slice: &[u16] = std::slice::from_raw_parts(target_buffer, target_len);
@@ -68,7 +69,7 @@ pub unsafe extern fn compare_with_wildcard(input_buffer: *const u16, input_len: 
     let input = String::from_utf16_lossy(input_slice);
     let target = String::from_utf16_lossy(target_slice);
 
-    compare(&input, &target)
+    compare_with_wildcard(&input, &target)
 }
 
 #[cfg(test)]
@@ -136,7 +137,7 @@ mod tests {
             let input_enc = utf16(input);
             let reference_enc = utf16(reference);
 
-            crate::compare_with_wildcard(
+            crate::compare_with_wildcard_utf16(
                 input_enc.as_ptr(),
                 input_enc.len(),
                 reference_enc.as_ptr(),
