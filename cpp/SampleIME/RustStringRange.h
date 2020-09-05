@@ -8,21 +8,19 @@
  * A C++ wrapper class for its Rust counterpart
  */
 class CRustStringRange {
+  void Set(const wchar_t* pwch, uintptr_t dwLength) {
+    range = ruststringrange_new((const uint16_t*)pwch, dwLength);
+  }
+
  public:
   CRustStringRange(void* range_raw) {
     range = range_raw;
   }
   explicit CRustStringRange(const CStringRangeBase& cstr) {
-    Set(cstr);
+    Set(cstr.GetRaw(), cstr.GetLength());
   }
   CRustStringRange(const wchar_t* pwch, uintptr_t dwLength) {
     Set(pwch, dwLength);
-  }
-  void Set(const wchar_t* pwch, uintptr_t dwLength) {
-    range = ruststringrange_new((const uint16_t*)pwch, dwLength);
-  }
-  void Set(const CStringRangeBase& cstr) {
-    Set(cstr.GetRaw(), cstr.GetLength());
   }
 
   ~CRustStringRange() {
