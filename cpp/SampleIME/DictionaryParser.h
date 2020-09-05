@@ -21,15 +21,7 @@ public:
 
     BOOL ParseLine(const CStringRangeSmart& input, _Out_ CStringRangeSmart* psrgKeyword, _Out_ CStringRangeSmart *psrgValue);
 
-    // dwBufLen - in character count
-    _Ret_maybenull_
-    LPCWSTR GetToken(const CStringRangeSmart& input, _In_ const WCHAR chDelimiter, _Out_ CStringRangeSmart *psrgKeyWord);
-
 protected:
-    BOOL RemoveWhiteSpaceFromBegin(CStringRangeSmart& string);
-    BOOL RemoveWhiteSpaceFromEnd(CStringRangeSmart& string);
-    BOOL RemoveStringDelimiter(CStringRangeSmart& string);
-
     DWORD_PTR GetOneLine(_In_z_ LPCWSTR pwszBuffer, DWORD_PTR dwBufLen);
 
     LCID _locale;   // used for CompareString

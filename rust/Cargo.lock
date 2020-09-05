@@ -7,6 +7,9 @@ version = "0.1.0"
 [[package]]
 name = "dictionary_parser"
 version = "0.1.0"
+dependencies = [
+ "ruststringrange",
+]
 
 [[package]]
 name = "globals"

@@ -1,3 +1,26 @@
+use core::ffi::c_void;
+use ruststringrange::RustStringRange;
+
+#[no_mangle]
+pub unsafe extern fn parse_line(line: *const c_void, key: *mut *mut c_void, value: *mut *mut c_void) -> bool {
+    fn unwrap(text: &str) -> &str {
+        let mut result = text;
+        if text.starts_with("\"") && text.ends_with("\"") {
+            result = &text[1..text.len()-1];
+        }
+        result.trim()
+    }
+
+    let line = Box::leak(RustStringRange::from_void(line as *mut _));
+    let split: Vec<&str> = line.as_slice().split('=').collect();
+    if split.len() < 2 {
+        return false;
+    }
+    *key = Box::into_raw(Box::new(RustStringRange::from_str(unwrap(split[0])))) as *mut c_void;
+    *value = Box::into_raw(Box::new(RustStringRange::from_str(unwrap(split[1])))) as *mut c_void;
+    return true;
+}
+
 #[no_mangle]
 pub unsafe extern fn get_equalsign(buffer: *const u16, buffer_len: usize) -> *mut u16 {
     let slice: &[u16] = std::slice::from_raw_parts(buffer, buffer_len);
@@ -23,12 +46,30 @@ pub unsafe extern fn get_equalsign(buffer: *const u16, buffer_len: usize) -> *mu
 
 #[cfg(test)]
 mod tests {
-    fn utf16(s: &str) -> Vec<u16> {
-        s.encode_utf16().collect()
+    mod line_parser {
+        use super::super::*;
+
+        #[test]
+        fn parse() {
+            let line_raw = Box::into_raw(Box::new(RustStringRange::from_str("\"abc\"=\"bcd\"")));
+            let mut key_raw = std::ptr::null::<c_void>() as *mut c_void;
+            let mut value_raw = key_raw;
+            unsafe {
+                let result = parse_line(line_raw as *mut c_void, &mut key_raw, &mut value_raw);
+                assert_eq!(result, true);
+                Box::from_raw(line_raw); // implicit destruction
+                let key = Box::from_raw(key_raw as *mut RustStringRange);
+                let value = Box::from_raw(value_raw as *mut RustStringRange);
+                assert_eq!(key.as_slice(), "abc");
+                assert_eq!(value.as_slice(), "bcd");
+            }
+        }
     }
 
     mod equalsign_getter {
-        use super::utf16;
+        fn utf16(s: &str) -> Vec<u16> {
+            s.encode_utf16().collect()
+        }
 
         #[test]
         fn equalsign() {
