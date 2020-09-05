@@ -15,6 +15,9 @@ class CRustStringRange {
   explicit CRustStringRange(const CStringRangeBase& cstr) {
     Set(cstr);
   }
+  CRustStringRange(const wchar_t* pwch, uintptr_t dwLength) {
+    Set(pwch, dwLength);
+  }
   void Set(const wchar_t* pwch, uintptr_t dwLength) {
     range = ruststringrange_new((const uint16_t*)pwch, dwLength);
   }
@@ -34,7 +37,7 @@ class CRustStringRange {
     return ruststringrange_raw(range);
   }
 
-  void* GetInternal() {
+  void* GetInternal() const {
     return range;
   }
 

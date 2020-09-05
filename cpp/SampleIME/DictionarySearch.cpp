@@ -8,6 +8,7 @@
 #include "Private.h"
 #include "DictionarySearch.h"
 #include "SampleIMEBaseStructure.h"
+#include "RustStringRange.h"
 
 //+---------------------------------------------------------------------------
 //
@@ -99,11 +100,9 @@ BOOL CDictionarySearch::FindWorker(BOOL isTextSearch, _Out_ CDictionaryResult **
         bufLenOneLine = GetOneLine(&pwch[indexTrace], dwTotalBufLen);
         if (bufLenOneLine)
         {
-            CStringRangeSmart line;
+            CRustStringRange line(&pwch[indexTrace], bufLenOneLine);
             CStringRangeSmart keyword;
             CStringRangeSmart value;
-
-            line.SetClone(&pwch[indexTrace], bufLenOneLine);
 
             if (!ParseLine(line, &keyword, &value))
             {

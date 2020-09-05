@@ -44,13 +44,12 @@ CDictionaryParser::~CDictionaryParser()
 //
 //---------------------------------------------------------------------
 
-BOOL CDictionaryParser::ParseLine(const CStringRangeSmart& input, _Out_ CStringRangeSmart* psrgKeyword, _Out_ CStringRangeSmart *psrgValue)
+BOOL CDictionaryParser::ParseLine(const CRustStringRange& input, _Out_ CStringRangeSmart* psrgKeyword, _Out_ CStringRangeSmart *psrgValue)
 {
-    CRustStringRange sr(input);
     void* keyword_raw;
     void* value_raw;
 
-    if (!parse_line(sr.GetInternal(), &keyword_raw, &value_raw))
+    if (!parse_line(input.GetInternal(), &keyword_raw, &value_raw))
     {
         return false;
     }
