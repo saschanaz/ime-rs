@@ -38,12 +38,12 @@ public:
 private:
     BOOL FindWorker(BOOL isTextSearch, _Out_ CDictionaryResult **ppdret, BOOL isWildcardSearch);
 
-    DWORD_PTR GetBufferInWCharLength()
+    DWORD_PTR GetBufferInCharLength()
     {
-        return (_pFile->GetFileSize() / sizeof(WCHAR)) - _charIndex;     // in char count as a returned length.
+        return (_pFile->GetFileSize() / sizeof(char)) - _charIndex;     // in char count as a returned length.
     }
 
-    const WCHAR* GetBufferInWChar()
+    const char* GetBufferInChar()
     {
         return _pFile->GetReadBufferPointer() + _charIndex;
     }

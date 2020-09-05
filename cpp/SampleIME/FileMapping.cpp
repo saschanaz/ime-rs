@@ -50,7 +50,7 @@ CFileMapping::~CFileMapping()
 
 BOOL CFileMapping::SetupReadBuffer()
 {
-    if (_fileSize > sizeof(WCHAR))
+    if (_fileSize > 0)
     {
         //
         // Read file in file mapping
@@ -58,24 +58,11 @@ BOOL CFileMapping::SetupReadBuffer()
         _fileMappingHandle = CreateFileMapping(_fileHandle, NULL, PAGE_READONLY, 0, 0, NULL);
         if (_fileMappingHandle)
         {
-            _pMapBuffer = (const WCHAR *)MapViewOfFile(_fileMappingHandle, FILE_MAP_READ, 0, 0, 0);
+            _pMapBuffer = (const char *)MapViewOfFile(_fileMappingHandle, FILE_MAP_READ, 0, 0, 0);
             if (_pMapBuffer)
             {
-                if (IsTextUnicode(_pMapBuffer, (int)_fileSize, NULL))
-                {
-                    _pReadBuffer = (WCHAR*)_pMapBuffer;
-
-                    // skip Unicode byte order mark
-                    if (*((WCHAR*)_pMapBuffer) == Global::UnicodeByteOrderMark)
-                    {
-                        _pReadBuffer++;
-                        _fileSize--;
-                    }
-                    return TRUE;
-                }
-
-                UnmapViewOfFile(_pReadBuffer);
-                _pReadBuffer = nullptr;
+                _pReadBuffer = (char*)_pMapBuffer;
+                return true;
             }
 
             CloseHandle(_fileMappingHandle);

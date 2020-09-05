@@ -67,13 +67,13 @@ BOOL CDictionaryParser::ParseLine(const CRustStringRange& input, _Out_ CStringRa
 //
 //---------------------------------------------------------------------
 
-DWORD_PTR CDictionaryParser::GetOneLine(_In_z_ LPCWSTR pwszBuffer, DWORD_PTR dwBufLen)
+DWORD_PTR CDictionaryParser::GetOneLine(_In_z_ LPCSTR pwszBuffer, DWORD_PTR dwBufLen)
 {
     DWORD_PTR dwIndexTrace = 0;     // in char
 
-    if (FAILED(FindChar(L'\r', pwszBuffer, dwBufLen, &dwIndexTrace)))
+    if (FAILED(FindChar(u8'\r', pwszBuffer, dwBufLen, &dwIndexTrace)))
     {
-        if (FAILED(FindChar(L'\0', pwszBuffer, dwBufLen, &dwIndexTrace)))
+        if (FAILED(FindChar(u8'\0', pwszBuffer, dwBufLen, &dwIndexTrace)))
         {
             return dwBufLen;
         }

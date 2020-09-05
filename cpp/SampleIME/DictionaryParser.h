@@ -22,7 +22,7 @@ public:
     BOOL ParseLine(const CRustStringRange& input, _Out_ CStringRangeSmart* psrgKeyword, _Out_ CStringRangeSmart *psrgValue);
 
 protected:
-    DWORD_PTR GetOneLine(_In_z_ LPCWSTR pwszBuffer, DWORD_PTR dwBufLen);
+    DWORD_PTR GetOneLine(_In_z_ LPCSTR pwszBuffer, DWORD_PTR dwBufLen);
 
     LCID _locale;   // used for CompareString
 };

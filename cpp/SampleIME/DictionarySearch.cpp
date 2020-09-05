@@ -83,13 +83,13 @@ static bool StringCompare(const CStringRangeSmart& x, const CStringRangeSmart& y
 
 BOOL CDictionarySearch::FindWorker(BOOL isTextSearch, _Out_ CDictionaryResult **ppdret, BOOL isWildcardSearch)
 {
-    DWORD_PTR dwTotalBufLen = GetBufferInWCharLength();        // in char
+    DWORD_PTR dwTotalBufLen = GetBufferInCharLength();        // in char
     if (dwTotalBufLen == 0)
     {
         return FALSE;
     }
 
-    const WCHAR *pwch = GetBufferInWChar();
+    const CHAR *pch = GetBufferInChar();
     DWORD_PTR indexTrace = 0;     // in char
     *ppdret = nullptr;
     BOOL isFound = FALSE;
@@ -97,10 +97,10 @@ BOOL CDictionarySearch::FindWorker(BOOL isTextSearch, _Out_ CDictionaryResult **
 
     while (true)
     {
-        bufLenOneLine = GetOneLine(&pwch[indexTrace], dwTotalBufLen);
+        bufLenOneLine = GetOneLine(&pch[indexTrace], dwTotalBufLen);
         if (bufLenOneLine)
         {
-            CRustStringRange line(&pwch[indexTrace], bufLenOneLine);
+            CRustStringRange line(&pch[indexTrace], bufLenOneLine);
             CStringRangeSmart keyword;
             CStringRangeSmart value;
 
@@ -145,7 +145,7 @@ BOOL CDictionarySearch::FindWorker(BOOL isTextSearch, _Out_ CDictionaryResult **
             }
 
             indexTrace += bufLenOneLine;
-            if (pwch[indexTrace] == L'\r' || pwch[indexTrace] == L'\n' || pwch[indexTrace] == L'\0')
+            if (pch[indexTrace] == u8'\r' || pch[indexTrace] == u8'\n' || pch[indexTrace] == u8'\0')
             {
                 bufLenOneLine = 1;
             }

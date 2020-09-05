@@ -93,9 +93,7 @@ BOOL CFile::CreateFile(_In_ PCWSTR pFileName, DWORD desiredAccess,
 
 BOOL CFile::SetupReadBuffer()
 {
-    const WCHAR* pWideBuffer = nullptr;
-
-    _pReadBuffer = (const WCHAR *) new (std::nothrow) BYTE[ _fileSize ];
+    _pReadBuffer = (const char *) new (std::nothrow) BYTE[ _fileSize ];
     if (!_pReadBuffer)
     {
         return FALSE;
@@ -109,69 +107,7 @@ BOOL CFile::SetupReadBuffer()
         return FALSE;
     }
 
-    if (!IsTextUnicode(_pReadBuffer, dwNumberOfByteRead, NULL))
-    {
-        // This is ASCII file.
-        // Read file with Unicode conversion.
-        int wideLength = 0;
-
-        wideLength = MultiByteToWideChar(_codePage, 0, (LPCSTR)_pReadBuffer, dwNumberOfByteRead, NULL, 0);
-        if (wideLength <= 0)
-        {
-            delete [] _pReadBuffer;
-            _pReadBuffer = nullptr;
-            return FALSE;
-        }
-
-        pWideBuffer = new (std::nothrow) WCHAR[ wideLength ];
-        if (!pWideBuffer)
-        {
-            delete [] _pReadBuffer;
-            _pReadBuffer = nullptr;
-            return FALSE;
-        }
-
-        wideLength = MultiByteToWideChar(_codePage, 0, (LPCSTR)_pReadBuffer, (DWORD)_fileSize, (LPWSTR)pWideBuffer, wideLength);
-        if (wideLength <= 0)
-        {
-            delete [] pWideBuffer;
-            delete [] _pReadBuffer;
-            _pReadBuffer = nullptr;
-            return FALSE;
-        }
-
-        _fileSize = wideLength * sizeof(WCHAR);
-        delete [] _pReadBuffer;
-        _pReadBuffer = pWideBuffer;
-    }
-    else if (_fileSize > sizeof(WCHAR))
-    {
-        // Read file in allocated buffer
-        pWideBuffer = new (std::nothrow) WCHAR[ _fileSize/sizeof(WCHAR) - 1 ];
-        if (!pWideBuffer)
-        {
-            delete [] _pReadBuffer;
-            _pReadBuffer = nullptr;
-            return FALSE;
-        }
-
-        // skip unicode byte-order signature
-        SetFilePointer(_fileHandle, sizeof(WCHAR), NULL, FILE_BEGIN);
-
-        if (!ReadFile(_fileHandle, (LPVOID)pWideBuffer, (DWORD)(_fileSize - sizeof(WCHAR)), &dwNumberOfByteRead, NULL))
-        {
-            delete [] pWideBuffer;
-            delete [] _pReadBuffer;
-            _pReadBuffer = nullptr;
-            return FALSE;
-        }
-
-        _fileSize -= sizeof(WCHAR);
-        delete [] _pReadBuffer;
-        _pReadBuffer = pWideBuffer;
-    }
-    else
-    {
+    if (!_fileSize) {
         return FALSE;
     }
 
@@ -197,16 +133,16 @@ BOOL CFile::IsEndOfFile()
 
 VOID CFile::NextLine()
 {
-    DWORD_PTR totalBufLen = GetBufferInWCharLength();
+    DWORD_PTR totalBufLen = GetBufferInCharLength();
     if (totalBufLen == 0)
     {
         goto SetEOF;
     }
-    const WCHAR *pwch = GetBufferInWChar();
+    const char *pch = GetBufferInChar();
 
     DWORD_PTR indexTrace = 0;       // in char
 
-    if (FindChar(L'\r', pwch, totalBufLen, &indexTrace) != S_OK)
+    if (FindChar(u8'\r', pch, totalBufLen, &indexTrace) != S_OK)
     {
         goto SetEOF;
     }
@@ -222,9 +158,9 @@ VOID CFile::NextLine()
         goto SetEOF;
     }
 
-    if (pwch[indexTrace] != L'\n')
+    if (pch[indexTrace] != u8'\n')
     {
-        _filePosPointer += (indexTrace * sizeof(WCHAR));
+        _filePosPointer += (indexTrace * sizeof(char));
         return;
     }
 
@@ -235,7 +171,7 @@ VOID CFile::NextLine()
         goto SetEOF;
     }
 
-    _filePosPointer += (indexTrace * sizeof(WCHAR));
+    _filePosPointer += (indexTrace * sizeof(char));
 
     return;
 

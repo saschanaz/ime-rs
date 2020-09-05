@@ -20,7 +20,7 @@ public:
     VOID NextLine();
 
     _Ret_maybenull_
-    const WCHAR *GetReadBufferPointer()
+    const char *GetReadBufferPointer()
     {
         if (!_pReadBuffer)
         {
@@ -40,25 +40,25 @@ protected:
     virtual BOOL SetupReadBuffer();
 
 protected:
-    const WCHAR* _pReadBuffer;   // read buffer memory.
+    const char* _pReadBuffer;   // read buffer memory.
     DWORD_PTR _fileSize;         // in byte.
     HANDLE _fileHandle;          // file handle for CreateFile
 
 private:
-    DWORD_PTR GetBufferInWCharLength()
+    DWORD_PTR GetBufferInCharLength()
     {
         if (_filePosPointer == 0 && _fileSize > 0)
         {
             // skip Unicode byte order mark
             GetReadBufferPointer();
         }
-        return(_fileSize - _filePosPointer) / sizeof(WCHAR);    // in char count as a returned length.
+        return(_fileSize - _filePosPointer) / sizeof(char);    // in char count as a returned length.
     }
 
-    const WCHAR *GetBufferInWChar()
+    const char *GetBufferInChar()
     {
-        const WCHAR *pwch = GetReadBufferPointer();
-        return(const WCHAR*)((BYTE*)pwch + _filePosPointer);
+        const char *pwch = GetReadBufferPointer();
+        return pwch + _filePosPointer;
     }
 
 private:

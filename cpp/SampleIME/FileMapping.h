@@ -32,7 +32,7 @@ public:
         CFile::NextLine();
     }
 
-    const WCHAR *GetReadBufferPointer() { return CFile::GetReadBufferPointer(); }
+    const char *GetReadBufferPointer() { return CFile::GetReadBufferPointer(); }
     DWORD_PTR GetFileSize() { return CFile::GetFileSize(); }
 
     LPCWSTR GetFileName() { return CFile::GetFileName(); }
