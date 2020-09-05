@@ -12,7 +12,7 @@ class CRustStringRange {
   CRustStringRange(void* range_raw) {
     range = range_raw;
   }
-  CRustStringRange(const CStringRangeBase& cstr) {
+  explicit CRustStringRange(const CStringRangeBase& cstr) {
     Set(cstr);
   }
   void Set(const wchar_t* pwch, uintptr_t dwLength) {

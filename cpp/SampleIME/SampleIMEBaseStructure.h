@@ -231,7 +231,7 @@ public:
     CStringRangeSmart(WCHAR wch) {
         Set(wch);
     };
-    CStringRangeSmart(const CRustStringRange& rsr) {
+    explicit CStringRangeSmart(const CRustStringRange& rsr) {
         Set(rsr);
     }
     ~CStringRangeSmart() {};

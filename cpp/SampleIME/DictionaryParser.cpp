@@ -55,8 +55,8 @@ BOOL CDictionaryParser::ParseLine(const CStringRangeSmart& input, _Out_ CStringR
         return false;
     }
 
-    *psrgKeyword = CRustStringRange(keyword_raw);
-    *psrgValue = CRustStringRange(value_raw);
+    *psrgKeyword = CStringRangeSmart(CRustStringRange(keyword_raw));
+    *psrgValue = CStringRangeSmart(CRustStringRange(value_raw));
     return true;
 }
 
