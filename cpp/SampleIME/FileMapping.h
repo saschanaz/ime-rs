@@ -38,7 +38,7 @@ public:
     LPCWSTR GetFileName() { return CFile::GetFileName(); }
 
 protected:
-    BOOL SetupReadBuffer();
+    BOOL SetupReadBuffer() override;
 
 private:
     HANDLE _fileMappingHandle;  // file handle for CreateFileMapping
