@@ -15,6 +15,8 @@
 using std::cout;
 using std::endl;
 
+class CRustStringRange;
+
 //---------------------------------------------------------------------
 // defined keyword
 //---------------------------------------------------------------------
@@ -229,6 +231,9 @@ public:
     CStringRangeSmart(WCHAR wch) {
         Set(wch);
     };
+    CStringRangeSmart(const CRustStringRange& rsr) {
+        Set(rsr);
+    }
     ~CStringRangeSmart() {};
 
     const WCHAR *GetRaw() const override;
@@ -239,7 +244,8 @@ public:
     void SetClone(const WCHAR *pwch, DWORD_PTR dwLength);
     void Set(const std::shared_ptr<const WCHAR> pwch, DWORD_PTR dwLength);
     void Set(WCHAR wch);
-    void Set(const CStringRangeSmart &sr);
+    void Set(const CStringRangeSmart& sr);
+    void Set(const CRustStringRange& rsr);
     CStringRangeSmart& operator=(const CStringRangeSmart& sr);
 
     CStringRangeSmart Substr(DWORD_PTR start) const;

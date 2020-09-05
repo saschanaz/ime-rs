@@ -5,6 +5,8 @@
 //
 // Copyright (c) Microsoft Corporation. All rights reserved
 
+#include <codecvt>
+
 #include "Globals.h"
 #include "RustStringRange.h"
 
@@ -165,9 +167,19 @@ void CStringRangeSmart::Set(WCHAR wch)
     _startOffset = 0;
 }
 
-void CStringRangeSmart::Set(const CStringRangeSmart &sr)
+void CStringRangeSmart::Set(const CStringRangeSmart& sr)
 {
     *this = sr;
+}
+
+void CStringRangeSmart::Set(const CRustStringRange& rsr) {
+    // The conversion to UTF16 is in C++ on purpose to allow easier memory management
+    char* firstChar = (char*)rsr.GetRawUtf8();
+    char* afterLastChar = firstChar + rsr.GetLengthUtf8();
+    std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> conversion;
+    std::u16string strU16 = conversion.from_bytes(firstChar, afterLastChar);
+
+    SetClone((WCHAR*)strU16.c_str(), strU16.length());
 }
 
 CStringRangeSmart& CStringRangeSmart::operator =(const CStringRangeSmart& sr)
