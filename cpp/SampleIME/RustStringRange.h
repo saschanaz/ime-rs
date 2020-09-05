@@ -22,6 +22,9 @@ class CRustStringRange {
   CRustStringRange(const wchar_t* pwch, uintptr_t dwLength) {
     Set(pwch, dwLength);
   }
+  CRustStringRange(const char* pch, uintptr_t dwLength) {
+    range = ruststringrange_new_utf8((const uint8_t*)pch, dwLength);
+  }
 
   ~CRustStringRange() {
     ruststringrange_free(range);

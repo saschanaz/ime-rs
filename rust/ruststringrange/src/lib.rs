@@ -39,6 +39,12 @@ impl RustStringRange {
     RustStringRange::from_string(String::from_utf16_lossy(buffer_slice))
   }
 
+  pub unsafe fn from_buffer_utf8(buffer: *const u8, buffer_len: usize) -> RustStringRange {
+    let buffer_slice: &[u8] = std::slice::from_raw_parts(buffer, buffer_len);
+
+    RustStringRange::from_str(&String::from_utf8_lossy(buffer_slice))
+  }
+
   pub unsafe fn from_void(p: *mut c_void) -> Box<RustStringRange> {
     Box::from_raw(p as *mut RustStringRange)
   }
@@ -55,6 +61,11 @@ impl RustStringRange {
 #[no_mangle]
 pub unsafe extern fn ruststringrange_new(buffer: *const u16, buffer_len: usize) -> *mut c_void {
   Box::into_raw(Box::new(RustStringRange::from_buffer_utf16(buffer, buffer_len))) as *mut c_void
+}
+
+#[no_mangle]
+pub unsafe extern fn ruststringrange_new_utf8(buffer: *const u8, buffer_len: usize) -> *mut c_void {
+  Box::into_raw(Box::new(RustStringRange::from_buffer_utf8(buffer, buffer_len))) as *mut c_void
 }
 
 #[no_mangle]
