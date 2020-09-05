@@ -13,10 +13,12 @@ pub struct RustStringRange {
 }
 
 impl RustStringRange {
-  pub unsafe fn from_buffer_utf16(buffer: *const u16, buffer_len: usize) -> RustStringRange {
-    let buffer_slice: &[u16] = std::slice::from_raw_parts(buffer, buffer_len);
+  pub fn len(&self) -> usize {
+    self.length
+  }
 
-    let string = Rc::new(String::from_utf16_lossy(buffer_slice));
+  fn from_string(s: String) -> RustStringRange {
+    let string = Rc::new(s);
     let length = string.len();
 
     RustStringRange {
@@ -26,8 +28,23 @@ impl RustStringRange {
     }
   }
 
+  pub fn from_str(s: &str) -> RustStringRange {
+    let string = String::from(s);
+    RustStringRange::from_string(string)
+  }
+
+  pub unsafe fn from_buffer_utf16(buffer: *const u16, buffer_len: usize) -> RustStringRange {
+    let buffer_slice: &[u16] = std::slice::from_raw_parts(buffer, buffer_len);
+
+    RustStringRange::from_string(String::from_utf16_lossy(buffer_slice))
+  }
+
   pub unsafe fn from_void(p: *mut c_void) -> Box<RustStringRange> {
     Box::from_raw(p as *mut RustStringRange)
+  }
+
+  pub unsafe fn as_ptr(&self) -> *const u8 {
+    self.string.as_ptr().offset(self.offset as isize)
   }
 
   pub fn as_slice(&self) -> &str {
@@ -43,6 +60,18 @@ pub unsafe extern fn ruststringrange_new(buffer: *const u16, buffer_len: usize) 
 #[no_mangle]
 pub unsafe extern fn ruststringrange_free(p: *mut c_void) -> () {
   RustStringRange::from_void(p); // implicit cleanup
+}
+
+#[no_mangle]
+pub unsafe extern fn ruststringrange_raw(p: *mut c_void) -> *const u8 {
+  let rsr = Box::leak(RustStringRange::from_void(p));
+  rsr.as_ptr()
+}
+
+#[no_mangle]
+pub unsafe extern fn ruststringrange_len(p: *const c_void) -> usize {
+  let rsr = Box::leak(RustStringRange::from_void(p as *mut c_void));
+  rsr.len()
 }
 
 #[no_mangle]

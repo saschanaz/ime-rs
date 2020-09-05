@@ -9,6 +9,9 @@
  */
 class CRustStringRange {
  public:
+  CRustStringRange(void* range_raw) {
+    range = range_raw;
+  }
   CRustStringRange(const CStringRangeBase& cstr) {
     Set(cstr);
   }
@@ -21,6 +24,18 @@ class CRustStringRange {
 
   ~CRustStringRange() {
     ruststringrange_free(range);
+  }
+
+  uintptr_t GetLengthUtf8() const {
+    return ruststringrange_len(range);
+  }
+
+  const uint8_t* GetRawUtf8() const {
+    return ruststringrange_raw(range);
+  }
+
+  void* GetInternal() {
+    return range;
   }
 
   bool CompareWithWildCard(const CRustStringRange& target) const {
