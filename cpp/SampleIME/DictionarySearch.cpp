@@ -95,8 +95,6 @@ TryAgain:
     {
         CStringRangeSmart line;
         CStringRangeSmart keyword;
-        DWORD_PTR bufLen = 0;
-        LPWSTR pText = nullptr;
 
         line.SetClone(&pwch[indexTrace], bufLenOneLine);
 
@@ -112,10 +110,6 @@ TryAgain:
             {
                 if (CStringRangeSmart::Compare(_locale, keyword, _searchKeyCode) != CSTR_EQUAL)
                 {
-                    if (bufLen)
-                    {
-                        delete [] pText;
-                    }
                     goto FindNextLine;
                 }
             }
@@ -124,10 +118,6 @@ TryAgain:
                 // Wildcard search
                 if (!CStringRangeSmart::WildcardCompare(_locale, _searchKeyCode, keyword))
                 {
-                    if (bufLen)
-                    {
-                        delete [] pText;
-                    }
                     goto FindNextLine;
                 }
             }
@@ -138,10 +128,6 @@ TryAgain:
             CStringRangeSmart tempString;
             if (!ParseLine(line, &keyword, &tempString))
             {
-                if (bufLen)
-                {
-                    delete [] pText;
-                }
                 return FALSE;
             }
             if (tempString.GetLength())
@@ -150,10 +136,6 @@ TryAgain:
                 {
                     if (CStringRangeSmart::Compare(_locale, tempString, _searchKeyCode) != CSTR_EQUAL)
                     {
-                        if (bufLen)
-                        {
-                            delete [] pText;
-                        }
                         goto FindNextLine;
                     }
                 }
@@ -162,27 +144,14 @@ TryAgain:
                     // Wildcard search
                     if (!CStringRangeSmart::WildcardCompare(_locale, _searchKeyCode, tempString))
                     {
-                        if (bufLen)
-                        {
-                            delete [] pText;
-                        }
                         goto FindNextLine;
                     }
                 }
             }
             else
             {
-                if (bufLen)
-                {
-                    delete [] pText;
-                }
                 goto FindNextLine;
             }
-        }
-
-        if (bufLen)
-        {
-            delete [] pText;
         }
 
         // Prepare return's CDictionaryResult
