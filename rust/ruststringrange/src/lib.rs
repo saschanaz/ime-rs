@@ -6,6 +6,7 @@ use compare_with_wildcard::compare_with_wildcard;
 // Don't bind the struct itself, instead just expose functions receiving and returning void*
 // The C++ wrapper will care those void pointers
 
+#[derive(Clone)]
 pub struct RustStringRange {
   string: Rc<String>,
   offset: usize,
@@ -90,4 +91,10 @@ pub unsafe extern fn ruststringrange_compare_with_wildcard(x_raw: *mut c_void, y
   let x = Box::leak(RustStringRange::from_void(x_raw));
   let y = Box::leak(RustStringRange::from_void(y_raw));
   compare_with_wildcard(&x.as_slice(), &y.as_slice())
+}
+
+#[no_mangle]
+pub unsafe extern fn ruststringrange_clone(p: *const c_void) -> *mut c_void {
+  let rsr = Box::leak(RustStringRange::from_void(p as *mut c_void));
+  Box::into_raw(Box::new(rsr.clone())) as *mut c_void
 }

@@ -5,6 +5,8 @@
 
 extern "C" {
 
+void *ruststringrange_clone(const void *p);
+
 bool ruststringrange_compare_with_wildcard(void *x_raw, void *y_raw);
 
 void ruststringrange_free(void *p);

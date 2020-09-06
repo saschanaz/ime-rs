@@ -16,6 +16,13 @@ class CRustStringRange {
   CRustStringRange(void* range_raw) {
     range = range_raw;
   }
+  CRustStringRange(const CRustStringRange& that) {
+    range = ruststringrange_clone(that.range);
+  }
+  CRustStringRange(CRustStringRange&& that) noexcept {
+    range = that.range;
+    that.range = nullptr;
+  }
   explicit CRustStringRange(const CStringRangeBase& cstr) {
     Set(cstr.GetRaw(), cstr.GetLength());
   }
@@ -27,7 +34,14 @@ class CRustStringRange {
   }
 
   ~CRustStringRange() {
-    ruststringrange_free(range);
+    if (range) {
+      ruststringrange_free(range);
+    }
+  }
+
+  CRustStringRange& operator=(CRustStringRange sr) {
+    std::swap(range, sr.range);
+    return *this;
   }
 
   uintptr_t GetLengthUtf8() const {
