@@ -704,7 +704,7 @@ void CCandidateWindow::_DrawBorder(_In_ HWND wndHandle, _In_ int cx)
 
 void CCandidateWindow::_AddString(_Inout_ CCandidateListItem *pCandidateItem, _In_ BOOL isAddFindKeyCode)
 {
-    CCandidateListItem& item = _candidateList.Append();
+    CCandidateListItem item;
 
     if (pCandidateItem->_ItemString.GetLength())
     {
@@ -715,7 +715,7 @@ void CCandidateWindow::_AddString(_Inout_ CCandidateListItem *pCandidateItem, _I
         item._FindKeyCode.Set(pCandidateItem->_FindKeyCode);
     }
 
-    return;
+    _candidateList.Append(item);
 }
 
 //+---------------------------------------------------------------------------
@@ -1046,8 +1046,7 @@ HRESULT CCandidateWindow::_SetPageIndex(UINT *pIndex, _In_ UINT uPageCnt)
 
     for (UINT i = 0; i < uPageCnt; i++)
     {
-        UINT& lastNewPageIndex = _PageIndex.Append();
-        lastNewPageIndex = *pIndex;
+        _PageIndex.Append(*pIndex);
         pIndex++;
     }
 

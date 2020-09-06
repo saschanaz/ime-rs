@@ -155,11 +155,9 @@ public:
         return static_cast<UINT>(_innerVect.size());
     }
 
-    T& Append()
+    void Append(T item)
     {
-        T newT;
-        _innerVect.push_back(newT);
-        return _innerVect.back();
+        _innerVect.push_back(item);
     }
 
     void reserve(size_t Count)
@@ -201,9 +199,9 @@ public:
     {
         return _CandidateListIndexRange.GetAt(index);
     }
-    inline DWORD& Append()
+    inline void Append(DWORD dw)
     {
-        return _CandidateListIndexRange.Append();
+        _CandidateListIndexRange.Append(dw);
     }
 
 private:

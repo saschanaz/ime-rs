@@ -327,8 +327,7 @@ void CCompositionProcessorEngine::GetReadingStrings(_Inout_ CSampleImeArray<CStr
 
     if (pReadingStrings->Count() == 0 && _keystrokeBuffer.GetLength())
     {
-        CStringRangeSmart& newString = pReadingStrings->Append();
-        newString = _keystrokeBuffer;
+        pReadingStrings->Append(_keystrokeBuffer);
 
         for (DWORD index = 0; index < _keystrokeBuffer.GetLength(); index++)
         {
@@ -583,8 +582,7 @@ void CCompositionProcessorEngine::SetKeystrokeTable(_Inout_ CSampleImeArray<_KEY
 {
     for (int i = 0; i < 26; i++)
     {
-        _KEYSTROKE& keyStroke = pKeystroke->Append();
-        keyStroke = _keystrokeTable[i];
+        pKeystroke->Append(_keystrokeTable[i]);
     }
 }
 
@@ -628,8 +626,7 @@ void CCompositionProcessorEngine::SetPreservedKey(const CLSID clsid, TF_PRESERVE
 {
     pXPreservedKey->Guid = clsid;
 
-    TF_PRESERVEDKEY& tfPsvKey1 = pXPreservedKey->TSFPreservedKeyTable.Append();
-    tfPsvKey1 = tfPreservedKey;
+    pXPreservedKey->TSFPreservedKeyTable.Append(tfPreservedKey);
 
 	size_t srgKeystrokeBufLen = 0;
 	if (StringCchLength(pwszDescription, STRSAFE_MAX_CCH, &srgKeystrokeBufLen) != S_OK)
@@ -958,15 +955,13 @@ void CCompositionProcessorEngine::SetupPunctuationPair()
 
     for (int i = 0; i < pair_count; ++i)
     {
-        CPunctuationPair& puncPair = _PunctuationPair.Append();
-        puncPair = puncPairs[i];
+        _PunctuationPair.Append(puncPairs[i]);
     }
 
     // Punctuation nest pair
     CPunctuationNestPair punc_angle_bracket(L'<', 0x300A, 0x3008, L'>', 0x300B, 0x3009);
 
-    CPunctuationNestPair& puncNestPair = _PunctuationNestPair.Append();
-    puncNestPair = punc_angle_bracket;
+    _PunctuationNestPair.Append(punc_angle_bracket);
 }
 
 void CCompositionProcessorEngine::InitializeSampleIMECompartment(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId)
@@ -1407,16 +1402,8 @@ void CCompositionProcessorEngine::SetInitialCandidateListRange()
 {
     for (DWORD i = 1; i <= 10; i++)
     {
-        DWORD& newIndexRange = _candidateListIndexRange.Append();
-
-        if (i != 10)
-        {
-            newIndexRange = i;
-        }
-        else
-        {
-            newIndexRange = 0;
-        }
+        DWORD newIndexRange = i != 10 ? i : 0;
+        _candidateListIndexRange.Append(newIndexRange);
     }
 }
 

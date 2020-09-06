@@ -66,7 +66,7 @@ VOID CBaseDictionaryEngine::MergeSortByFindKeyCode(_Inout_ CSampleImeArray<CCand
             srgLeftTemp = pItemList->GetAt(leftRangeTemp)->_FindKeyCode;
             srgMidTemp = pItemList->GetAt(midTemp)->_FindKeyCode;
 
-            CCandidateListItem& item = ListItemTemp.Append();
+            CCandidateListItem item;
             if (leftRangeTemp == mid)
             {
                 item = *pItemList->GetAt(midTemp++);
@@ -79,6 +79,7 @@ VOID CBaseDictionaryEngine::MergeSortByFindKeyCode(_Inout_ CSampleImeArray<CCand
             {
                 item = *pItemList->GetAt(midTemp++);
             }
+            ListItemTemp.Append(item);
         }
 
         leftRangeTemp = leftRange;

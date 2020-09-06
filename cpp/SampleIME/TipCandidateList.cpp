@@ -174,8 +174,7 @@ STDMETHODIMP CTipCandidateList::SetCandidate(_In_ ITfCandidateString **ppCandStr
         return E_POINTER;
     }
 
-    ITfCandidateString*& pCandLast = _tfCandStrList.Append();
-    pCandLast = *ppCandStr;
+    _tfCandStrList.Append(*ppCandStr);
 
     return S_OK;
 }

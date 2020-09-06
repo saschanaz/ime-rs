@@ -24,9 +24,10 @@ VOID CTableDictionaryEngine::CollectWord(const CStringRangeSmart& keyCode, _Inou
     {
         for (auto& item : pdret->_FindPhraseList)
         {
-            CCandidateListItem& listItem = pItemList->Append();
+            CCandidateListItem listItem;
             listItem._ItemString.Set(item);
             listItem._FindKeyCode.Set(pdret->_FindKeyCode);
+            pItemList->Append(listItem);
         }
 
         delete pdret;
@@ -49,9 +50,10 @@ VOID CTableDictionaryEngine::CollectWordForWildcard(const CStringRangeSmart& key
     {
         for (auto& item : pdret->_FindPhraseList)
         {
-            CCandidateListItem& listItem = pItemList->Append();
+            CCandidateListItem listItem;
             listItem._ItemString.Set(item);
             listItem._FindKeyCode.Set(pdret->_FindKeyCode);
+            pItemList->Append(listItem);
         }
 
         delete pdret;
@@ -74,9 +76,10 @@ VOID CTableDictionaryEngine::CollectWordFromConvertedStringForWildcard(const CSt
     {
         for (auto& item : pdret->_FindPhraseList)
         {
-            CCandidateListItem& listItem = pItemList->Append();
+            CCandidateListItem listItem;
             listItem._ItemString.Set(item);
             listItem._FindKeyCode.Set(pdret->_FindKeyCode);
+            pItemList->Append(listItem);
         }
 
         delete pdret;
