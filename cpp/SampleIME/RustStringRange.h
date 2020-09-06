@@ -67,3 +67,5 @@ class CRustStringRange {
 private:
   void* range = nullptr;
 };
+
+CRustStringRange operator""_rs(const char* aStr, std::size_t aLen);
