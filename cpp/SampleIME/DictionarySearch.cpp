@@ -72,7 +72,7 @@ BOOL CDictionarySearch::FindConvertedStringForWildcard(CDictionaryResult **ppdre
 //
 //----------------------------------------------------------------------------
 
-static bool StringCompare(const CStringRangeSmart& x, const CStringRangeSmart& y, LCID locale, bool isWildcardSearch)
+static bool StringCompare(const CRustStringRange& x, const CRustStringRange& y, LCID locale, bool isWildcardSearch)
 {
     if (isWildcardSearch)
     {
@@ -94,6 +94,7 @@ BOOL CDictionarySearch::FindWorker(BOOL isTextSearch, _Out_ CDictionaryResult **
     *ppdret = nullptr;
     BOOL isFound = FALSE;
     DWORD_PTR bufLenOneLine = 0;
+    CRustStringRange searchKeyCode(_searchKeyCode);
 
     while (true)
     {
@@ -101,16 +102,17 @@ BOOL CDictionarySearch::FindWorker(BOOL isTextSearch, _Out_ CDictionaryResult **
         if (bufLenOneLine)
         {
             CRustStringRange line(&pch[indexTrace], bufLenOneLine);
-            CStringRangeSmart keyword;
-            CStringRangeSmart value;
 
-            if (!ParseLine(line, &keyword, &value))
+            auto result = ParseLine(line);
+            if (!result.has_value())
             {
                 return FALSE;    // error
             }
 
-            const CStringRangeSmart& target = isTextSearch ? value : keyword;
-            if (target.GetLength() && StringCompare(_searchKeyCode, target, _locale, isWildcardSearch))
+            auto [keyword, value] = result.value();
+
+            const CRustStringRange& target = isTextSearch ? value : keyword;
+            if (target.GetLengthUtf8() && StringCompare(searchKeyCode, target, _locale, isWildcardSearch))
             {
                 // Prepare return's CDictionaryResult
                 *ppdret = new (std::nothrow) CDictionaryResult();
@@ -119,9 +121,9 @@ BOOL CDictionarySearch::FindWorker(BOOL isTextSearch, _Out_ CDictionaryResult **
                     return FALSE;
                 }
 
-                (*ppdret)->_FindKeyCode = keyword;
+                (*ppdret)->_FindKeyCode = CStringRangeSmart(keyword);
                 (*ppdret)->_SearchKeyCode = _searchKeyCode;
-                (*ppdret)->_FoundPhrase = value;
+                (*ppdret)->_FoundPhrase = CStringRangeSmart(value);
 
                 // Seek to next line
                 isFound = TRUE;

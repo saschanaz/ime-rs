@@ -213,8 +213,8 @@ private:
 class CStringRangeBase {
 public:
     const DWORD_PTR GetLength() const;
-    static int Compare(LCID locale, const CStringRangeBase& string1, const CStringRangeBase& string2);
-    static BOOL WildcardCompare(LCID locale, const CStringRangeBase& stringWithWildcard, const CStringRangeBase& targetString);
+    static int Compare(LCID locale, const CRustStringRange& string1, const CRustStringRange& string2);
+    static BOOL WildcardCompare(LCID locale, const CRustStringRange& stringWithWildcard, const CRustStringRange& targetString);
 
     virtual const WCHAR *GetRaw() const = 0;
 

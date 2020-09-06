@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <optional>
+
 #include "Globals.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -19,7 +21,7 @@ public:
     CDictionaryParser(LCID locale);
     virtual ~CDictionaryParser();
 
-    BOOL ParseLine(const CRustStringRange& input, _Out_ CStringRangeSmart* psrgKeyword, _Out_ CStringRangeSmart *psrgValue);
+    std::optional<std::tuple<CRustStringRange, CRustStringRange>> ParseLine(const CRustStringRange& input);
 
 protected:
     DWORD_PTR GetOneLine(_In_z_ LPCSTR pwszBuffer, DWORD_PTR dwBufLen);

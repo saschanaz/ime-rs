@@ -8,6 +8,7 @@
 #include "Private.h"
 #include "BaseDictionaryEngine.h"
 #include "Globals.h"
+#include "RustStringRange.h"
 
 //+---------------------------------------------------------------------------
 // ctor
@@ -60,11 +61,8 @@ VOID CBaseDictionaryEngine::MergeSortByFindKeyCode(_Inout_ CSampleImeArray<CCand
         int midTemp = 0;
         for (leftRangeTemp = leftRange, midTemp = mid; leftRangeTemp != mid || midTemp != rightRange;)
         {
-            CStringRangeSmart srgLeftTemp;
-            CStringRangeSmart srgMidTemp;
-
-            srgLeftTemp = pItemList->GetAt(leftRangeTemp)->_FindKeyCode;
-            srgMidTemp = pItemList->GetAt(midTemp)->_FindKeyCode;
+            CRustStringRange srgLeftTemp(pItemList->GetAt(leftRangeTemp)->_FindKeyCode);
+            CRustStringRange srgMidTemp(pItemList->GetAt(midTemp)->_FindKeyCode);
 
             CCandidateListItem item;
             if (leftRangeTemp == mid)
@@ -90,11 +88,8 @@ VOID CBaseDictionaryEngine::MergeSortByFindKeyCode(_Inout_ CSampleImeArray<CCand
     }
     else if (candidateCount == 2)
     {
-        CStringRangeSmart srgLeft;
-        CStringRangeSmart srgLeftNext;
-
-        srgLeft = pItemList->GetAt(leftRange )->_FindKeyCode;
-        srgLeftNext = pItemList->GetAt(leftRange+1)->_FindKeyCode;
+        CRustStringRange srgLeft(pItemList->GetAt(leftRange)->_FindKeyCode);
+        CRustStringRange srgLeftNext(pItemList->GetAt(leftRange + 1)->_FindKeyCode);
 
         if (CStringRangeSmart::Compare(_locale, srgLeft, srgLeftNext) == CSTR_GREATER_THAN)
         {

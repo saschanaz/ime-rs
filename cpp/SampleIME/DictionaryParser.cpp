@@ -44,19 +44,17 @@ CDictionaryParser::~CDictionaryParser()
 //
 //---------------------------------------------------------------------
 
-BOOL CDictionaryParser::ParseLine(const CRustStringRange& input, _Out_ CStringRangeSmart* psrgKeyword, _Out_ CStringRangeSmart *psrgValue)
+std::optional<std::tuple<CRustStringRange, CRustStringRange>> CDictionaryParser::ParseLine(const CRustStringRange& input)
 {
     void* keyword_raw;
     void* value_raw;
 
     if (!parse_line(input.GetInternal(), &keyword_raw, &value_raw))
     {
-        return false;
+        return std::nullopt;
     }
 
-    *psrgKeyword = CStringRangeSmart(CRustStringRange(keyword_raw));
-    *psrgValue = CStringRangeSmart(CRustStringRange(value_raw));
-    return true;
+    return std::make_tuple(CRustStringRange(keyword_raw), CRustStringRange(value_raw));
 }
 
 //---------------------------------------------------------------------

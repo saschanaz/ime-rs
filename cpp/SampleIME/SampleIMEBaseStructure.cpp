@@ -190,8 +190,10 @@ CStringRangeSmart& CStringRangeSmart::operator =(const CStringRangeSmart& sr)
     return *this;
 }
 
-int CStringRangeBase::Compare(LCID locale, const CStringRangeBase& string1, const CStringRangeBase& string2)
+int CStringRangeBase::Compare(LCID locale, const CRustStringRange& rsr1, const CRustStringRange& rsr2)
 {
+    CStringRangeSmart string1(rsr1);
+    CStringRangeSmart string2(rsr2);
     return CompareString(locale,
         NORM_IGNORECASE,
         string1.GetRaw(),
@@ -200,14 +202,12 @@ int CStringRangeBase::Compare(LCID locale, const CStringRangeBase& string1, cons
         (DWORD)string2.GetLength());
 }
 
-BOOL CStringRangeBase::WildcardCompare(LCID, const CStringRangeBase& stringWithWildcard, const CStringRangeBase& targetString)
+BOOL CStringRangeBase::WildcardCompare(LCID, const CRustStringRange& stringWithWildcard, const CRustStringRange& targetString)
 {
     // This is expectedly slower than the previous C++ code
     // as the function now allocates a parsed string object every time
     // This should be faster when porting the string processing completes.
-    CRustStringRange base(stringWithWildcard);
-    CRustStringRange target(targetString);
-    return base.CompareWithWildCard(target);
+    return stringWithWildcard.CompareWithWildCard(targetString);
 }
 
 CStringRangeSmart CStringRangeSmart::Substr(DWORD_PTR start) const {

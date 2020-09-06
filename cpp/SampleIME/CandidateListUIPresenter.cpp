@@ -11,6 +11,7 @@
 #include "CandidateListUIPresenter.h"
 #include "CompositionProcessorEngine.h"
 #include "SampleIMEBaseStructure.h"
+#include "RustStringRange.h"
 #include "../../rust/globals/globals.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -1147,7 +1148,7 @@ void CCandidateListUIPresenter::RemoveSpecificCandidateFromList(_In_ LCID Locale
     {
         CCandidateListItem* pLI = candidateList.GetAt(index);
 
-        if (CStringRangeSmart::Compare(Locale, candidateString, pLI->_ItemString) == CSTR_EQUAL)
+        if (CStringRangeSmart::Compare(Locale, CRustStringRange(candidateString), CRustStringRange(pLI->_ItemString)) == CSTR_EQUAL)
         {
             candidateList.RemoveAt(index);
             continue;
