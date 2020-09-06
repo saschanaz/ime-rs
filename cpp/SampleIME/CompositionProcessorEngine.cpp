@@ -327,13 +327,8 @@ void CCompositionProcessorEngine::GetReadingStrings(_Inout_ CSampleImeArray<CStr
 
     if (pReadingStrings->Count() == 0 && _keystrokeBuffer.GetLength())
     {
-        CStringRangeSmart* pNewString = nullptr;
-
-        pNewString = pReadingStrings->Append();
-        if (pNewString)
-        {
-            *pNewString = _keystrokeBuffer;
-        }
+        CStringRangeSmart& newString = pReadingStrings->Append();
+        newString = _keystrokeBuffer;
 
         for (DWORD index = 0; index < _keystrokeBuffer.GetLength(); index++)
         {
@@ -588,14 +583,8 @@ void CCompositionProcessorEngine::SetKeystrokeTable(_Inout_ CSampleImeArray<_KEY
 {
     for (int i = 0; i < 26; i++)
     {
-        _KEYSTROKE* pKS = nullptr;
-
-        pKS = pKeystroke->Append();
-        if (!pKS)
-        {
-            break;
-        }
-        *pKS = _keystrokeTable[i];
+        _KEYSTROKE& keyStroke = pKeystroke->Append();
+        keyStroke = _keystrokeTable[i];
     }
 }
 
@@ -639,12 +628,8 @@ void CCompositionProcessorEngine::SetPreservedKey(const CLSID clsid, TF_PRESERVE
 {
     pXPreservedKey->Guid = clsid;
 
-    TF_PRESERVEDKEY *ptfPsvKey1 = pXPreservedKey->TSFPreservedKeyTable.Append();
-    if (!ptfPsvKey1)
-    {
-        return;
-    }
-    *ptfPsvKey1 = tfPreservedKey;
+    TF_PRESERVEDKEY& tfPsvKey1 = pXPreservedKey->TSFPreservedKeyTable.Append();
+    tfPsvKey1 = tfPreservedKey;
 
 	size_t srgKeystrokeBufLen = 0;
 	if (StringCchLength(pwszDescription, STRSAFE_MAX_CCH, &srgKeystrokeBufLen) != S_OK)
@@ -973,15 +958,15 @@ void CCompositionProcessorEngine::SetupPunctuationPair()
 
     for (int i = 0; i < pair_count; ++i)
     {
-        CPunctuationPair *pPuncPair = _PunctuationPair.Append();
-        *pPuncPair = puncPairs[i];
+        CPunctuationPair& puncPair = _PunctuationPair.Append();
+        puncPair = puncPairs[i];
     }
 
     // Punctuation nest pair
     CPunctuationNestPair punc_angle_bracket(L'<', 0x300A, 0x3008, L'>', 0x300B, 0x3009);
 
-    CPunctuationNestPair* pPuncNestPair = _PunctuationNestPair.Append();
-    *pPuncNestPair = punc_angle_bracket;
+    CPunctuationNestPair& puncNestPair = _PunctuationNestPair.Append();
+    puncNestPair = punc_angle_bracket;
 }
 
 void CCompositionProcessorEngine::InitializeSampleIMECompartment(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId)
@@ -1422,19 +1407,15 @@ void CCompositionProcessorEngine::SetInitialCandidateListRange()
 {
     for (DWORD i = 1; i <= 10; i++)
     {
-        DWORD* pNewIndexRange = nullptr;
+        DWORD& newIndexRange = _candidateListIndexRange.Append();
 
-        pNewIndexRange = _candidateListIndexRange.Append();
-        if (pNewIndexRange != nullptr)
+        if (i != 10)
         {
-            if (i != 10)
-            {
-                *pNewIndexRange = i;
-            }
-            else
-            {
-                *pNewIndexRange = 0;
-            }
+            newIndexRange = i;
+        }
+        else
+        {
+            newIndexRange = 0;
         }
     }
 }

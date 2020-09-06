@@ -66,22 +66,18 @@ VOID CBaseDictionaryEngine::MergeSortByFindKeyCode(_Inout_ CSampleImeArray<CCand
             srgLeftTemp = pItemList->GetAt(leftRangeTemp)->_FindKeyCode;
             srgMidTemp = pItemList->GetAt(midTemp)->_FindKeyCode;
 
-            CCandidateListItem* pLI = nullptr;
-            pLI = ListItemTemp.Append();
-            if (pLI)
+            CCandidateListItem& item = ListItemTemp.Append();
+            if (leftRangeTemp == mid)
             {
-                if (leftRangeTemp == mid)
-                {
-                    *pLI = *pItemList->GetAt(midTemp++);
-                }
-                else if (midTemp == rightRange || CStringRangeSmart::Compare(_locale, srgLeftTemp, srgMidTemp) != CSTR_GREATER_THAN)
-                {
-                    *pLI = *pItemList->GetAt(leftRangeTemp++);
-                }
-                else
-                {
-                    *pLI = *pItemList->GetAt(midTemp++);
-                }
+                item = *pItemList->GetAt(midTemp++);
+            }
+            else if (midTemp == rightRange || CStringRangeSmart::Compare(_locale, srgLeftTemp, srgMidTemp) != CSTR_GREATER_THAN)
+            {
+                item = *pItemList->GetAt(leftRangeTemp++);
+            }
+            else
+            {
+                item = *pItemList->GetAt(midTemp++);
             }
         }
 

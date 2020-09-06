@@ -24,13 +24,9 @@ VOID CTableDictionaryEngine::CollectWord(const CStringRangeSmart& keyCode, _Inou
     {
         for (auto& item : pdret->_FindPhraseList)
         {
-            CCandidateListItem* pLI = nullptr;
-            pLI = pItemList->Append();
-            if (pLI)
-            {
-                pLI->_ItemString.Set(item);
-                pLI->_FindKeyCode.Set(pdret->_FindKeyCode);
-            }
+            CCandidateListItem& listItem = pItemList->Append();
+            listItem._ItemString.Set(item);
+            listItem._FindKeyCode.Set(pdret->_FindKeyCode);
         }
 
         delete pdret;
@@ -53,13 +49,9 @@ VOID CTableDictionaryEngine::CollectWordForWildcard(const CStringRangeSmart& key
     {
         for (auto& item : pdret->_FindPhraseList)
         {
-            CCandidateListItem* pLI = nullptr;
-            pLI = pItemList->Append();
-            if (pLI)
-            {
-                pLI->_ItemString.Set(item);
-                pLI->_FindKeyCode.Set(pdret->_FindKeyCode);
-            }
+            CCandidateListItem& listItem = pItemList->Append();
+            listItem._ItemString.Set(item);
+            listItem._FindKeyCode.Set(pdret->_FindKeyCode);
         }
 
         delete pdret;
@@ -82,13 +74,9 @@ VOID CTableDictionaryEngine::CollectWordFromConvertedStringForWildcard(const CSt
     {
         for (auto& item : pdret->_FindPhraseList)
         {
-            CCandidateListItem* pLI = nullptr;
-            pLI = pItemList->Append();
-            if (pLI)
-            {
-                pLI->_ItemString.Set(item);
-                pLI->_FindKeyCode.Set(pdret->_FindKeyCode);
-            }
+            CCandidateListItem& listItem = pItemList->Append();
+            listItem._ItemString.Set(item);
+            listItem._FindKeyCode.Set(pdret->_FindKeyCode);
         }
 
         delete pdret;

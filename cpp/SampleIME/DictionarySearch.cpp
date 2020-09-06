@@ -175,11 +175,8 @@ TryAgain:
         (*ppdret)->_FindKeyCode = keyword;
         (*ppdret)->_SearchKeyCode = _searchKeyCode;
 
-        CStringRangeSmart* findPhrase = (*ppdret)->_FindPhraseList.Append();
-        if (findPhrase)
-        {
-            *findPhrase = valueString;
-        }
+        CStringRangeSmart& findPhrase = (*ppdret)->_FindPhraseList.Append();
+        findPhrase = valueString;
 
         // Seek to next line
         isFound = TRUE;
