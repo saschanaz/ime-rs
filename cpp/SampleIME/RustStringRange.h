@@ -60,6 +60,10 @@ class CRustStringRange {
     return ruststringrange_compare_with_wildcard(this->range, target.range);
   }
 
+  CRustStringRange Concat(const CRustStringRange& sr) {
+    return ruststringrange_concat(this->range, sr.range);
+  }
+
 private:
   void* range = nullptr;
 };

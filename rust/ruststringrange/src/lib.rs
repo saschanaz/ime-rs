@@ -57,6 +57,16 @@ impl RustStringRange {
   pub fn as_slice(&self) -> &str {
     &self.string[self.offset..self.offset + self.length]
   }
+
+  pub fn concat(&self, s: &RustStringRange) -> RustStringRange {
+    let sum = [self.as_slice(), s.as_slice()].concat();
+    let length = sum.len();
+    RustStringRange {
+      string: Rc::new(sum),
+      offset: 0,
+      length
+    }
+  }
 }
 
 #[no_mangle]
@@ -97,4 +107,12 @@ pub unsafe extern fn ruststringrange_compare_with_wildcard(x_raw: *mut c_void, y
 pub unsafe extern fn ruststringrange_clone(p: *const c_void) -> *mut c_void {
   let rsr = Box::leak(RustStringRange::from_void(p as *mut c_void));
   Box::into_raw(Box::new(rsr.clone())) as *mut c_void
+}
+
+#[no_mangle]
+pub unsafe extern fn ruststringrange_concat(p1: *const c_void, p2: *const c_void) -> *mut c_void {
+  let x = Box::leak(RustStringRange::from_void(p1 as *mut c_void));
+  let y = Box::leak(RustStringRange::from_void(p2 as *mut c_void));
+
+  Box::into_raw(Box::new(x.concat(y))) as *mut c_void
 }

@@ -9,6 +9,8 @@ void *ruststringrange_clone(const void *p);
 
 bool ruststringrange_compare_with_wildcard(void *x_raw, void *y_raw);
 
+void *ruststringrange_concat(const void *p1, const void *p2);
+
 void ruststringrange_free(void *p);
 
 uintptr_t ruststringrange_len(const void *p);
