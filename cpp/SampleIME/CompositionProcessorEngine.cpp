@@ -336,7 +336,7 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
 
     if (isIncrementalWordSearch)
     {
-        CStringRangeSmart wildcardSearch = _keystrokeBuffer;
+        CRustStringRange wildcardSearch(_keystrokeBuffer);
 
         // check keystroke buffer already has wildcard char which end user want wildcard serach
         DWORD wildcardIndex = 0;
@@ -357,7 +357,7 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
         if (!isFindWildcard)
         {
             // add wildcard char for incremental search
-            wildcardSearch = wildcardSearch.Concat(L"*"_sr);
+            wildcardSearch = wildcardSearch.Concat(u8"*"_rs);
         }
 
         _pTableDictionaryEngine->CollectWordForWildcard(wildcardSearch, pCandidateList);
@@ -374,11 +374,11 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
     }
     else if (isWildcardSearch)
     {
-        _pTableDictionaryEngine->CollectWordForWildcard(CStringRangeSmart(_keystrokeBuffer), pCandidateList);
+        _pTableDictionaryEngine->CollectWordForWildcard(CRustStringRange(_keystrokeBuffer), pCandidateList);
     }
     else
     {
-        _pTableDictionaryEngine->CollectWord(CStringRangeSmart(_keystrokeBuffer), pCandidateList);
+        _pTableDictionaryEngine->CollectWord(CRustStringRange(_keystrokeBuffer), pCandidateList);
     }
 }
 
@@ -396,7 +396,7 @@ void CCompositionProcessorEngine::GetCandidateStringInConverted(const CStringRan
     }
 
     // Search phrase from SECTION_TEXT's converted string list
-    CStringRangeSmart wildcardSearch = searchString.Concat(L"*"_sr);
+    CRustStringRange wildcardSearch = CRustStringRange(searchString).Concat(u8"*"_rs);
 
     _pTableDictionaryEngine->CollectWordFromConvertedStringForWildcard(wildcardSearch, pCandidateList);
 
@@ -404,8 +404,6 @@ void CCompositionProcessorEngine::GetCandidateStringInConverted(const CStringRan
     {
         _pTableDictionaryEngine->SortListItemByFindKeyCode(pCandidateList);
     }
-
-    wildcardSearch.Clear();
 }
 
 //+---------------------------------------------------------------------------
