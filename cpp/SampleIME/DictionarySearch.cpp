@@ -16,10 +16,9 @@
 //
 //----------------------------------------------------------------------------
 
-CDictionarySearch::CDictionarySearch(LCID locale, _In_ CFile *pFile, const CStringRangeSmart& searchKeyCode) : CDictionaryParser(locale)
+CDictionarySearch::CDictionarySearch(LCID locale, _In_ CFile *pFile, const CStringRangeSmart& searchKeyCode) : CDictionaryParser(locale), _searchKeyCode(searchKeyCode)
 {
     _pFile = pFile;
-    _searchKeyCode = searchKeyCode;
     _charIndex = 0;
 }
 
@@ -94,7 +93,6 @@ BOOL CDictionarySearch::FindWorker(BOOL isTextSearch, _Out_ CDictionaryResult **
     *ppdret = nullptr;
     BOOL isFound = FALSE;
     DWORD_PTR bufLenOneLine = 0;
-    CRustStringRange searchKeyCode(_searchKeyCode);
 
     while (true)
     {
@@ -112,7 +110,7 @@ BOOL CDictionarySearch::FindWorker(BOOL isTextSearch, _Out_ CDictionaryResult **
             auto [keyword, value] = result.value();
 
             const CRustStringRange& target = isTextSearch ? value : keyword;
-            if (target.GetLengthUtf8() && StringCompare(searchKeyCode, target, _locale, isWildcardSearch))
+            if (target.GetLengthUtf8() && StringCompare(_searchKeyCode, target, _locale, isWildcardSearch))
             {
                 // Prepare return's CDictionaryResult
                 *ppdret = new (std::nothrow) CDictionaryResult();
@@ -122,7 +120,7 @@ BOOL CDictionarySearch::FindWorker(BOOL isTextSearch, _Out_ CDictionaryResult **
                 }
 
                 (*ppdret)->_FindKeyCode = CStringRangeSmart(keyword);
-                (*ppdret)->_SearchKeyCode = _searchKeyCode;
+                (*ppdret)->_SearchKeyCode = CStringRangeSmart(_searchKeyCode);
                 (*ppdret)->_FoundPhrase = CStringRangeSmart(value);
 
                 // Seek to next line

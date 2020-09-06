@@ -11,6 +11,7 @@
 #include "File.h"
 #include "DictionaryParser.h"
 #include "SampleIMEBaseStructure.h"
+#include "RustStringRange.h"
 
 class CDictionaryResult;
 
@@ -31,7 +32,7 @@ public:
 
     BOOL FindConvertedStringForWildcard(CDictionaryResult **ppdret);
 
-    CStringRangeSmart _searchKeyCode;
+    CRustStringRange _searchKeyCode;
 
     DWORD_PTR _charIndex;      // in character. Always point start of line in dictionary file.
 
