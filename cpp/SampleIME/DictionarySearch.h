@@ -61,7 +61,7 @@ private:
 class CDictionaryResult
 {
 public:
-    CDictionaryResult() { }
+    CDictionaryResult(CRustStringRange search, CRustStringRange found): _SearchKeyCode(search), _FindKeyCode(found) {}
     virtual ~CDictionaryResult() { }
 
     CDictionaryResult& operator=(CDictionaryResult& dret)
@@ -71,7 +71,7 @@ public:
         return *this;
     }
 
-    CStringRangeSmart _SearchKeyCode;
-    CStringRangeSmart _FindKeyCode;
+    CRustStringRange _SearchKeyCode;
+    CRustStringRange _FindKeyCode;
     CStringRangeSmart _FoundPhrase;
 };
