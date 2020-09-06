@@ -24,7 +24,7 @@ class CDictionaryResult;
 class CDictionarySearch : CDictionaryParser
 {
 public:
-    CDictionarySearch(LCID locale, _In_ CFile *pFile, const CStringRangeSmart& searchKeyCode);
+    CDictionarySearch(LCID locale, _In_ CFile *pFile, const CRustStringRange& searchKeyCode);
     virtual ~CDictionarySearch();
 
     BOOL FindPhrase(_Out_ CDictionaryResult **ppdret);

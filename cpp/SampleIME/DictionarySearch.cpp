@@ -16,7 +16,7 @@
 //
 //----------------------------------------------------------------------------
 
-CDictionarySearch::CDictionarySearch(LCID locale, _In_ CFile *pFile, const CStringRangeSmart& searchKeyCode) : CDictionaryParser(locale), _searchKeyCode(searchKeyCode)
+CDictionarySearch::CDictionarySearch(LCID locale, _In_ CFile *pFile, const CRustStringRange& searchKeyCode) : CDictionaryParser(locale), _searchKeyCode(searchKeyCode)
 {
     _pFile = pFile;
     _charIndex = 0;

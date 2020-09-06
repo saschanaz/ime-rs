@@ -18,7 +18,7 @@
 VOID CTableDictionaryEngine::CollectWord(const CStringRangeSmart& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList)
 {
     CDictionaryResult* pdret = nullptr;
-    CDictionarySearch dshSearch(_locale, _pDictionaryFile, keyCode);
+    CDictionarySearch dshSearch(_locale, _pDictionaryFile, CRustStringRange(keyCode));
 
     while (dshSearch.FindPhrase(&pdret))
     {
@@ -41,7 +41,7 @@ VOID CTableDictionaryEngine::CollectWord(const CStringRangeSmart& keyCode, _Inou
 VOID CTableDictionaryEngine::CollectWordForWildcard(const CStringRangeSmart& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList)
 {
     CDictionaryResult* pdret = nullptr;
-    CDictionarySearch dshSearch(_locale, _pDictionaryFile, keyCode);
+    CDictionarySearch dshSearch(_locale, _pDictionaryFile, CRustStringRange(keyCode));
 
     while (dshSearch.FindPhraseForWildcard(&pdret))
     {
@@ -64,7 +64,7 @@ VOID CTableDictionaryEngine::CollectWordForWildcard(const CStringRangeSmart& key
 VOID CTableDictionaryEngine::CollectWordFromConvertedStringForWildcard(const CStringRangeSmart& string, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList)
 {
     CDictionaryResult* pdret = nullptr;
-    CDictionarySearch dshSearch(_locale, _pDictionaryFile, string);
+    CDictionarySearch dshSearch(_locale, _pDictionaryFile, CRustStringRange(string));
 
     while (dshSearch.FindConvertedStringForWildcard(&pdret)) // TAIL ALL CHAR MATCH
     {
