@@ -77,7 +77,7 @@ static bool StringCompare(const CRustStringRange& x, const CRustStringRange& y, 
     {
         return x.CompareWithWildCard(y);
     }
-    return CStringRangeSmart::Compare(locale, x, y) == CSTR_EQUAL;
+    return x == y;
 }
 
 BOOL CDictionarySearch::FindWorker(BOOL isTextSearch, _Out_ CDictionaryResult **ppdret, BOOL isWildcardSearch)

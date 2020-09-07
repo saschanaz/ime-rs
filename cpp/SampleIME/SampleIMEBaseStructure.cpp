@@ -190,18 +190,6 @@ CStringRangeSmart& CStringRangeSmart::operator =(const CStringRangeSmart& sr)
     return *this;
 }
 
-int CStringRangeBase::Compare(LCID locale, const CRustStringRange& rsr1, const CRustStringRange& rsr2)
-{
-    CStringRangeSmart string1(rsr1);
-    CStringRangeSmart string2(rsr2);
-    return CompareString(locale,
-        NORM_IGNORECASE,
-        string1.GetRaw(),
-        (DWORD)string1.GetLength(),
-        string2.GetRaw(),
-        (DWORD)string2.GetLength());
-}
-
 CStringRangeSmart CStringRangeSmart::Substr(DWORD_PTR start) const {
     return Substr(start, GetLength());
 }
