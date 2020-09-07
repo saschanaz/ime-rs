@@ -44,6 +44,34 @@ class CRustStringRange {
     return *this;
   }
 
+  bool operator==(const CRustStringRange& sr) const {
+    return Compare(sr) == 0;
+  }
+
+  bool operator!=(const CRustStringRange& sr) const {
+    return !(*this == sr);
+  }
+
+  bool operator>(const CRustStringRange& sr) const {
+    return Compare(sr) > 0;
+  }
+
+  bool operator>=(const CRustStringRange& sr) const {
+    return Compare(sr) >= 0;
+  }
+
+  bool operator<(const CRustStringRange& sr) const {
+    return Compare(sr) < 0;
+  }
+
+  bool operator<=(const CRustStringRange& sr) const {
+    return Compare(sr) <= 0;
+  }
+
+  int8_t Compare(const CRustStringRange& sr) const {
+    return ruststringrange_compare(this->range, sr.range);
+  }
+
   uintptr_t GetLengthUtf8() const {
     return ruststringrange_len(range);
   }

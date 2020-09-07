@@ -1,5 +1,6 @@
 use std::rc::Rc;
 use core::ffi::c_void;
+use std::cmp::Ordering;
 
 use compare_with_wildcard::compare_with_wildcard;
 
@@ -67,6 +68,15 @@ impl RustStringRange {
       length
     }
   }
+
+  pub fn compare(&self, s: &RustStringRange) -> i8 {
+    let order = self.string.cmp(&s.string);
+    match order {
+      Ordering::Less => -1,
+      Ordering::Greater => 1,
+      Ordering::Equal => 0
+    }
+  }
 }
 
 #[no_mangle]
@@ -94,6 +104,13 @@ pub unsafe extern fn ruststringrange_raw(p: *mut c_void) -> *const u8 {
 pub unsafe extern fn ruststringrange_len(p: *const c_void) -> usize {
   let rsr = Box::leak(RustStringRange::from_void(p as *mut c_void));
   rsr.len()
+}
+
+#[no_mangle]
+pub unsafe extern fn ruststringrange_compare(x_raw: *mut c_void, y_raw: *mut c_void) -> i8 {
+  let x = Box::leak(RustStringRange::from_void(x_raw));
+  let y = Box::leak(RustStringRange::from_void(y_raw));
+  x.compare(y)
 }
 
 #[no_mangle]

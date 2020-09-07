@@ -7,6 +7,8 @@ extern "C" {
 
 void *ruststringrange_clone(const void *p);
 
+int8_t ruststringrange_compare(void *x_raw, void *y_raw);
+
 bool ruststringrange_compare_with_wildcard(void *x_raw, void *y_raw);
 
 void *ruststringrange_concat(const void *p1, const void *p2);
