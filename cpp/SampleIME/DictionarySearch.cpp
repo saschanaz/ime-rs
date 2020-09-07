@@ -75,7 +75,7 @@ static bool StringCompare(const CRustStringRange& x, const CRustStringRange& y, 
 {
     if (isWildcardSearch)
     {
-        return CStringRangeSmart::WildcardCompare(locale, x, y);
+        return x.CompareWithWildCard(y);
     }
     return CStringRangeSmart::Compare(locale, x, y) == CSTR_EQUAL;
 }

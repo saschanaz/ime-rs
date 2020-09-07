@@ -202,14 +202,6 @@ int CStringRangeBase::Compare(LCID locale, const CRustStringRange& rsr1, const C
         (DWORD)string2.GetLength());
 }
 
-BOOL CStringRangeBase::WildcardCompare(LCID, const CRustStringRange& stringWithWildcard, const CRustStringRange& targetString)
-{
-    // This is expectedly slower than the previous C++ code
-    // as the function now allocates a parsed string object every time
-    // This should be faster when porting the string processing completes.
-    return stringWithWildcard.CompareWithWildCard(targetString);
-}
-
 CStringRangeSmart CStringRangeSmart::Substr(DWORD_PTR start) const {
     return Substr(start, GetLength());
 }
