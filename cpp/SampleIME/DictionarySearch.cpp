@@ -71,6 +71,15 @@ BOOL CDictionarySearch::FindConvertedStringForWildcard(CDictionaryResult **ppdre
 //
 //----------------------------------------------------------------------------
 
+static bool StringCompare(const CStringRangeSmart& x, const CStringRangeSmart& y, LCID locale, bool isWildcardSearch)
+{
+    if (isWildcardSearch)
+    {
+        return CStringRangeSmart::WildcardCompare(locale, x, y);
+    }
+    return CStringRangeSmart::Compare(locale, x, y) == CSTR_EQUAL;
+}
+
 BOOL CDictionarySearch::FindWorker(BOOL isTextSearch, _Out_ CDictionaryResult **ppdret, BOOL isWildcardSearch)
 {
     DWORD_PTR dwTotalBufLen = GetBufferInWCharLength();        // in char
@@ -87,11 +96,7 @@ BOOL CDictionarySearch::FindWorker(BOOL isTextSearch, _Out_ CDictionaryResult **
 
 TryAgain:
     bufLenOneLine = GetOneLine(&pwch[indexTrace], dwTotalBufLen);
-    if (bufLenOneLine == 0)
-    {
-        goto FindNextLine;
-    }
-    else
+    if (bufLenOneLine)
     {
         CStringRangeSmart line;
         CStringRangeSmart keyword;
@@ -103,26 +108,7 @@ TryAgain:
             return FALSE;    // error
         }
 
-        if (!isTextSearch)
-        {
-            // Compare Dictionary key code and input key code
-            if (!isWildcardSearch)
-            {
-                if (CStringRangeSmart::Compare(_locale, keyword, _searchKeyCode) != CSTR_EQUAL)
-                {
-                    goto FindNextLine;
-                }
-            }
-            else
-            {
-                // Wildcard search
-                if (!CStringRangeSmart::WildcardCompare(_locale, _searchKeyCode, keyword))
-                {
-                    goto FindNextLine;
-                }
-            }
-        }
-        else
+        if (isTextSearch)
         {
             // Compare Dictionary converted string and input string
             CStringRangeSmart tempString;
@@ -130,28 +116,19 @@ TryAgain:
             {
                 return FALSE;
             }
-            if (tempString.GetLength())
-            {
-                if (!isWildcardSearch)
-                {
-                    if (CStringRangeSmart::Compare(_locale, tempString, _searchKeyCode) != CSTR_EQUAL)
-                    {
-                        goto FindNextLine;
-                    }
-                }
-                else
-                {
-                    // Wildcard search
-                    if (!CStringRangeSmart::WildcardCompare(_locale, _searchKeyCode, tempString))
-                    {
-                        goto FindNextLine;
-                    }
-                }
-            }
-            else
+            if (!tempString.GetLength())
             {
                 goto FindNextLine;
             }
+            else if (!StringCompare(_searchKeyCode, tempString, _locale, isWildcardSearch))
+            {
+                goto FindNextLine;
+            }
+        }
+        // Compare Dictionary key code and input key code
+        else if (!StringCompare(_searchKeyCode, keyword, _locale, isWildcardSearch))
+        {
+            goto FindNextLine;
         }
 
         // Prepare return's CDictionaryResult
