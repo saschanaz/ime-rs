@@ -55,7 +55,7 @@ BOOL CDictionaryParser::ParseLine(const CStringRangeSmart& input, _Out_ CStringR
     CStringRangeSmart value = input.Substr(pwszKeyWordDelimiter - input.GetRaw() + 1);
 
     // Get value.
-    if (psrgValue && value.GetLength())
+    if (value.GetLength())
     {
         RemoveWhiteSpaceFromBegin(value);
         RemoveWhiteSpaceFromEnd(value);

@@ -19,7 +19,7 @@ public:
     CDictionaryParser(LCID locale);
     virtual ~CDictionaryParser();
 
-    BOOL ParseLine(const CStringRangeSmart& input, _Out_ CStringRangeSmart* psrgKeyword, _Out_ CStringRangeSmart *psrgValue = nullptr);
+    BOOL ParseLine(const CStringRangeSmart& input, _Out_ CStringRangeSmart* psrgKeyword, _Out_ CStringRangeSmart *psrgValue);
 
     // dwBufLen - in character count
     _Ret_maybenull_

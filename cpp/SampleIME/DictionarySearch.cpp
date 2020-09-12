@@ -100,62 +100,33 @@ TryAgain:
     {
         CStringRangeSmart line;
         CStringRangeSmart keyword;
+        CStringRangeSmart value;
 
         line.SetClone(&pwch[indexTrace], bufLenOneLine);
 
-        if (!ParseLine(line, &keyword))
+        if (!ParseLine(line, &keyword, &value))
         {
             return FALSE;    // error
         }
 
-        if (isTextSearch)
+        const CStringRangeSmart& target = isTextSearch ? value : keyword;
+        if (target.GetLength() && StringCompare(_searchKeyCode, target, _locale, isWildcardSearch))
         {
-            // Compare Dictionary converted string and input string
-            CStringRangeSmart tempString;
-            if (!ParseLine(line, &keyword, &tempString))
+            // Prepare return's CDictionaryResult
+            *ppdret = new (std::nothrow) CDictionaryResult();
+            if (!*ppdret)
             {
                 return FALSE;
             }
-            if (!tempString.GetLength())
-            {
-                goto FindNextLine;
-            }
-            else if (!StringCompare(_searchKeyCode, tempString, _locale, isWildcardSearch))
-            {
-                goto FindNextLine;
-            }
+
+            (*ppdret)->_FindKeyCode = keyword;
+            (*ppdret)->_SearchKeyCode = _searchKeyCode;
+
+            (*ppdret)->_FindPhraseList.Append(value);
+
+            // Seek to next line
+            isFound = TRUE;
         }
-        // Compare Dictionary key code and input key code
-        else if (!StringCompare(_searchKeyCode, keyword, _locale, isWildcardSearch))
-        {
-            goto FindNextLine;
-        }
-
-        // Prepare return's CDictionaryResult
-        *ppdret = new (std::nothrow) CDictionaryResult();
-        if (!*ppdret)
-        {
-            return FALSE;
-        }
-
-        CStringRangeSmart valueString;
-        if (!ParseLine(line, &keyword, &valueString))
-        {
-            if (*ppdret)
-            {
-                delete *ppdret;
-                *ppdret = nullptr;
-            }
-            return FALSE;
-        }
-
-        (*ppdret)->_FindKeyCode = keyword;
-        (*ppdret)->_SearchKeyCode = _searchKeyCode;
-
-        (*ppdret)->_FindPhraseList.Append(valueString);
-
-        // Seek to next line
-        isFound = TRUE;
     }
 
 FindNextLine:
