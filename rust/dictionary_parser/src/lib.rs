@@ -1,8 +1,7 @@
 use core::ffi::c_void;
 use ruststringrange::RustStringRange;
 
-#[no_mangle]
-pub unsafe extern fn parse_line(line: *const c_void, key: *mut *mut c_void, value: *mut *mut c_void) -> bool {
+fn parse_line_internal(line: &str) -> Option<(&str, &str)> {
     fn unwrap(text: &str) -> &str {
         let mut result = text;
         if text.starts_with("\"") && text.ends_with("\"") {
@@ -11,19 +10,31 @@ pub unsafe extern fn parse_line(line: *const c_void, key: *mut *mut c_void, valu
         result.trim()
     }
 
+
+    let equalsign = get_equalsign(line);
+    if equalsign.is_none() {
+        return None;
+    }
+
+    let key_slice = &line[0..equalsign.unwrap()];
+    let value_slice = &line[equalsign.unwrap() + 1..];
+    Some((unwrap(key_slice), unwrap(value_slice)))
+}
+
+#[no_mangle]
+pub unsafe extern fn parse_line(line: *const c_void, key: *mut *mut c_void, value: *mut *mut c_void) -> bool {
     *key = 0 as *mut c_void;
     *value = 0 as *mut c_void;
 
     let line = Box::leak(RustStringRange::from_void(line as *mut _));
-    let equalsign = get_equalsign(line.as_slice());
-    if equalsign.is_none() {
+    let result = parse_line_internal(line.as_slice());
+    if result.is_none() {
         return false;
     }
 
-    let key_slice = &line.as_slice()[0..equalsign.unwrap()];
-    let value_slice = &line.as_slice()[equalsign.unwrap() + 1..];
-    *key = Box::into_raw(Box::new(RustStringRange::from_str(unwrap(key_slice)))) as *mut c_void;
-    *value = Box::into_raw(Box::new(RustStringRange::from_str(unwrap(value_slice)))) as *mut c_void;
+    let parsed = result.unwrap();
+    *key = Box::into_raw(Box::new(RustStringRange::from_str(parsed.0))) as *mut c_void;
+    *value = Box::into_raw(Box::new(RustStringRange::from_str(parsed.1))) as *mut c_void;
     return true;
 }
 
