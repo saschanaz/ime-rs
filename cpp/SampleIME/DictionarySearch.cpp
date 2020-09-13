@@ -94,68 +94,73 @@ BOOL CDictionarySearch::FindWorker(BOOL isTextSearch, _Out_ CDictionaryResult **
     BOOL isFound = FALSE;
     DWORD_PTR bufLenOneLine = 0;
 
-TryAgain:
-    bufLenOneLine = GetOneLine(&pwch[indexTrace], dwTotalBufLen);
-    if (bufLenOneLine)
+    while (true)
     {
-        CStringRangeSmart line;
-        CStringRangeSmart keyword;
-        CStringRangeSmart value;
-
-        line.SetClone(&pwch[indexTrace], bufLenOneLine);
-
-        if (!ParseLine(line, &keyword, &value))
+        bufLenOneLine = GetOneLine(&pwch[indexTrace], dwTotalBufLen);
+        if (bufLenOneLine)
         {
-            return FALSE;    // error
-        }
+            CStringRangeSmart line;
+            CStringRangeSmart keyword;
+            CStringRangeSmart value;
 
-        const CStringRangeSmart& target = isTextSearch ? value : keyword;
-        if (target.GetLength() && StringCompare(_searchKeyCode, target, _locale, isWildcardSearch))
-        {
-            // Prepare return's CDictionaryResult
-            *ppdret = new (std::nothrow) CDictionaryResult();
-            if (!*ppdret)
+            line.SetClone(&pwch[indexTrace], bufLenOneLine);
+
+            if (!ParseLine(line, &keyword, &value))
             {
-                return FALSE;
+                return FALSE;    // error
             }
 
-            (*ppdret)->_FindKeyCode = keyword;
-            (*ppdret)->_SearchKeyCode = _searchKeyCode;
+            const CStringRangeSmart& target = isTextSearch ? value : keyword;
+            if (target.GetLength() && StringCompare(_searchKeyCode, target, _locale, isWildcardSearch))
+            {
+                // Prepare return's CDictionaryResult
+                *ppdret = new (std::nothrow) CDictionaryResult();
+                if (!*ppdret)
+                {
+                    return FALSE;
+                }
 
-            (*ppdret)->_FindPhraseList.Append(value);
+                (*ppdret)->_FindKeyCode = keyword;
+                (*ppdret)->_SearchKeyCode = _searchKeyCode;
 
-            // Seek to next line
-            isFound = TRUE;
+                (*ppdret)->_FindPhraseList.Append(value);
+
+                // Seek to next line
+                isFound = TRUE;
+            }
         }
-    }
 
-FindNextLine:
-    dwTotalBufLen -= bufLenOneLine;
-    if (dwTotalBufLen == 0)
-    {
-        indexTrace += bufLenOneLine;
-        _charIndex += indexTrace;
-
-        if (!isFound && *ppdret)
+        while (true)
         {
-            delete *ppdret;
-            *ppdret = nullptr;
+            dwTotalBufLen -= bufLenOneLine;
+            if (dwTotalBufLen == 0)
+            {
+                indexTrace += bufLenOneLine;
+                _charIndex += indexTrace;
+
+                if (!isFound && *ppdret)
+                {
+                    delete *ppdret;
+                    *ppdret = nullptr;
+                }
+                return (isFound ? TRUE : FALSE);        // End of file
+            }
+
+            indexTrace += bufLenOneLine;
+            if (pwch[indexTrace] == L'\r' || pwch[indexTrace] == L'\n' || pwch[indexTrace] == L'\0')
+            {
+                bufLenOneLine = 1;
+            }
+            else
+            {
+                break;
+            }
         }
-        return (isFound ? TRUE : FALSE);        // End of file
-    }
 
-    indexTrace += bufLenOneLine;
-    if (pwch[indexTrace] == L'\r' || pwch[indexTrace] == L'\n' || pwch[indexTrace] == L'\0')
-    {
-        bufLenOneLine = 1;
-        goto FindNextLine;
+        if (isFound)
+        {
+            _charIndex += indexTrace;
+            return TRUE;
+        }
     }
-
-    if (isFound)
-    {
-        _charIndex += indexTrace;
-        return TRUE;
-    }
-
-    goto TryAgain;
 }
