@@ -122,8 +122,7 @@ BOOL CDictionarySearch::FindWorker(BOOL isTextSearch, _Out_ CDictionaryResult **
 
                 (*ppdret)->_FindKeyCode = keyword;
                 (*ppdret)->_SearchKeyCode = _searchKeyCode;
-
-                (*ppdret)->_FindPhraseList.Append(value);
+                (*ppdret)->_FoundPhrase = value;
 
                 // Seek to next line
                 isFound = TRUE;

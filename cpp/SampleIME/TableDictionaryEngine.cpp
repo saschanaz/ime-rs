@@ -22,13 +22,10 @@ VOID CTableDictionaryEngine::CollectWord(const CStringRangeSmart& keyCode, _Inou
 
     while (dshSearch.FindPhrase(&pdret))
     {
-        for (auto& item : pdret->_FindPhraseList)
-        {
-            CCandidateListItem listItem;
-            listItem._ItemString.Set(item);
-            listItem._FindKeyCode.Set(pdret->_FindKeyCode);
-            pItemList->Append(listItem);
-        }
+        CCandidateListItem listItem;
+        listItem._ItemString.Set(pdret->_FoundPhrase);
+        listItem._FindKeyCode.Set(pdret->_FindKeyCode);
+        pItemList->Append(listItem);
 
         delete pdret;
         pdret = nullptr;
@@ -48,13 +45,10 @@ VOID CTableDictionaryEngine::CollectWordForWildcard(const CStringRangeSmart& key
 
     while (dshSearch.FindPhraseForWildcard(&pdret))
     {
-        for (auto& item : pdret->_FindPhraseList)
-        {
-            CCandidateListItem listItem;
-            listItem._ItemString.Set(item);
-            listItem._FindKeyCode.Set(pdret->_FindKeyCode);
-            pItemList->Append(listItem);
-        }
+        CCandidateListItem listItem;
+        listItem._ItemString.Set(pdret->_FoundPhrase);
+        listItem._FindKeyCode.Set(pdret->_FindKeyCode);
+        pItemList->Append(listItem);
 
         delete pdret;
         pdret = nullptr;
@@ -74,13 +68,10 @@ VOID CTableDictionaryEngine::CollectWordFromConvertedStringForWildcard(const CSt
 
     while (dshSearch.FindConvertedStringForWildcard(&pdret)) // TAIL ALL CHAR MATCH
     {
-        for (auto& item : pdret->_FindPhraseList)
-        {
-            CCandidateListItem listItem;
-            listItem._ItemString.Set(item);
-            listItem._FindKeyCode.Set(pdret->_FindKeyCode);
-            pItemList->Append(listItem);
-        }
+        CCandidateListItem listItem;
+        listItem._ItemString.Set(pdret->_FoundPhrase);
+        listItem._FindKeyCode.Set(pdret->_FindKeyCode);
+        pItemList->Append(listItem);
 
         delete pdret;
         pdret = nullptr;

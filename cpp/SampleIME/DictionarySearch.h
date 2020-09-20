@@ -66,11 +66,11 @@ public:
     CDictionaryResult& operator=(CDictionaryResult& dret)
     {
         _FindKeyCode = dret._FindKeyCode;
-        _FindPhraseList = dret._FindPhraseList;
+        _FoundPhrase = dret._FoundPhrase;
         return *this;
     }
 
     CStringRangeSmart _SearchKeyCode;
     CStringRangeSmart _FindKeyCode;
-    CSampleImeArray<CStringRangeSmart> _FindPhraseList;
+    CStringRangeSmart _FoundPhrase;
 };
