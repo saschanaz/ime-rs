@@ -294,14 +294,6 @@ void CCompositionProcessorEngine::PurgeVirtualKey()
     _keystrokeBuffer.Clear();
 }
 
-WCHAR CCompositionProcessorEngine::GetVirtualKey(DWORD_PTR dwIndex)
-{
-    if (dwIndex < _keystrokeBuffer.GetLength())
-    {
-        return _keystrokeBuffer.CharAt(dwIndex);
-    }
-    return 0;
-}
 //+---------------------------------------------------------------------------
 //
 // GetReadingStrings

@@ -43,7 +43,6 @@ public:
     void PurgeVirtualKey();
 
     bool HasVirtualKey() { return _keystrokeBuffer.GetLength(); }
-    WCHAR GetVirtualKey(DWORD_PTR dwIndex);
 
     void GetReadingStrings(_Inout_ CSampleImeArray<CStringRangeSmart> *pReadingStrings, _Out_ BOOL *pIsWildcardIncluded);
     void GetCandidateList(_Inout_ CSampleImeArray<CCandidateListItem> *pCandidateList, BOOL isIncrementalWordSearch, BOOL isWildcardSearch);
