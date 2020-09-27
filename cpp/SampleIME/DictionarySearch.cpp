@@ -113,13 +113,11 @@ BOOL CDictionarySearch::FindWorker(BOOL isTextSearch, _Out_ CDictionaryResult **
             if (target.GetLengthUtf8() && StringCompare(_searchKeyCode, target, _locale, isWildcardSearch))
             {
                 // Prepare return's CDictionaryResult
-                *ppdret = new (std::nothrow) CDictionaryResult(_searchKeyCode, keyword);
+                *ppdret = new (std::nothrow) CDictionaryResult(_searchKeyCode, keyword, value);
                 if (!*ppdret)
                 {
                     return FALSE;
                 }
-
-                (*ppdret)->_FoundPhrase = CStringRangeSmart(value);
 
                 // Seek to next line
                 isFound = TRUE;
