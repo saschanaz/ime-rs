@@ -92,6 +92,10 @@ class CRustStringRange {
     return ruststringrange_concat(this->range, sr.range);
   }
 
+  bool Contains(char ch) {
+    return ruststringrange_contains(this->range, ch);
+  }
+
 private:
   void* range = nullptr;
 };

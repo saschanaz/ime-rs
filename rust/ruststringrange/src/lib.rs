@@ -77,6 +77,10 @@ impl RustStringRange {
       Ordering::Equal => 0
     }
   }
+
+  pub fn contains(&self, s: char) -> bool {
+    self.as_slice().contains(s)
+  }
 }
 
 #[no_mangle]
@@ -132,4 +136,11 @@ pub unsafe extern fn ruststringrange_concat(p1: *const c_void, p2: *const c_void
   let y = Box::leak(RustStringRange::from_void(p2 as *mut c_void));
 
   Box::into_raw(Box::new(x.concat(y))) as *mut c_void
+}
+
+#[no_mangle]
+pub unsafe extern fn ruststringrange_contains(p: *const c_void, ch: u8) -> bool {
+  let sr = Box::leak(RustStringRange::from_void(p as *mut c_void));
+
+  sr.contains(char::from(ch))
 }

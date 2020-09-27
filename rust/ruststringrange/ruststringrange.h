@@ -13,6 +13,8 @@ bool ruststringrange_compare_with_wildcard(void *x_raw, void *y_raw);
 
 void *ruststringrange_concat(const void *p1, const void *p2);
 
+bool ruststringrange_contains(const void *p, uint8_t ch);
+
 void ruststringrange_free(void *p);
 
 uintptr_t ruststringrange_len(const void *p);
