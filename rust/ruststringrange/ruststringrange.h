@@ -15,6 +15,8 @@ void *ruststringrange_concat(const void *p1, const void *p2);
 
 bool ruststringrange_contains(const void *p, uint8_t ch);
 
+void *ruststringrange_cutlast(void *p);
+
 void ruststringrange_free(void *p);
 
 uintptr_t ruststringrange_len(const void *p);

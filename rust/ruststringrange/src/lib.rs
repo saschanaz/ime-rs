@@ -55,6 +55,18 @@ impl RustStringRange {
     self.string.as_ptr().offset(self.offset as isize)
   }
 
+  pub fn cut_last(&self) -> RustStringRange {
+    let last = self.as_slice().chars().rev().next();
+    if last.is_none() {
+      return self.clone();
+    }
+    RustStringRange {
+      string: Rc::clone(&self.string),
+      offset: self.offset,
+      length: self.length - last.unwrap().len_utf8()
+    }
+  }
+
   pub fn as_slice(&self) -> &str {
     &self.string[self.offset..self.offset + self.length]
   }
@@ -143,4 +155,11 @@ pub unsafe extern fn ruststringrange_contains(p: *const c_void, ch: u8) -> bool 
   let sr = Box::leak(RustStringRange::from_void(p as *mut c_void));
 
   sr.contains(char::from(ch))
+}
+
+#[no_mangle]
+pub unsafe extern fn ruststringrange_cutlast(p: *mut c_void) -> *mut c_void {
+  let sr = Box::leak(RustStringRange::from_void(p as *mut c_void));
+
+  Box::into_raw(Box::new(sr.cut_last())) as *mut c_void
 }

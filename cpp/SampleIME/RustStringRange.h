@@ -96,6 +96,10 @@ class CRustStringRange {
     return ruststringrange_contains(this->range, ch);
   }
 
+  CRustStringRange CutLast() {
+    return ruststringrange_cutlast(range);
+  }
+
 private:
   void* range = nullptr;
 };
