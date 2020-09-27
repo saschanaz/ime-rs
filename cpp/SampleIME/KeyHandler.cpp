@@ -448,13 +448,11 @@ HRESULT CSampleIME::_HandleCompositionBackspace(TfEditCookie ec, _In_ ITfContext
     CCompositionProcessorEngine* pCompositionProcessorEngine = nullptr;
     pCompositionProcessorEngine = _pCompositionProcessorEngine;
 
-    DWORD_PTR vKeyLen = pCompositionProcessorEngine->GetVirtualKeyLength();
-
-    if (vKeyLen)
+    if (pCompositionProcessorEngine->HasVirtualKey())
     {
-        pCompositionProcessorEngine->RemoveVirtualKey(vKeyLen - 1);
+        pCompositionProcessorEngine->PopVirtualKey();
 
-        if (pCompositionProcessorEngine->GetVirtualKeyLength())
+        if (pCompositionProcessorEngine->HasVirtualKey())
         {
             _HandleCompositionInputWorker(pCompositionProcessorEngine, ec, pContext);
         }

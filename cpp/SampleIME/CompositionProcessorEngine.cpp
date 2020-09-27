@@ -266,25 +266,17 @@ BOOL CCompositionProcessorEngine::AddVirtualKey(WCHAR wch)
 
 //+---------------------------------------------------------------------------
 //
-// RemoveVirtualKey
-// Remove stored virtual key code.
-// param
-//     [in] dwIndex   - Specified index.
+// PopVirtualKey
+// Remove the last stored virtual key code.
 // returns
 //     none.
 //----------------------------------------------------------------------------
 
-void CCompositionProcessorEngine::RemoveVirtualKey(DWORD_PTR dwIndex)
+void CCompositionProcessorEngine::PopVirtualKey()
 {
     DWORD_PTR srgKeystrokeBufLen = _keystrokeBuffer.GetLength();
 
-    if (dwIndex + 1 < srgKeystrokeBufLen)
-    {
-        // shift following eles left
-        _keystrokeBuffer = _keystrokeBuffer.Substr(0, dwIndex).Concat(_keystrokeBuffer.Substr(dwIndex + 1));
-    } else {
-        _keystrokeBuffer = _keystrokeBuffer.Substr(0, srgKeystrokeBufLen - 1);
-    }
+    _keystrokeBuffer = _keystrokeBuffer.Substr(0, srgKeystrokeBufLen - 1);
 }
 
 //+---------------------------------------------------------------------------

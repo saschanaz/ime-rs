@@ -39,10 +39,10 @@ public:
     BOOL IsVirtualKeyNeed(UINT uCode, _In_reads_(1) WCHAR *pwch, BOOL fComposing, CANDIDATE_MODE candidateMode, BOOL hasCandidateWithWildcard, _Out_opt_ _KEYSTROKE_STATE *pKeyState);
 
     BOOL AddVirtualKey(WCHAR wch);
-    void RemoveVirtualKey(DWORD_PTR dwIndex);
+    void PopVirtualKey();
     void PurgeVirtualKey();
 
-    DWORD_PTR GetVirtualKeyLength() { return _keystrokeBuffer.GetLength(); }
+    bool HasVirtualKey() { return _keystrokeBuffer.GetLength(); }
     WCHAR GetVirtualKey(DWORD_PTR dwIndex);
 
     void GetReadingStrings(_Inout_ CSampleImeArray<CStringRangeSmart> *pReadingStrings, _Out_ BOOL *pIsWildcardIncluded);
