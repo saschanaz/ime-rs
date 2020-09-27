@@ -32,7 +32,7 @@ const int MOVETO_BOTTOM = -1;
 HRESULT CSampleIME::_HandleCandidateFinalize(TfEditCookie ec, _In_ ITfContext *pContext)
 {
     HRESULT hr = S_OK;
-    CStringRangeSmart candidateString;
+    std::optional<CStringRangeSmart> candidateString;
 
     if (nullptr == _pCandidateListUIPresenter)
     {
@@ -41,9 +41,8 @@ HRESULT CSampleIME::_HandleCandidateFinalize(TfEditCookie ec, _In_ ITfContext *p
 
     candidateString = _pCandidateListUIPresenter->_GetSelectedCandidateString();
 
-    if (candidateString.GetLength())
-    {
-        hr = _AddComposingAndChar(ec, pContext, candidateString);
+    if (candidateString.has_value()) {
+        hr = _AddComposingAndChar(ec, pContext, candidateString.value());
 
         if (FAILED(hr))
         {
@@ -81,7 +80,7 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
     DWORD_PTR candidateLen = 0;
     const WCHAR* pCandidateString = nullptr;
     BSTR pbstr = nullptr;
-    CStringRangeSmart candidateString;
+    std::optional<CStringRangeSmart> candidateString;
     CSampleImeArray<CCandidateListItem> candidatePhraseList;
 
     if (nullptr == _pCandidateListUIPresenter)
@@ -91,7 +90,7 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
     }
 
     candidateString = _pCandidateListUIPresenter->_GetSelectedCandidateString();
-    if (0 == candidateString.GetLength()) {
+    if (!candidateString.has_value()) {
         hrReturn = S_FALSE;
         goto Exit;
     }
@@ -99,10 +98,10 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
     BOOL fMakePhraseFromText = _pCompositionProcessorEngine->IsMakePhraseFromText();
     if (fMakePhraseFromText)
     {
-        _pCompositionProcessorEngine->GetCandidateStringInConverted(candidateString, &candidatePhraseList);
+        _pCompositionProcessorEngine->GetCandidateStringInConverted(candidateString.value(), &candidatePhraseList);
         LCID locale = _pCompositionProcessorEngine->GetLocale();
 
-        _pCandidateListUIPresenter->RemoveSpecificCandidateFromList(locale, candidatePhraseList, candidateString);
+        _pCandidateListUIPresenter->RemoveSpecificCandidateFromList(locale, candidatePhraseList, candidateString.value());
     }
 
     // We have a candidate list if candidatePhraseList.Cnt is not 0
@@ -151,7 +150,7 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
         pTempCandListUIPresenter->_SetText(&candidatePhraseList, FALSE);
 
         // Add composing character
-        hrReturn = _AddComposingAndChar(ec, pContext, candidateString);
+        hrReturn = _AddComposingAndChar(ec, pContext, candidateString.value());
 
         // close candidate list
         if (_pCandidateListUIPresenter)
@@ -238,11 +237,11 @@ HRESULT CSampleIME::_HandlePhraseFinalize(TfEditCookie ec, _In_ ITfContext *pCon
 {
     HRESULT hr = S_OK;
 
-    CStringRangeSmart phraseString = _pCandidateListUIPresenter->_GetSelectedCandidateString();
+    std::optional<CStringRangeSmart> phraseString = _pCandidateListUIPresenter->_GetSelectedCandidateString();
 
-    if (phraseString.GetLength())
+    if (phraseString.has_value())
     {
-        if ((hr = _AddCharAndFinalize(ec, pContext, phraseString)) != S_OK)
+        if ((hr = _AddCharAndFinalize(ec, pContext, phraseString.value())) != S_OK)
         {
             return hr;
         }
@@ -582,10 +581,9 @@ STDAPI CCandidateListUIPresenter::GetString(UINT uIndex, BSTR *pbstr)
         return E_FAIL;
     }
 
-    CStringRangeSmart candidateString = _pCandidateWnd->_GetCandidateString(uIndex);
-    DWORD candidateLen = candidateString.GetLength();
+    std::optional<CStringRangeSmart> candidateString = _pCandidateWnd->_GetCandidateString(uIndex);
 
-    *pbstr = (candidateLen == 0) ? nullptr : SysAllocStringLen(candidateString.GetRaw(), candidateLen);
+    *pbstr = !candidateString.has_value() ? nullptr : SysAllocStringLen(candidateString.value().GetRaw(), candidateString.value().GetLength());
 
     return S_OK;
 }
@@ -886,7 +884,7 @@ void CCandidateListUIPresenter::_SetFillColor(HBRUSH hBrush)
 //
 //----------------------------------------------------------------------------
 
-CStringRangeSmart CCandidateListUIPresenter::_GetSelectedCandidateString()
+std::optional<CStringRangeSmart> CCandidateListUIPresenter::_GetSelectedCandidateString()
 {
     return _pCandidateWnd->_GetSelectedCandidateString();
 }

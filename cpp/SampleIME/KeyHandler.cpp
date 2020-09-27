@@ -284,12 +284,12 @@ HRESULT CSampleIME::_HandleCompositionFinalize(TfEditCookie ec, _In_ ITfContext 
     if (isCandidateList && _pCandidateListUIPresenter)
     {
         // Finalize selected candidate string from CCandidateListUIPresenter
-        CStringRangeSmart candidateString = _pCandidateListUIPresenter->_GetSelectedCandidateString();
+        std::optional<CStringRangeSmart> candidateString = _pCandidateListUIPresenter->_GetSelectedCandidateString();
 
-        if (candidateString.GetLength())
+        if (candidateString.has_value())
         {
             // Finalize character
-            hr = _AddCharAndFinalize(ec, pContext, candidateString);
+            hr = _AddCharAndFinalize(ec, pContext, candidateString.value());
             if (FAILED(hr))
             {
                 return hr;
@@ -524,11 +524,11 @@ HRESULT CSampleIME::_HandleCompositionPunctuation(TfEditCookie ec, _In_ ITfConte
 
     if (_candidateMode != CANDIDATE_NONE && _pCandidateListUIPresenter)
     {
-        CStringRangeSmart candidateString = _pCandidateListUIPresenter->_GetSelectedCandidateString();
+        std::optional<CStringRangeSmart> candidateString = _pCandidateListUIPresenter->_GetSelectedCandidateString();
 
-        if (candidateString.GetLength())
+        if (candidateString.has_value())
         {
-            _AddComposingAndChar(ec, pContext, candidateString);
+            _AddComposingAndChar(ec, pContext, candidateString.value());
         }
     }
     //
