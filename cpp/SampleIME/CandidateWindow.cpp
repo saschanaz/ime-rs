@@ -621,7 +621,7 @@ void CCandidateWindow::_DrawList(_In_ HDC dcHandle, _In_ UINT iIndex, _In_ RECT 
         iIndex++, pageCount++)
     {
         WCHAR pageCountString[lenOfPageCount] = {'\0'};
-        CCandidateListItem* pItemList = nullptr;
+        CStringRangeSmart* pStr = nullptr;
 
         rc.top = prc->top + pageCount * cyLine;
         rc.bottom = rc.top + cyLine;
@@ -651,8 +651,8 @@ void CCandidateWindow::_DrawList(_In_ HDC dcHandle, _In_ UINT iIndex, _In_ RECT 
             SetBkColor(dcHandle, CANDWND_SELECTED_BK_COLOR);
         }
 
-        pItemList = _candidateList.GetAt(iIndex);
-        ExtTextOut(dcHandle, StringPosition * cxLine, pageCount * cyLine + cyOffset, ETO_OPAQUE, &rc, pItemList->_ItemString.GetRaw(), (DWORD)pItemList->_ItemString.GetLength(), NULL);
+        pStr = _candidateList.GetAt(iIndex);
+        ExtTextOut(dcHandle, StringPosition * cxLine, pageCount * cyLine + cyOffset, ETO_OPAQUE, &rc, pStr->GetRaw(), (DWORD)pStr->GetLength(), NULL);
     }
     for (; (pageCount < candidateListPageCnt); pageCount++)
     {
@@ -702,16 +702,9 @@ void CCandidateWindow::_DrawBorder(_In_ HWND wndHandle, _In_ int cx)
 //
 //----------------------------------------------------------------------------
 
-void CCandidateWindow::_AddString(_Inout_ CCandidateListItem *pCandidateItem)
+void CCandidateWindow::_AddString(const CStringRangeSmart& str)
 {
-    CCandidateListItem item;
-
-    if (pCandidateItem->_ItemString.GetLength())
-    {
-        item._ItemString.Set(pCandidateItem->_ItemString);
-    }
-
-    _candidateList.Append(item);
+    _candidateList.Append(str);
 }
 
 //+---------------------------------------------------------------------------
@@ -754,7 +747,7 @@ void CCandidateWindow::_SetScrollInfo(_In_ int nMax, _In_ int nPage)
 
 std::optional<CStringRangeSmart> CCandidateWindow::_GetCandidateString(_In_ int iIndex)
 {
-    CCandidateListItem* pItemList = nullptr;
+    CStringRangeSmart* pStr = nullptr;
 
     if (iIndex < 0 )
     {
@@ -768,8 +761,8 @@ std::optional<CStringRangeSmart> CCandidateWindow::_GetCandidateString(_In_ int 
         return std::nullopt;
     }
 
-    pItemList = _candidateList.GetAt(iIndex);
-    return pItemList->_ItemString;
+    pStr = _candidateList.GetAt(iIndex);
+    return *pStr;
 }
 
 //+---------------------------------------------------------------------------
@@ -780,15 +773,15 @@ std::optional<CStringRangeSmart> CCandidateWindow::_GetCandidateString(_In_ int 
 
 std::optional<CStringRangeSmart> CCandidateWindow::_GetSelectedCandidateString()
 {
-    CCandidateListItem* pItemList = nullptr;
+    CStringRangeSmart* pStr = nullptr;
 
     if (_currentSelection >= _candidateList.Count())
     {
         return std::nullopt;
     }
 
-    pItemList = _candidateList.GetAt(_currentSelection);
-    return pItemList->_ItemString;
+    pStr = _candidateList.GetAt(_currentSelection);
+    return *pStr;
 }
 
 //+---------------------------------------------------------------------------

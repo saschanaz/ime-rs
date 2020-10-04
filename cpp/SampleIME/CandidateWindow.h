@@ -44,7 +44,7 @@ public:
     void _OnMouseMove(POINT pt);
     void _OnVScroll(DWORD dwSB, _In_ DWORD nPos);
 
-    void _AddString(_Inout_ CCandidateListItem *pCandidateItem);
+    void _AddString(const CStringRangeSmart& str);
     void _ClearList();
     UINT _GetCount()
     {
@@ -95,7 +95,7 @@ private:
 
 private:
     UINT _currentSelection;
-    CSampleImeArray<CCandidateListItem> _candidateList;
+    CSampleImeArray<CStringRangeSmart> _candidateList;
     CSampleImeArray<UINT> _PageIndex;
 
     COLORREF _crTextColor;
