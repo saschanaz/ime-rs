@@ -702,17 +702,13 @@ void CCandidateWindow::_DrawBorder(_In_ HWND wndHandle, _In_ int cx)
 //
 //----------------------------------------------------------------------------
 
-void CCandidateWindow::_AddString(_Inout_ CCandidateListItem *pCandidateItem, _In_ BOOL isAddFindKeyCode)
+void CCandidateWindow::_AddString(_Inout_ CCandidateListItem *pCandidateItem)
 {
     CCandidateListItem item;
 
     if (pCandidateItem->_ItemString.GetLength())
     {
         item._ItemString.Set(pCandidateItem->_ItemString);
-    }
-    if (pCandidateItem->_FindKeyCode.GetLength() && isAddFindKeyCode)
-    {
-        item._FindKeyCode.Set(pCandidateItem->_FindKeyCode);
     }
 
     _candidateList.Append(item);

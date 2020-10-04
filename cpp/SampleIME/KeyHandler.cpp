@@ -200,7 +200,7 @@ HRESULT CSampleIME::_HandleCompositionInputWorker(_In_ CCompositionProcessorEngi
         if (SUCCEEDED(hr))
         {
             _pCandidateListUIPresenter->_ClearList();
-            _pCandidateListUIPresenter->_SetText(&candidateList, TRUE);
+            _pCandidateListUIPresenter->_SetText(&candidateList);
         }
     }
     else if (_pCandidateListUIPresenter)
@@ -397,7 +397,7 @@ HRESULT CSampleIME::_HandleCompositionConvert(TfEditCookie ec, _In_ ITfContext *
         }
         if (SUCCEEDED(hr))
         {
-            _pCandidateListUIPresenter->_SetText(&candidateList, FALSE);
+            _pCandidateListUIPresenter->_SetText(&candidateList);
         }
     }
 

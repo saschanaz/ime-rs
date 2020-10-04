@@ -147,7 +147,7 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
     {
         pTempCandListUIPresenter->_SetTextColor(RGB(0, 0x80, 0), GetSysColor(COLOR_WINDOW));    // Text color is green
         pTempCandListUIPresenter->_SetFillColor((HBRUSH)(COLOR_WINDOW+1));    // Background color is window
-        pTempCandListUIPresenter->_SetText(&candidatePhraseList, FALSE);
+        pTempCandListUIPresenter->_SetText(&candidatePhraseList);
 
         // Add composing character
         hrReturn = _AddComposingAndChar(ec, pContext, candidateString.value());
@@ -802,9 +802,9 @@ void CCandidateListUIPresenter::_EndCandidateList()
 //
 //----------------------------------------------------------------------------
 
-void CCandidateListUIPresenter::_SetText(_In_ CSampleImeArray<CCandidateListItem> *pCandidateList, BOOL isAddFindKeyCode)
+void CCandidateListUIPresenter::_SetText(_In_ CSampleImeArray<CCandidateListItem> *pCandidateList)
 {
-    AddCandidateToCandidateListUI(pCandidateList, isAddFindKeyCode);
+    AddCandidateToCandidateListUI(pCandidateList);
 
     SetPageIndexWithScrollInfo(pCandidateList);
 
@@ -823,11 +823,11 @@ void CCandidateListUIPresenter::_SetText(_In_ CSampleImeArray<CCandidateListItem
     }
 }
 
-void CCandidateListUIPresenter::AddCandidateToCandidateListUI(_In_ CSampleImeArray<CCandidateListItem> *pCandidateList, BOOL isAddFindKeyCode)
+void CCandidateListUIPresenter::AddCandidateToCandidateListUI(_In_ CSampleImeArray<CCandidateListItem> *pCandidateList)
 {
     for (auto& item : *pCandidateList)
     {
-        _pCandidateWnd->_AddString(&item, isAddFindKeyCode);
+        _pCandidateWnd->_AddString(&item);
     }
 }
 

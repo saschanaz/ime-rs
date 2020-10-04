@@ -44,7 +44,7 @@ public:
     void _OnMouseMove(POINT pt);
     void _OnVScroll(DWORD dwSB, _In_ DWORD nPos);
 
-    void _AddString(_Inout_ CCandidateListItem *pCandidateItem, _In_ BOOL isAddFindKeyCode);
+    void _AddString(_Inout_ CCandidateListItem *pCandidateItem);
     void _ClearList();
     UINT _GetCount()
     {
