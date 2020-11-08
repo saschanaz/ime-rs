@@ -236,8 +236,6 @@ public:
 
     const WCHAR *GetRaw() const override;
 
-    WCHAR CharAt(DWORD_PTR index) const;
-
     void Clear();
     void SetClone(const WCHAR *pwch, DWORD_PTR dwLength);
     void Set(const std::shared_ptr<const WCHAR> pwch, DWORD_PTR dwLength);
