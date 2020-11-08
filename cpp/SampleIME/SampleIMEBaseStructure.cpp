@@ -156,6 +156,10 @@ void CStringRangeSmart::Set(const CRustStringRange& rsr) {
     SetClone((WCHAR*)strU16.c_str(), strU16.length());
 }
 
+CStringRangeSmart::operator CRustStringRange() const {
+    return CRustStringRange(GetRaw(), GetLength());
+};
+
 WCHAR* CStringRangeSmart::Clone(const WCHAR* pwch, DWORD_PTR dwLength)
 {
     if (!dwLength) {

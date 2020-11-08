@@ -238,6 +238,8 @@ public:
     void Set(WCHAR wch);
     void Set(const CRustStringRange& rsr);
 
+    explicit operator CRustStringRange() const;
+
 protected:
     static WCHAR* Clone(const WCHAR* pwch, DWORD_PTR dwLength);
 

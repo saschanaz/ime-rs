@@ -2,8 +2,6 @@
 
 #include "..\..\rust\ruststringrange\ruststringrange.h"
 
-#include "SampleIMEBaseStructure.h"
-
 /**
  * A C++ wrapper class for its Rust counterpart
  */
@@ -25,9 +23,6 @@ class CRustStringRange {
   CRustStringRange(CRustStringRange&& that) noexcept {
     range = that.range;
     that.range = nullptr;
-  }
-  explicit CRustStringRange(const CStringRangeBase& cstr) {
-    Set(cstr.GetRaw(), cstr.GetLength());
   }
   CRustStringRange(const wchar_t* pwch, uintptr_t dwLength) {
     Set(pwch, dwLength);
