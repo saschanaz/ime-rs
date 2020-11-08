@@ -170,16 +170,18 @@ Exit:
 HRESULT CSampleIME::_HandleCompositionInputWorker(_In_ CCompositionProcessorEngine *pCompositionProcessorEngine, TfEditCookie ec, _In_ ITfContext *pContext)
 {
     HRESULT hr = S_OK;
-    CSampleImeArray<CStringRangeSmart> readingStrings;
     BOOL isWildcardIncluded = TRUE;
 
     //
     // Get reading string from composition processor engine
     //
-    pCompositionProcessorEngine->GetReadingStrings(&readingStrings, &isWildcardIncluded);
+    auto readingString = pCompositionProcessorEngine->GetReadingString();
 
-    for (auto& item : readingStrings)
+    if (readingString.has_value())
     {
+        auto [item, hasWildcard] = readingString.value();
+        isWildcardIncluded = hasWildcard;
+
         hr = _AddComposingAndChar(ec, pContext, CStringRangeSmart(item));
         if (FAILED(hr))
         {
@@ -207,7 +209,7 @@ HRESULT CSampleIME::_HandleCompositionInputWorker(_In_ CCompositionProcessorEngi
     {
         _pCandidateListUIPresenter->_ClearList();
     }
-    else if (readingStrings.Count() && isWildcardIncluded)
+    else if (readingString.has_value() && isWildcardIncluded)
     {
         hr = _CreateAndStartCandidate(pCompositionProcessorEngine, ec, pContext);
         if (SUCCEEDED(hr))

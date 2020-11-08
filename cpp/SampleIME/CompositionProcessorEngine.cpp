@@ -296,23 +296,17 @@ void CCompositionProcessorEngine::PurgeVirtualKey()
 
 //+---------------------------------------------------------------------------
 //
-// GetReadingStrings
+// GetReadingString
 // Retrieves string from Composition Processor Engine.
-// param
-//     [out] pReadingStrings - Specified returns pointer of CUnicodeString.
-// returns
-//     none
 //
 //----------------------------------------------------------------------------
 
-void CCompositionProcessorEngine::GetReadingStrings(_Inout_ CSampleImeArray<CStringRangeSmart> *pReadingStrings, _Out_ BOOL *pIsWildcardIncluded)
+std::optional<std::tuple<CStringRangeSmart, bool>> CCompositionProcessorEngine::GetReadingString()
 {
     _hasWildcardIncludedInKeystrokeBuffer = FALSE;
 
-    if (pReadingStrings->Count() == 0 && _keystrokeBuffer.GetLength())
+    if (_keystrokeBuffer.GetLength())
     {
-        pReadingStrings->Append(_keystrokeBuffer);
-
         for (DWORD index = 0; index < _keystrokeBuffer.GetLength(); index++)
         {
             if (IsWildcard() && IsWildcardChar(_keystrokeBuffer.CharAt(index)))
@@ -320,9 +314,11 @@ void CCompositionProcessorEngine::GetReadingStrings(_Inout_ CSampleImeArray<CStr
                 _hasWildcardIncludedInKeystrokeBuffer = TRUE;
             }
         }
+
+        return std::tuple<CStringRangeSmart, bool>(_keystrokeBuffer, _hasWildcardIncludedInKeystrokeBuffer);
     }
 
-    *pIsWildcardIncluded = _hasWildcardIncludedInKeystrokeBuffer;
+    return std::nullopt;
 }
 
 //+---------------------------------------------------------------------------

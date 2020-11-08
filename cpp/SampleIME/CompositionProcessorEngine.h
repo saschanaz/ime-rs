@@ -8,6 +8,9 @@
 
 #pragma once
 
+#include <optional>
+#include <tuple>
+
 #include "sal.h"
 #include "TableDictionaryEngine.h"
 #include "KeyHandlerEditSession.h"
@@ -44,7 +47,7 @@ public:
 
     bool HasVirtualKey() { return _keystrokeBuffer.GetLength(); }
 
-    void GetReadingStrings(_Inout_ CSampleImeArray<CStringRangeSmart> *pReadingStrings, _Out_ BOOL *pIsWildcardIncluded);
+    std::optional<std::tuple<CStringRangeSmart, bool>> GetReadingString();
     void GetCandidateList(_Inout_ CSampleImeArray<CCandidateListItem> *pCandidateList, BOOL isIncrementalWordSearch, BOOL isWildcardSearch);
     void GetCandidateStringInConverted(const CStringRangeSmart &searchString, _In_ CSampleImeArray<CCandidateListItem> *pCandidateList);
 
