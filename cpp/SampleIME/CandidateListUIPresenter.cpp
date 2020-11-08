@@ -243,7 +243,7 @@ HRESULT CSampleIME::_HandlePhraseFinalize(TfEditCookie ec, _In_ ITfContext *pCon
 
     if (phraseString.has_value())
     {
-        if ((hr = _AddCharAndFinalize(ec, pContext, CStringRangeSmart(phraseString.value()))) != S_OK)
+        if ((hr = _AddCharAndFinalize(ec, pContext, phraseString.value())) != S_OK)
         {
             return hr;
         }

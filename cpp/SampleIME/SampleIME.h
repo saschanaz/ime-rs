@@ -147,7 +147,7 @@ private:
     BOOL _IsKeyboardDisabled();
 
     HRESULT _AddComposingAndChar(TfEditCookie ec, _In_ ITfContext *pContext, const CRustStringRange& strAddString);
-    HRESULT _AddCharAndFinalize(TfEditCookie ec, _In_ ITfContext *pContext, const CStringRangeSmart& strAddString);
+    HRESULT _AddCharAndFinalize(TfEditCookie ec, _In_ ITfContext *pContext, const CRustStringRange& strAddString);
 
     BOOL _FindComposingRange(TfEditCookie ec, _In_ ITfContext *pContext, _In_ ITfRange *pSelection, _Outptr_result_maybenull_ ITfRange **ppRange);
     HRESULT _SetInputString(TfEditCookie ec, _In_ ITfContext *pContext, _Out_opt_ ITfRange *pRange, const CStringRangeSmart& strAddString, BOOL exist_composing);

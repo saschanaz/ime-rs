@@ -291,7 +291,7 @@ HRESULT CSampleIME::_HandleCompositionFinalize(TfEditCookie ec, _In_ ITfContext 
         if (candidateString.has_value())
         {
             // Finalize character
-            hr = _AddCharAndFinalize(ec, pContext, CStringRangeSmart(candidateString.value()));
+            hr = _AddCharAndFinalize(ec, pContext, candidateString.value());
             if (FAILED(hr))
             {
                 return hr;
@@ -539,11 +539,8 @@ HRESULT CSampleIME::_HandleCompositionPunctuation(TfEditCookie ec, _In_ ITfConte
 
     WCHAR punctuation = pCompositionProcessorEngine->GetPunctuation(wch);
 
-    CStringRangeSmart punctuationString;
-    punctuationString.Set(punctuation);
-
     // Finalize character
-    hr = _AddCharAndFinalize(ec, pContext, punctuationString);
+    hr = _AddCharAndFinalize(ec, pContext, CRustStringRange(CStringRangeSmart(punctuation)));
     if (FAILED(hr))
     {
         return hr;
@@ -566,11 +563,8 @@ HRESULT CSampleIME::_HandleCompositionDoubleSingleByte(TfEditCookie ec, _In_ ITf
 
     WCHAR fullWidth = Global::FullWidthCharTable[wch - 0x20];
 
-    CStringRangeSmart fullWidthString;
-    fullWidthString.Set(fullWidth);
-
     // Finalize character
-    hr = _AddCharAndFinalize(ec, pContext, fullWidthString);
+    hr = _AddCharAndFinalize(ec, pContext, CRustStringRange(CStringRangeSmart(fullWidth)));
     if (FAILED(hr))
     {
         return hr;
