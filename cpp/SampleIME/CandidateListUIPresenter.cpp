@@ -99,11 +99,10 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
     BOOL fMakePhraseFromText = _pCompositionProcessorEngine->IsMakePhraseFromText();
     if (fMakePhraseFromText)
     {
-        CStringRangeSmart str(candidateString.value());
-        _pCompositionProcessorEngine->GetCandidateStringInConverted(str, &candidatePhraseList);
+        _pCompositionProcessorEngine->GetCandidateStringInConverted(candidateString.value(), &candidatePhraseList);
         LCID locale = _pCompositionProcessorEngine->GetLocale();
 
-        _pCandidateListUIPresenter->RemoveSpecificCandidateFromList(locale, candidatePhraseList, str);
+        _pCandidateListUIPresenter->RemoveSpecificCandidateFromList(locale, candidatePhraseList, candidateString.value());
     }
 
     // We have a candidate list if candidatePhraseList.Cnt is not 0
@@ -1148,13 +1147,13 @@ HRESULT CCandidateListUIPresenter::OnKillThreadFocus()
     return S_OK;
 }
 
-void CCandidateListUIPresenter::RemoveSpecificCandidateFromList(_In_ LCID Locale, _Inout_ CSampleImeArray<CCandidateListItem> &candidateList, const CStringRangeSmart &candidateString)
+void CCandidateListUIPresenter::RemoveSpecificCandidateFromList(_In_ LCID Locale, _Inout_ CSampleImeArray<CCandidateListItem> &candidateList, const CRustStringRange& candidateString)
 {
     for (UINT index = 0; index < candidateList.Count();)
     {
         CCandidateListItem* pLI = candidateList.GetAt(index);
 
-        if (CRustStringRange(candidateString) == CRustStringRange(pLI->_ItemString))
+        if (candidateString == CRustStringRange(pLI->_ItemString))
         {
             candidateList.RemoveAt(index);
             continue;

@@ -91,7 +91,7 @@ class CRustStringRange {
     return ruststringrange_compare_with_wildcard(this->range, target.range);
   }
 
-  CRustStringRange Concat(const CRustStringRange& sr) {
+  CRustStringRange Concat(const CRustStringRange& sr) const {
     return CRustStringRange(ruststringrange_concat(this->range, sr.range));
   }
 

@@ -50,7 +50,7 @@ public:
 
     std::optional<std::tuple<CRustStringRange, bool>> GetReadingString();
     void GetCandidateList(_Inout_ CSampleImeArray<CCandidateListItem> *pCandidateList, BOOL isIncrementalWordSearch, BOOL isWildcardSearch);
-    void GetCandidateStringInConverted(const CStringRangeSmart &searchString, _In_ CSampleImeArray<CCandidateListItem> *pCandidateList);
+    void GetCandidateStringInConverted(const CRustStringRange& searchString, _In_ CSampleImeArray<CCandidateListItem> *pCandidateList);
 
     // Preserved key handler
     void OnPreservedKey(REFGUID rguid, _Out_ BOOL *pIsEaten, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);

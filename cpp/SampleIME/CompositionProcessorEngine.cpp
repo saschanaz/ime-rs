@@ -376,7 +376,7 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
 //
 //----------------------------------------------------------------------------
 
-void CCompositionProcessorEngine::GetCandidateStringInConverted(const CStringRangeSmart &searchString, _In_ CSampleImeArray<CCandidateListItem> *pCandidateList)
+void CCompositionProcessorEngine::GetCandidateStringInConverted(const CRustStringRange& searchString, _In_ CSampleImeArray<CCandidateListItem> *pCandidateList)
 {
     if (!IsDictionaryAvailable())
     {
@@ -384,7 +384,7 @@ void CCompositionProcessorEngine::GetCandidateStringInConverted(const CStringRan
     }
 
     // Search phrase from SECTION_TEXT's converted string list
-    CRustStringRange wildcardSearch = CRustStringRange(searchString).Concat(u8"*"_rs);
+    CRustStringRange wildcardSearch = searchString.Concat(u8"*"_rs);
 
     _pTableDictionaryEngine->CollectWordFromConvertedStringForWildcard(wildcardSearch, pCandidateList);
 
