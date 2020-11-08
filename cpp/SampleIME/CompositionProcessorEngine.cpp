@@ -299,7 +299,7 @@ void CCompositionProcessorEngine::PurgeVirtualKey()
 //
 //----------------------------------------------------------------------------
 
-std::optional<std::tuple<CStringRangeSmart, bool>> CCompositionProcessorEngine::GetReadingString()
+std::optional<std::tuple<CRustStringRange, bool>> CCompositionProcessorEngine::GetReadingString()
 {
     _hasWildcardIncludedInKeystrokeBuffer = FALSE;
 
@@ -310,7 +310,7 @@ std::optional<std::tuple<CStringRangeSmart, bool>> CCompositionProcessorEngine::
             _hasWildcardIncludedInKeystrokeBuffer = _keystrokeBuffer.Contains(u8'*') || _keystrokeBuffer.Contains(u8'?');
         }
 
-        return std::tuple<CStringRangeSmart, bool>(_keystrokeBuffer, _hasWildcardIncludedInKeystrokeBuffer);
+        return std::tuple<CRustStringRange, bool>(_keystrokeBuffer, _hasWildcardIncludedInKeystrokeBuffer);
     }
 
     return std::nullopt;

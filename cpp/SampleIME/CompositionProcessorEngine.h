@@ -48,7 +48,7 @@ public:
 
     bool HasVirtualKey() { return _keystrokeBuffer.GetLengthUtf8(); }
 
-    std::optional<std::tuple<CStringRangeSmart, bool>> GetReadingString();
+    std::optional<std::tuple<CRustStringRange, bool>> GetReadingString();
     void GetCandidateList(_Inout_ CSampleImeArray<CCandidateListItem> *pCandidateList, BOOL isIncrementalWordSearch, BOOL isWildcardSearch);
     void GetCandidateStringInConverted(const CStringRangeSmart &searchString, _In_ CSampleImeArray<CCandidateListItem> *pCandidateList);
 
