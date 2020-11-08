@@ -57,8 +57,8 @@ public:
     }
     void _SetScrollInfo(_In_ int nMax, _In_ int nPage);
 
-    std::optional<CStringRangeSmart> _GetCandidateString(_In_ int iIndex);
-    std::optional<CStringRangeSmart> _GetSelectedCandidateString();
+    std::optional<CRustStringRange> _GetCandidateString(_In_ int iIndex);
+    std::optional<CRustStringRange> _GetSelectedCandidateString();
 
     BOOL _MoveSelection(_In_ int offSet, _In_ BOOL isNotify);
     BOOL _SetSelection(_In_ int iPage, _In_ BOOL isNotify);

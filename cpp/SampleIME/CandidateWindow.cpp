@@ -744,7 +744,7 @@ void CCandidateWindow::_SetScrollInfo(_In_ int nMax, _In_ int nPage)
 //
 //----------------------------------------------------------------------------
 
-std::optional<CStringRangeSmart> CCandidateWindow::_GetCandidateString(_In_ int iIndex)
+std::optional<CRustStringRange> CCandidateWindow::_GetCandidateString(_In_ int iIndex)
 {
     if (iIndex < 0 )
     {
@@ -758,7 +758,7 @@ std::optional<CStringRangeSmart> CCandidateWindow::_GetCandidateString(_In_ int 
         return std::nullopt;
     }
 
-    return CStringRangeSmart(*_candidateList.GetAt(iIndex));
+    return *_candidateList.GetAt(iIndex);
 }
 
 //+---------------------------------------------------------------------------
@@ -767,14 +767,14 @@ std::optional<CStringRangeSmart> CCandidateWindow::_GetCandidateString(_In_ int 
 //
 //----------------------------------------------------------------------------
 
-std::optional<CStringRangeSmart> CCandidateWindow::_GetSelectedCandidateString()
+std::optional<CRustStringRange> CCandidateWindow::_GetSelectedCandidateString()
 {
     if (_currentSelection >= _candidateList.Count())
     {
         return std::nullopt;
     }
 
-    return CStringRangeSmart(*_candidateList.GetAt(_currentSelection));
+    return *_candidateList.GetAt(_currentSelection);
 }
 
 //+---------------------------------------------------------------------------

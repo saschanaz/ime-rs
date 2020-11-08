@@ -78,7 +78,7 @@ public:
     VOID _SetTextColor(COLORREF crColor, COLORREF crBkColor);
     VOID _SetFillColor(HBRUSH hBrush);
 
-    std::optional<CStringRangeSmart> _GetSelectedCandidateString();
+    std::optional<CRustStringRange> _GetSelectedCandidateString();
     BOOL _SetSelectionInPage(int nPos) { return _pCandidateWnd->_SetSelectionInPage(nPos); }
 
     BOOL _MoveSelection(_In_ int offSet);
