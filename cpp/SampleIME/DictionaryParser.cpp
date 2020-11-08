@@ -54,7 +54,7 @@ std::optional<std::tuple<CRustStringRange, CRustStringRange>> CDictionaryParser:
         return std::nullopt;
     }
 
-    return std::make_tuple(CRustStringRange(keyword_raw), CRustStringRange(value_raw));
+    return std::make_tuple(CRustStringRange::from_void(keyword_raw), CRustStringRange::from_void(value_raw));
 }
 
 //---------------------------------------------------------------------

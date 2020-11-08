@@ -11,10 +11,13 @@ class CRustStringRange {
   void Set(const wchar_t* pwch, uintptr_t dwLength) {
     range = ruststringrange_new((const uint16_t*)pwch, dwLength);
   }
+  explicit CRustStringRange(void* range_raw) {
+    range = range_raw;
+  }
 
  public:
-  CRustStringRange(void* range_raw) {
-    range = range_raw;
+  static CRustStringRange from_void(void* range_raw) {
+    return CRustStringRange(range_raw);
   }
   CRustStringRange(const CRustStringRange& that) {
     range = ruststringrange_clone(that.range);
@@ -89,7 +92,7 @@ class CRustStringRange {
   }
 
   CRustStringRange Concat(const CRustStringRange& sr) {
-    return ruststringrange_concat(this->range, sr.range);
+    return CRustStringRange(ruststringrange_concat(this->range, sr.range));
   }
 
   bool Contains(char ch) {
@@ -97,7 +100,7 @@ class CRustStringRange {
   }
 
   CRustStringRange CutLast() {
-    return ruststringrange_cutlast(range);
+    return CRustStringRange(ruststringrange_cutlast(range));
   }
 
 private:
