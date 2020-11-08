@@ -55,7 +55,7 @@ VOID CBaseDictionaryEngine::MergeSortByFindKeyCode(_Inout_ CSampleImeArray<CCand
         MergeSortByFindKeyCode(pItemList, leftRange, mid);
         MergeSortByFindKeyCode(pItemList, mid, rightRange);
 
-        CSampleImeArray<CCandidateListItem> ListItemTemp;
+        CSampleImeArray<CCandidateListItem> listItemTemp;
 
         int leftRangeTemp = 0;
         int midTemp = 0;
@@ -64,24 +64,24 @@ VOID CBaseDictionaryEngine::MergeSortByFindKeyCode(_Inout_ CSampleImeArray<CCand
             CRustStringRange srgLeftTemp(pItemList->GetAt(leftRangeTemp)->_FindKeyCode);
             CRustStringRange srgMidTemp(pItemList->GetAt(midTemp)->_FindKeyCode);
 
-            CCandidateListItem item;
+            CCandidateListItem* pItem;
             if (leftRangeTemp == mid)
             {
-                item = *pItemList->GetAt(midTemp++);
+                pItem = pItemList->GetAt(midTemp++);
             }
             else if (midTemp == rightRange || srgLeftTemp <= srgMidTemp)
             {
-                item = *pItemList->GetAt(leftRangeTemp++);
+                pItem = pItemList->GetAt(leftRangeTemp++);
             }
             else
             {
-                item = *pItemList->GetAt(midTemp++);
+                pItem = pItemList->GetAt(midTemp++);
             }
-            ListItemTemp.Append(item);
+            listItemTemp.Append(*pItem);
         }
 
         leftRangeTemp = leftRange;
-        for (const auto& item : ListItemTemp)
+        for (const auto& item : listItemTemp)
         {
             *pItemList->GetAt(leftRangeTemp++) = item;
         }
@@ -93,10 +93,9 @@ VOID CBaseDictionaryEngine::MergeSortByFindKeyCode(_Inout_ CSampleImeArray<CCand
 
         if (srgLeft > srgLeftNext)
         {
-            CCandidateListItem ListItem;
-            ListItem = *pItemList->GetAt(leftRange);
+            CCandidateListItem listItem = *pItemList->GetAt(leftRange);
             *pItemList->GetAt(leftRange ) = *pItemList->GetAt(leftRange+1);
-            *pItemList->GetAt(leftRange+1) = ListItem;
+            *pItemList->GetAt(leftRange+1) = listItem;
         }
     }
 }

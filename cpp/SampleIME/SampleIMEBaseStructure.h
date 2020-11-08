@@ -11,11 +11,10 @@
 #include <vector>
 #include "assert.h"
 #include <iostream>
+#include "RustStringRange.h"
 
 using std::cout;
 using std::endl;
-
-class CRustStringRange;
 
 //---------------------------------------------------------------------
 // defined keyword
@@ -253,8 +252,10 @@ protected:
 //---------------------------------------------------------------------
 struct CCandidateListItem
 {
-    CStringRangeSmart _ItemString;
-    CStringRangeSmart _FindKeyCode;
+    CCandidateListItem(CRustStringRange itemString, CRustStringRange findKeyCode): _ItemString(itemString), _FindKeyCode(findKeyCode) {}
+
+    CRustStringRange _ItemString;
+    CRustStringRange _FindKeyCode;
 
 	CCandidateListItem& CCandidateListItem::operator =( const CCandidateListItem& rhs)
 	{
