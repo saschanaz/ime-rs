@@ -234,23 +234,15 @@ public:
 
     const WCHAR *GetRaw() const override;
 
-    void Clear();
     void SetClone(const WCHAR *pwch, DWORD_PTR dwLength);
-    void Set(const std::shared_ptr<const WCHAR> pwch, DWORD_PTR dwLength);
     void Set(WCHAR wch);
-    void Set(const CStringRangeSmart& sr);
     void Set(const CRustStringRange& rsr);
-    CStringRangeSmart& operator=(const CStringRangeSmart& sr);
-
-    CStringRangeSmart Concat(const CStringRangeSmart& postfix) const;
 
 protected:
     static WCHAR* Clone(const WCHAR* pwch, DWORD_PTR dwLength);
 
     std::shared_ptr<const WCHAR> _pStringBuf;    // Buffer which is not add zero terminate.
 };
-
-CStringRangeSmart operator""_sr(const wchar_t* aStr, std::size_t aLen);
 
 //---------------------------------------------------------------------
 // CCandidateListItem

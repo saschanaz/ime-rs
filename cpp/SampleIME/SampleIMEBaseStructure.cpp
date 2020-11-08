@@ -134,33 +134,16 @@ const WCHAR *CStringRangeSmart::GetRaw() const
     return _pStringBuf.get();
 }
 
-void CStringRangeSmart::Clear()
-{
-    _stringBufLen = 0;
-    _pStringBuf.reset();
-}
-
 void CStringRangeSmart::SetClone(const WCHAR *pwch, DWORD_PTR dwLength)
 {
     _stringBufLen = dwLength;
     _pStringBuf = std::shared_ptr<WCHAR>(Clone(pwch, _stringBufLen));
 }
 
-void CStringRangeSmart::Set(const std::shared_ptr<const WCHAR> pwch, DWORD_PTR dwLength)
-{
-    _stringBufLen = dwLength;
-    _pStringBuf = pwch;
-}
-
 void CStringRangeSmart::Set(WCHAR wch)
 {
     _stringBufLen = 1;
     _pStringBuf = std::make_shared<WCHAR>(wch);
-}
-
-void CStringRangeSmart::Set(const CStringRangeSmart& sr)
-{
-    *this = sr;
 }
 
 void CStringRangeSmart::Set(const CRustStringRange& rsr) {
@@ -171,25 +154,6 @@ void CStringRangeSmart::Set(const CRustStringRange& rsr) {
     std::u16string strU16 = conversion.from_bytes(firstChar, afterLastChar);
 
     SetClone((WCHAR*)strU16.c_str(), strU16.length());
-}
-
-CStringRangeSmart& CStringRangeSmart::operator =(const CStringRangeSmart& sr)
-{
-    _stringBufLen = sr.GetLength();
-    _pStringBuf = sr._pStringBuf;
-    return *this;
-}
-
-CStringRangeSmart CStringRangeSmart::Concat(const CStringRangeSmart& postfix) const {
-    if (!GetLength()) {
-        return postfix;
-    }
-    DWORD_PTR resultLength = GetLength() + postfix.GetLength();
-    auto pwch = std::shared_ptr<WCHAR>(Clone(GetRaw(), resultLength));
-    memcpy((void*)(pwch.get() + GetLength()), postfix.GetRaw(), postfix.GetLength() * sizeof(WCHAR));
-    CStringRangeSmart range;
-    range.Set(pwch, resultLength);
-    return range;
 }
 
 WCHAR* CStringRangeSmart::Clone(const WCHAR* pwch, DWORD_PTR dwLength)
@@ -204,12 +168,6 @@ WCHAR* CStringRangeSmart::Clone(const WCHAR* pwch, DWORD_PTR dwLength)
     }
     memcpy((void*)pwchString, pwch, dwLength * sizeof(WCHAR));
     return pwchString;
-}
-
-CStringRangeSmart operator""_sr(const wchar_t* aStr, std::size_t aLen) {
-  CStringRangeSmart range;
-  range.SetClone(aStr, aLen);
-  return range;
 }
 
 CCandidateRange::CCandidateRange(void)
