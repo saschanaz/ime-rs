@@ -375,24 +375,6 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
         {
             _pTableDictionaryEngine->SortListItemByFindKeyCode(pCandidateList);
         }
-
-        // Incremental search would show keystroke data from all candidate list items
-        // but wont show identical keystroke data for user inputted.
-        for (auto& item : *pCandidateList)
-        {
-            DWORD_PTR keystrokeBufferLen = 0;
-
-            if (IsWildcard())
-            {
-                keystrokeBufferLen = wildcardIndex;
-            }
-            else
-            {
-                keystrokeBufferLen = _keystrokeBuffer.GetLength();
-            }
-
-            item._FindKeyCode = item._FindKeyCode.Substr(keystrokeBufferLen);
-        }
     }
     else if (isWildcardSearch)
     {
