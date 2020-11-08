@@ -303,16 +303,14 @@ void CCompositionProcessorEngine::PurgeVirtualKey()
 
 std::optional<std::tuple<CStringRangeSmart, bool>> CCompositionProcessorEngine::GetReadingString()
 {
+    CRustStringRange keystrokeBuffer(_keystrokeBuffer);
     _hasWildcardIncludedInKeystrokeBuffer = FALSE;
 
-    if (_keystrokeBuffer.GetLength())
+    if (keystrokeBuffer.GetLengthUtf8())
     {
-        for (DWORD index = 0; index < _keystrokeBuffer.GetLength(); index++)
+        if (IsWildcard())
         {
-            if (IsWildcard() && IsWildcardChar(_keystrokeBuffer.CharAt(index)))
-            {
-                _hasWildcardIncludedInKeystrokeBuffer = TRUE;
-            }
+            _hasWildcardIncludedInKeystrokeBuffer = keystrokeBuffer.Contains(u8'*') || keystrokeBuffer.Contains(u8'?');
         }
 
         return std::tuple<CStringRangeSmart, bool>(_keystrokeBuffer, _hasWildcardIncludedInKeystrokeBuffer);
@@ -344,14 +342,7 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
 
         if (IsWildcard())
         {
-            for (wildcardIndex = 0; wildcardIndex < _keystrokeBuffer.GetLength(); wildcardIndex++)
-            {
-                if (IsWildcardChar(_keystrokeBuffer.CharAt(wildcardIndex)))
-                {
-                    isFindWildcard = TRUE;
-                    break;
-                }
-            }
+            isFindWildcard = wildcardSearch.Contains(u8'*') || wildcardSearch.Contains(u8'?');
         }
 
         if (!isFindWildcard)
