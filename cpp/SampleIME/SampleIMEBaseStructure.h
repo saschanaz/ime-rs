@@ -223,8 +223,6 @@ protected:
 class CStringRangeSmart : public CStringRangeBase
 {
 public:
-
-public:
     CStringRangeSmart() {};
     CStringRangeSmart(WCHAR wch) {
         Set(wch);
@@ -244,16 +242,12 @@ public:
     void Set(const CRustStringRange& rsr);
     CStringRangeSmart& operator=(const CStringRangeSmart& sr);
 
-    CStringRangeSmart Substr(DWORD_PTR start) const;
-    CStringRangeSmart Substr(DWORD_PTR start, DWORD_PTR end) const;
-
     CStringRangeSmart Concat(const CStringRangeSmart& postfix) const;
 
 protected:
     static WCHAR* Clone(const WCHAR* pwch, DWORD_PTR dwLength);
 
     std::shared_ptr<const WCHAR> _pStringBuf;    // Buffer which is not add zero terminate.
-    DWORD_PTR _startOffset = 0;
 };
 
 CStringRangeSmart operator""_sr(const wchar_t* aStr, std::size_t aLen);
