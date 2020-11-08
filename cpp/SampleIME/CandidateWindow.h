@@ -10,7 +10,7 @@
 
 #include <optional>
 
-#include "private.h"
+#include "Private.h"
 #include "BaseWindow.h"
 #include "ShadowWindow.h"
 #include "ScrollBarWindow.h"

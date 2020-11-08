@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "private.h"
-#include "define.h"
+#include "Private.h"
+#include "Define.h"
 #include "SampleIMEBaseStructure.h"
 
 void DllAddRef();

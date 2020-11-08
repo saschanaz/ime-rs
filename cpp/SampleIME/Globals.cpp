@@ -8,7 +8,7 @@
 #include "Private.h"
 #include "resource.h"
 #include "BaseWindow.h"
-#include "define.h"
+#include "Define.h"
 #include "SampleIMEBaseStructure.h"
 
 namespace Global {
