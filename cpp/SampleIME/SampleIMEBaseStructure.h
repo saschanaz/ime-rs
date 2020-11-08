@@ -209,40 +209,24 @@ private:
     CSampleImeArray<DWORD> _CandidateListIndexRange;
 };
 
-class CStringRangeBase {
-public:
-    const DWORD_PTR GetLength() const;
-
-    virtual const WCHAR *GetRaw() const = 0;
-
-protected:
-    DWORD_PTR _stringBufLen = 0;         // Length is in character count.
-};
-
-class CStringRangeSmart : public CStringRangeBase
+class CStringRangeSmart
 {
 public:
-    CStringRangeSmart() {};
-    CStringRangeSmart(WCHAR wch) {
-        Set(wch);
-    };
-    explicit CStringRangeSmart(const CRustStringRange& rsr) {
-        Set(rsr);
-    }
+    CStringRangeSmart(WCHAR wch);
+    explicit CStringRangeSmart(const CRustStringRange& rsr);
     ~CStringRangeSmart() {};
 
-    const WCHAR *GetRaw() const override;
-
-    void SetClone(const WCHAR *pwch, DWORD_PTR dwLength);
-    void Set(WCHAR wch);
-    void Set(const CRustStringRange& rsr);
+    const DWORD_PTR GetLength() const;
+    const WCHAR *GetRaw() const;
 
     explicit operator CRustStringRange() const;
 
 protected:
+    void SetClone(const WCHAR *pwch, DWORD_PTR dwLength);
     static WCHAR* Clone(const WCHAR* pwch, DWORD_PTR dwLength);
 
     std::shared_ptr<const WCHAR> _pStringBuf;    // Buffer which is not add zero terminate.
+    DWORD_PTR _stringBufLen = 0;         // Length is in character count.
 };
 
 //---------------------------------------------------------------------

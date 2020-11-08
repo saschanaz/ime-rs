@@ -124,7 +124,7 @@ BOOL IsSpace(LCID locale, WCHAR wch)
     return (wCharType & C1_SPACE);
 }
 
-const DWORD_PTR CStringRangeBase::GetLength() const
+const DWORD_PTR CStringRangeSmart::GetLength() const
 {
     return _stringBufLen;
 }
@@ -140,13 +140,13 @@ void CStringRangeSmart::SetClone(const WCHAR *pwch, DWORD_PTR dwLength)
     _pStringBuf = std::shared_ptr<WCHAR>(Clone(pwch, _stringBufLen));
 }
 
-void CStringRangeSmart::Set(WCHAR wch)
+CStringRangeSmart::CStringRangeSmart(WCHAR wch)
 {
     _stringBufLen = 1;
     _pStringBuf = std::make_shared<WCHAR>(wch);
 }
 
-void CStringRangeSmart::Set(const CRustStringRange& rsr) {
+CStringRangeSmart::CStringRangeSmart(const CRustStringRange& rsr) {
     // The conversion to UTF16 is in C++ on purpose to allow easier memory management
     char* firstChar = (char*)rsr.GetRawUtf8();
     char* afterLastChar = firstChar + rsr.GetLengthUtf8();
