@@ -43,7 +43,7 @@ HRESULT CSampleIME::_HandleCandidateFinalize(TfEditCookie ec, _In_ ITfContext *p
     candidateString = _pCandidateListUIPresenter->_GetSelectedCandidateString();
 
     if (candidateString.has_value()) {
-        hr = _AddComposingAndChar(ec, pContext, CStringRangeSmart(candidateString.value()));
+        hr = _AddComposingAndChar(ec, pContext, candidateString.value());
 
         if (FAILED(hr))
         {
@@ -152,7 +152,7 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
         pTempCandListUIPresenter->_SetText(&candidatePhraseList);
 
         // Add composing character
-        hrReturn = _AddComposingAndChar(ec, pContext, CStringRangeSmart(candidateString.value()));
+        hrReturn = _AddComposingAndChar(ec, pContext, candidateString.value());
 
         // close candidate list
         if (_pCandidateListUIPresenter)

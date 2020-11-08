@@ -182,7 +182,7 @@ HRESULT CSampleIME::_HandleCompositionInputWorker(_In_ CCompositionProcessorEngi
         auto [item, hasWildcard] = readingString.value();
         isWildcardIncluded = hasWildcard;
 
-        hr = _AddComposingAndChar(ec, pContext, CStringRangeSmart(item));
+        hr = _AddComposingAndChar(ec, pContext, item);
         if (FAILED(hr))
         {
             return hr;
@@ -528,7 +528,7 @@ HRESULT CSampleIME::_HandleCompositionPunctuation(TfEditCookie ec, _In_ ITfConte
 
         if (candidateString.has_value())
         {
-            _AddComposingAndChar(ec, pContext, CStringRangeSmart(candidateString.value()));
+            _AddComposingAndChar(ec, pContext, candidateString.value());
         }
     }
     //
