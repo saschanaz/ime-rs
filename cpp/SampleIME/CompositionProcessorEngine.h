@@ -18,6 +18,7 @@
 #include "FileMapping.h"
 #include "Compartment.h"
 #include "Define.h"
+#include "RustStringRange.h"
 
 class CCompositionProcessorEngine
 {
@@ -45,7 +46,7 @@ public:
     void PopVirtualKey();
     void PurgeVirtualKey();
 
-    bool HasVirtualKey() { return _keystrokeBuffer.GetLength(); }
+    bool HasVirtualKey() { return _keystrokeBuffer.GetLengthUtf8(); }
 
     std::optional<std::tuple<CStringRangeSmart, bool>> GetReadingString();
     void GetCandidateList(_Inout_ CSampleImeArray<CCandidateListItem> *pCandidateList, BOOL isIncrementalWordSearch, BOOL isWildcardSearch);
@@ -132,7 +133,7 @@ private:
     _KEYSTROKE _keystrokeTable[26];
 
     CTableDictionaryEngine* _pTableDictionaryEngine;
-    CStringRangeSmart _keystrokeBuffer;
+    CRustStringRange _keystrokeBuffer = ""_rs;
 
     BOOL _hasWildcardIncludedInKeystrokeBuffer;
 

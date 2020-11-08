@@ -259,7 +259,7 @@ BOOL CCompositionProcessorEngine::AddVirtualKey(WCHAR wch)
         return FALSE;
     }
 
-    _keystrokeBuffer = _keystrokeBuffer.Concat(CStringRangeSmart(wch));
+    _keystrokeBuffer = _keystrokeBuffer.Concat(CRustStringRange(CStringRangeSmart(wch)));
 
     return TRUE;
 }
@@ -274,7 +274,7 @@ BOOL CCompositionProcessorEngine::AddVirtualKey(WCHAR wch)
 
 void CCompositionProcessorEngine::PopVirtualKey()
 {
-    _keystrokeBuffer = CStringRangeSmart(CRustStringRange(_keystrokeBuffer).CutLast());
+    _keystrokeBuffer = CRustStringRange(_keystrokeBuffer).CutLast();
 }
 
 //+---------------------------------------------------------------------------
@@ -289,7 +289,7 @@ void CCompositionProcessorEngine::PopVirtualKey()
 
 void CCompositionProcessorEngine::PurgeVirtualKey()
 {
-    _keystrokeBuffer.Clear();
+    _keystrokeBuffer = ""_rs;
 }
 
 //+---------------------------------------------------------------------------
@@ -301,14 +301,13 @@ void CCompositionProcessorEngine::PurgeVirtualKey()
 
 std::optional<std::tuple<CStringRangeSmart, bool>> CCompositionProcessorEngine::GetReadingString()
 {
-    CRustStringRange keystrokeBuffer(_keystrokeBuffer);
     _hasWildcardIncludedInKeystrokeBuffer = FALSE;
 
-    if (keystrokeBuffer.GetLengthUtf8())
+    if (_keystrokeBuffer.GetLengthUtf8())
     {
         if (IsWildcard())
         {
-            _hasWildcardIncludedInKeystrokeBuffer = keystrokeBuffer.Contains(u8'*') || keystrokeBuffer.Contains(u8'?');
+            _hasWildcardIncludedInKeystrokeBuffer = _keystrokeBuffer.Contains(u8'*') || _keystrokeBuffer.Contains(u8'?');
         }
 
         return std::tuple<CStringRangeSmart, bool>(_keystrokeBuffer, _hasWildcardIncludedInKeystrokeBuffer);
@@ -363,11 +362,11 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
     }
     else if (isWildcardSearch)
     {
-        _pTableDictionaryEngine->CollectWordForWildcard(CRustStringRange(_keystrokeBuffer), pCandidateList);
+        _pTableDictionaryEngine->CollectWordForWildcard(_keystrokeBuffer, pCandidateList);
     }
     else
     {
-        _pTableDictionaryEngine->CollectWord(CRustStringRange(_keystrokeBuffer), pCandidateList);
+        _pTableDictionaryEngine->CollectWord(_keystrokeBuffer, pCandidateList);
     }
 }
 
@@ -1415,7 +1414,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, _In_reads_(1) WCH
             return TRUE;
         }
         else if ((IsWildcard() && IsWildcardChar(*pwch) && !IsDisableWildcardAtFirst()) ||
-            (IsWildcard() && IsWildcardChar(*pwch) &&  IsDisableWildcardAtFirst() && _keystrokeBuffer.GetLength()))
+            (IsWildcard() && IsWildcardChar(*pwch) &&  IsDisableWildcardAtFirst() && _keystrokeBuffer.GetLengthUtf8()))
         {
             if (pKeyState)
             {
