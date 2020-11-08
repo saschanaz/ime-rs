@@ -274,9 +274,7 @@ BOOL CCompositionProcessorEngine::AddVirtualKey(WCHAR wch)
 
 void CCompositionProcessorEngine::PopVirtualKey()
 {
-    DWORD_PTR srgKeystrokeBufLen = _keystrokeBuffer.GetLength();
-
-    _keystrokeBuffer = _keystrokeBuffer.Substr(0, srgKeystrokeBufLen - 1);
+    _keystrokeBuffer = CStringRangeSmart(CRustStringRange(_keystrokeBuffer).CutLast());
 }
 
 //+---------------------------------------------------------------------------
