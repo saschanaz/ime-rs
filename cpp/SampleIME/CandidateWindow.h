@@ -15,6 +15,7 @@
 #include "ShadowWindow.h"
 #include "ScrollBarWindow.h"
 #include "SampleIMEBaseStructure.h"
+#include "RustStringRange.h"
 
 enum CANDWND_ACTION
 {
@@ -95,7 +96,7 @@ private:
 
 private:
     UINT _currentSelection;
-    CSampleImeArray<CStringRangeSmart> _candidateList;
+    CSampleImeArray<CRustStringRange> _candidateList;
     CSampleImeArray<UINT> _PageIndex;
 
     COLORREF _crTextColor;
