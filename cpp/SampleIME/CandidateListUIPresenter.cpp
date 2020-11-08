@@ -834,7 +834,7 @@ void CCandidateListUIPresenter::AddCandidateToCandidateListUI(_In_ CSampleImeArr
 {
     for (auto& item : *pCandidateList)
     {
-        _pCandidateWnd->_AddString(item._ItemString);
+        _pCandidateWnd->_AddString(CRustStringRange(item._ItemString));
     }
 }
 

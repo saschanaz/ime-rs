@@ -701,9 +701,9 @@ void CCandidateWindow::_DrawBorder(_In_ HWND wndHandle, _In_ int cx)
 //
 //----------------------------------------------------------------------------
 
-void CCandidateWindow::_AddString(const CStringRangeSmart& str)
+void CCandidateWindow::_AddString(const CRustStringRange& str)
 {
-    _candidateList.Append(CRustStringRange(str));
+    _candidateList.Append(str);
 }
 
 //+---------------------------------------------------------------------------

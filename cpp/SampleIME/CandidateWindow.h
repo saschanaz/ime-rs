@@ -45,7 +45,7 @@ public:
     void _OnMouseMove(POINT pt);
     void _OnVScroll(DWORD dwSB, _In_ DWORD nPos);
 
-    void _AddString(const CStringRangeSmart& str);
+    void _AddString(const CRustStringRange& str);
     void _ClearList();
     UINT _GetCount()
     {
