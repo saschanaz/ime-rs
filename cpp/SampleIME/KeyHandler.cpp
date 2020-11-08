@@ -540,7 +540,7 @@ HRESULT CSampleIME::_HandleCompositionPunctuation(TfEditCookie ec, _In_ ITfConte
     WCHAR punctuation = pCompositionProcessorEngine->GetPunctuation(wch);
 
     // Finalize character
-    hr = _AddCharAndFinalize(ec, pContext, CRustStringRange(CStringRangeSmart(punctuation)));
+    hr = _AddCharAndFinalize(ec, pContext, CRustStringRange(CStringRangeUtf16(punctuation)));
     if (FAILED(hr))
     {
         return hr;
@@ -564,7 +564,7 @@ HRESULT CSampleIME::_HandleCompositionDoubleSingleByte(TfEditCookie ec, _In_ ITf
     WCHAR fullWidth = Global::FullWidthCharTable[wch - 0x20];
 
     // Finalize character
-    hr = _AddCharAndFinalize(ec, pContext, CRustStringRange(CStringRangeSmart(fullWidth)));
+    hr = _AddCharAndFinalize(ec, pContext, CRustStringRange(CStringRangeUtf16(fullWidth)));
     if (FAILED(hr))
     {
         return hr;

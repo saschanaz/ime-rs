@@ -259,7 +259,7 @@ BOOL CCompositionProcessorEngine::AddVirtualKey(WCHAR wch)
         return FALSE;
     }
 
-    _keystrokeBuffer = _keystrokeBuffer.Concat(CRustStringRange(CStringRangeSmart(wch)));
+    _keystrokeBuffer = _keystrokeBuffer.Concat(CRustStringRange(CStringRangeUtf16(wch)));
 
     return TRUE;
 }

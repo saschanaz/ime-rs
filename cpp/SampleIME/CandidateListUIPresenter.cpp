@@ -585,7 +585,7 @@ STDAPI CCandidateListUIPresenter::GetString(UINT uIndex, BSTR *pbstr)
     std::optional<CRustStringRange> candidateString = _pCandidateWnd->_GetCandidateString(uIndex);
 
     if (candidateString.has_value()) {
-        CStringRangeSmart str(candidateString.value());
+        CStringRangeUtf16 str(candidateString.value());
         *pbstr = SysAllocStringLen(str.GetRaw(), str.GetLength());
     } else {
         *pbstr = nullptr;

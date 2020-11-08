@@ -131,7 +131,7 @@ HRESULT CSampleIME::_AddCharAndFinalize(TfEditCookie ec, _In_ ITfContext *pConte
 
     // we use SetText here instead of InsertTextAtSelection because we've already started a composition
     // we don't want to the app to adjust the insertion point inside our composition
-    CStringRangeSmart str(strAddString);
+    CStringRangeUtf16 str(strAddString);
     hr = tfSelection.range->SetText(ec, 0, str.GetRaw(), (LONG)str.GetLength());
     if (hr == S_OK)
     {
@@ -223,7 +223,7 @@ HRESULT CSampleIME::_SetInputString(TfEditCookie ec, _In_ ITfContext *pContext, 
     }
     if (pRange != nullptr)
     {
-        CStringRangeSmart str(strAddString);
+        CStringRangeUtf16 str(strAddString);
         pRange->SetText(ec, 0, str.GetRaw(), (LONG)str.GetLength());
     }
 
@@ -267,7 +267,7 @@ HRESULT CSampleIME::_InsertAtSelection(TfEditCookie ec, _In_ ITfContext *pContex
     ITfRange* rangeInsert = nullptr;
     ITfInsertAtSelection* pias = nullptr;
     HRESULT hr = S_OK;
-    CStringRangeSmart str(strAddString);
+    CStringRangeUtf16 str(strAddString);
 
     if (ppCompRange == nullptr)
     {

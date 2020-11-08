@@ -650,7 +650,7 @@ void CCandidateWindow::_DrawList(_In_ HDC dcHandle, _In_ UINT iIndex, _In_ RECT 
             SetBkColor(dcHandle, CANDWND_SELECTED_BK_COLOR);
         }
 
-        CStringRangeSmart str(*_candidateList.GetAt(iIndex));
+        CStringRangeUtf16 str(*_candidateList.GetAt(iIndex));
         ExtTextOut(dcHandle, StringPosition * cxLine, pageCount * cyLine + cyOffset, ETO_OPAQUE, &rc, str.GetRaw(), (DWORD)str.GetLength(), NULL);
     }
     for (; (pageCount < candidateListPageCnt); pageCount++)

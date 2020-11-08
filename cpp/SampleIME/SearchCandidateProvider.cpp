@@ -184,7 +184,7 @@ STDMETHODIMP CSearchCandidateProvider::GetSearchCandidates(BSTR bstrQuery, BSTR 
             ITfCandidateString* pCandStr = nullptr;
             CTipCandidateString::CreateInstance(IID_ITfCandidateString, (void**)&pCandStr);
 
-            CStringRangeSmart str(candidateList.GetAt(iCand)->_ItemString);
+            CStringRangeUtf16 str(candidateList.GetAt(iCand)->_ItemString);
             ((CTipCandidateString*)pCandStr)->SetIndex(iCand);
             ((CTipCandidateString*)pCandStr)->SetString(str.GetRaw(), str.GetLength());
 

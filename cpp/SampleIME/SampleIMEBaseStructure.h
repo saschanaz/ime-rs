@@ -209,12 +209,12 @@ private:
     CSampleImeArray<DWORD> _CandidateListIndexRange;
 };
 
-class CStringRangeSmart
+class CStringRangeUtf16
 {
 public:
-    CStringRangeSmart(WCHAR wch);
-    explicit CStringRangeSmart(const CRustStringRange& rsr);
-    ~CStringRangeSmart() {};
+    CStringRangeUtf16(WCHAR wch);
+    explicit CStringRangeUtf16(const CRustStringRange& rsr);
+    ~CStringRangeUtf16() {};
 
     const DWORD_PTR GetLength() const;
     const WCHAR *GetRaw() const;
