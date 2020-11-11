@@ -11,37 +11,37 @@ pub unsafe extern fn parse_line(line: *const c_void, key: *mut *mut c_void, valu
         result.trim()
     }
 
+    *key = 0 as *mut c_void;
+    *value = 0 as *mut c_void;
+
     let line = Box::leak(RustStringRange::from_void(line as *mut _));
-    let split: Vec<&str> = line.as_slice().split('=').collect();
-    if split.len() < 2 {
+    let equalsign = get_equalsign(line.as_slice());
+    if equalsign.is_none() {
         return false;
     }
-    *key = Box::into_raw(Box::new(RustStringRange::from_str(unwrap(split[0])))) as *mut c_void;
-    *value = Box::into_raw(Box::new(RustStringRange::from_str(unwrap(split[1])))) as *mut c_void;
+
+    let key_slice = &line.as_slice()[0..equalsign.unwrap()];
+    let value_slice = &line.as_slice()[equalsign.unwrap() + 1..];
+    *key = Box::into_raw(Box::new(RustStringRange::from_str(unwrap(key_slice)))) as *mut c_void;
+    *value = Box::into_raw(Box::new(RustStringRange::from_str(unwrap(value_slice)))) as *mut c_void;
     return true;
 }
 
-#[no_mangle]
-pub unsafe extern fn get_equalsign(buffer: *const u16, buffer_len: usize) -> *mut u16 {
-    let slice: &[u16] = std::slice::from_raw_parts(buffer, buffer_len);
-
+pub fn get_equalsign(s: &str) -> Option<usize> {
     // ignore equalsign wrapped in doublequote
     let mut in_quote = false;
-    let position = slice.iter().position(|&c| {
-        if c == b'\"'.into() {
+    let position = s.bytes().position(|c| {
+        if c == b'\"' {
             in_quote = !in_quote;
         }
         if in_quote {
             false
         } else {
-            c == b'='.into()
+            c == b'='
         }
     });
 
-    match position {
-        Some(p) => buffer.offset(p as isize) as *mut u16,
-        None => 0 as *mut u16
-    }
+    position
 }
 
 #[cfg(test)]
@@ -64,59 +64,51 @@ mod tests {
                 assert_eq!(value.as_slice(), "bcd");
             }
         }
+
+        #[test]
+        fn parse_equalsign_wrapped() {
+            let line_raw = Box::into_raw(Box::new(RustStringRange::from_str("\"a=bc\"=\"bc=d\"")));
+            let mut key_raw = std::ptr::null::<c_void>() as *mut c_void;
+            let mut value_raw = key_raw;
+            unsafe {
+                let result = parse_line(line_raw as *mut c_void, &mut key_raw, &mut value_raw);
+                assert_eq!(result, true);
+                Box::from_raw(line_raw); // implicit destruction
+                let key = Box::from_raw(key_raw as *mut RustStringRange);
+                let value = Box::from_raw(value_raw as *mut RustStringRange);
+                assert_eq!(key.as_slice(), "a=bc");
+                assert_eq!(value.as_slice(), "bc=d");
+            }
+        }
     }
 
     mod equalsign_getter {
-        fn utf16(s: &str) -> Vec<u16> {
-            s.encode_utf16().collect()
-        }
-
         #[test]
         fn equalsign() {
-            let encoded = utf16("abc=");
-            let ptr = encoded.as_ptr();
+            let s = "abc=";
 
-            unsafe {
-                let result = crate::get_equalsign(ptr, encoded.len());
-                assert_eq!(result, ptr.offset(3) as *mut u16);
-                let char_code = *result as u16;
-                assert_eq!(char_code, b'='.into());
-            }
-        }
-
-        #[test]
-        fn equalsign_cut() {
-            let encoded = utf16("abc=");
-            let ptr = encoded.as_ptr();
-
-            unsafe {
-                let result = crate::get_equalsign(ptr, 2);
-                assert_eq!(result, 0 as *mut u16);
-            }
+            let result = crate::get_equalsign(s).unwrap();
+            assert_eq!(result, 3);
+            let char_code = s.bytes().nth(result).unwrap();
+            assert_eq!(char_code, b'=');
         }
 
         #[test]
         fn equalsign_wrapped() {
-            let encoded = utf16("\"abc=\"=");
-            let ptr = encoded.as_ptr();
+            let s = "\"abc=\"=";
 
-            unsafe {
-                let result = crate::get_equalsign(ptr, encoded.len());
-                assert_eq!(result, ptr.offset(6) as *mut u16);
-                let char_code = *result as u16;
-                assert_eq!(char_code, b'='.into());
-            }
+            let result = crate::get_equalsign(s).unwrap();
+            assert_eq!(result, 6);
+            let char_code = s.bytes().nth(result).unwrap();
+            assert_eq!(char_code, b'=');
         }
 
         #[test]
         fn equalsign_wrapped_nomatch() {
-            let encoded = utf16("\"abc=\"");
-            let ptr = encoded.as_ptr();
+            let s = "\"abc=\"";
 
-            unsafe {
-                let result = crate::get_equalsign(ptr, encoded.len());
-                assert_eq!(result, 0 as *mut u16);
-            }
+            let result = crate::get_equalsign(s);
+            assert!(result.is_none());
         }
     }
 }
