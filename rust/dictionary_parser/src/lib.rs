@@ -38,6 +38,49 @@ pub unsafe extern fn parse_line(line: *const c_void, key: *mut *mut c_void, valu
     return true;
 }
 
+fn find_worker_internal<'a>(content: &'a str, search_key: &str, is_text_search: bool, is_wildcard_search: bool) -> Option<(&'a str, &'a str, usize)> {
+    use compare_with_wildcard::compare_with_wildcard;
+
+    let mut offset: usize = 0;
+    for line in content.lines() {
+        if line.is_empty() {
+            continue;
+        }
+        if content[offset..].bytes().next().unwrap() == b'\r' {
+            offset += 1;
+        }
+        if content[offset..].bytes().next().unwrap() == b'\n' {
+            offset += 1;
+        }
+        offset += line.len();
+        let (key, value) = parse_line_internal(line).unwrap();
+        let target = if is_text_search { value } else { key };
+        let matches = if is_wildcard_search { compare_with_wildcard(search_key, target) } else { search_key.eq_ignore_ascii_case(target) };
+        if matches {
+            return Some((key, value, offset));
+        }
+    }
+    None
+}
+
+#[no_mangle]
+pub unsafe extern fn find_worker(content: *const c_void, search_key: *const c_void, is_text_search: bool, is_wildcard_search: bool, key: *mut *mut c_void, value: *mut *mut c_void) -> usize {
+    *key = 0 as *mut c_void;
+    *value = 0 as *mut c_void;
+
+    let content = Box::leak(RustStringRange::from_void(content as *mut _));
+    let search_key = Box::leak(RustStringRange::from_void(search_key as *mut _));
+
+    let result = find_worker_internal(content.as_slice(), search_key.as_slice(), is_text_search, is_wildcard_search);
+    if result.is_some() {
+        *key = Box::into_raw(Box::new(RustStringRange::from_str(result.unwrap().0))) as *mut c_void;
+        *value = Box::into_raw(Box::new(RustStringRange::from_str(result.unwrap().1))) as *mut c_void;
+        result.unwrap().2
+    } else {
+        content.len()
+    }
+}
+
 pub fn get_equalsign(s: &str) -> Option<usize> {
     // ignore equalsign wrapped in doublequote
     let mut in_quote = false;
@@ -90,6 +133,48 @@ mod tests {
                 assert_eq!(key.as_slice(), "a=bc");
                 assert_eq!(value.as_slice(), "bc=d");
             }
+        }
+    }
+
+    mod find_worker {
+        use super::super::*;
+
+        #[test]
+        fn find() {
+            let input = "\"A\"=\"錒\"\n\"AES\"=\"厑\"\n\"AI\"=\"爱\"";
+            let (key, value, offset) = find_worker_internal(input, "ai", false, false).unwrap();
+            assert_eq!(key, "AI");
+            assert_eq!(value, "爱");
+            assert_eq!(offset, input.len())
+        }
+
+        #[test]
+        fn find_wildcard() {
+            let input = "\"A\"=\"錒\"\n\"AES\"=\"厑\"";
+            let input_full = format!("{}{}", input, "\n\"AI\"=\"爱\"");
+            let (key, value, offset) = find_worker_internal(&input_full[..], "ae*", false, true).unwrap();
+            assert_eq!(key, "AES");
+            assert_eq!(value, "厑");
+            assert_eq!(offset, input.len())
+        }
+
+        #[test]
+        fn find_value() {
+            let input = "\"A\"=\"錒\"\n\"AES\"=\"厑\"";
+            let input_full = format!("{}{}", input, "\n\"AI\"=\"爱\"");
+            let (key, value, offset) = find_worker_internal(&input_full[..], "厑", true, false).unwrap();
+            assert_eq!(key, "AES");
+            assert_eq!(value, "厑");
+            assert_eq!(offset, input.len())
+        }
+
+        #[test]
+        fn find_crlf() {
+            let input = "\"A\"=\"錒\"\r\n\"AES\"=\"厑\"\r\n\"AI\"=\"爱\"";
+            let (key, value, offset) = find_worker_internal(input, "ai", false, false).unwrap();
+            assert_eq!(key, "AI");
+            assert_eq!(value, "爱");
+            assert_eq!(offset, input.len())
         }
     }
 

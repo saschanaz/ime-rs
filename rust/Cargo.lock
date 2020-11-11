@@ -8,6 +8,7 @@ version = "0.1.0"
 name = "dictionary_parser"
 version = "0.1.0"
 dependencies = [
+ "compare_with_wildcard",
  "ruststringrange",
 ]
 

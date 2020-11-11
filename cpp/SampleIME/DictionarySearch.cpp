@@ -9,6 +9,7 @@
 #include "DictionarySearch.h"
 #include "SampleIMEBaseStructure.h"
 #include "RustStringRange.h"
+#include "..\..\rust\dictionary_parser\dictionary_parser.h"
 
 //+---------------------------------------------------------------------------
 //
@@ -82,79 +83,23 @@ static bool StringCompare(const CRustStringRange& x, const CRustStringRange& y, 
 
 BOOL CDictionarySearch::FindWorker(BOOL isTextSearch, _Out_ CDictionaryResult **ppdret, BOOL isWildcardSearch)
 {
-    DWORD_PTR dwTotalBufLen = GetBufferInCharLength();        // in char
-    if (dwTotalBufLen == 0)
-    {
-        return FALSE;
+    CRustStringRange range(GetBufferInChar(), GetBufferInCharLength());
+
+    void* key_raw;
+    void* value_raw;
+    uintptr_t offset = find_worker(range.GetInternal(), _searchKeyCode.GetInternal(), isTextSearch, isWildcardSearch, &key_raw, &value_raw);
+    _charIndex += offset;
+
+    if (key_raw) {
+        // Prepare return's CDictionaryResult
+        *ppdret = new (std::nothrow) CDictionaryResult(_searchKeyCode, CRustStringRange::from_void(key_raw), CRustStringRange::from_void(value_raw));
+        if (!*ppdret)
+        {
+            return false;
+        }
+
+        return true;
     }
 
-    const CHAR *pch = GetBufferInChar();
-    DWORD_PTR indexTrace = 0;     // in char
-    *ppdret = nullptr;
-    BOOL isFound = FALSE;
-    DWORD_PTR bufLenOneLine = 0;
-
-    while (true)
-    {
-        bufLenOneLine = GetOneLine(&pch[indexTrace], dwTotalBufLen);
-        if (bufLenOneLine)
-        {
-            CRustStringRange line(&pch[indexTrace], bufLenOneLine);
-
-            auto result = ParseLine(line);
-            if (!result.has_value())
-            {
-                return FALSE;    // error
-            }
-
-            auto [keyword, value] = result.value();
-
-            const CRustStringRange& target = isTextSearch ? value : keyword;
-            if (target.GetLengthUtf8() && StringCompare(_searchKeyCode, target, _locale, isWildcardSearch))
-            {
-                // Prepare return's CDictionaryResult
-                *ppdret = new (std::nothrow) CDictionaryResult(_searchKeyCode, keyword, value);
-                if (!*ppdret)
-                {
-                    return FALSE;
-                }
-
-                // Seek to next line
-                isFound = TRUE;
-            }
-        }
-
-        while (true)
-        {
-            dwTotalBufLen -= bufLenOneLine;
-            if (dwTotalBufLen == 0)
-            {
-                indexTrace += bufLenOneLine;
-                _charIndex += indexTrace;
-
-                if (!isFound && *ppdret)
-                {
-                    delete *ppdret;
-                    *ppdret = nullptr;
-                }
-                return (isFound ? TRUE : FALSE);        // End of file
-            }
-
-            indexTrace += bufLenOneLine;
-            if (pch[indexTrace] == u8'\r' || pch[indexTrace] == u8'\n' || pch[indexTrace] == u8'\0')
-            {
-                bufLenOneLine = 1;
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        if (isFound)
-        {
-            _charIndex += indexTrace;
-            return TRUE;
-        }
-    }
+    return false;
 }
