@@ -44,8 +44,6 @@
     <ClInclude Include="KeyStateCategory.h" />
     <ClInclude Include="SampleIMEBaseStructure.h" />
     <ClInclude Include="SearchCandidateProvider.h" />
-    <ClInclude Include="DictionaryParser.h" />
-    <ClInclude Include="DictionarySearch.h" />
     <ClInclude Include="DisplayAttributeInfo.h" />
     <ClInclude Include="EditSession.h" />
     <ClInclude Include="EnumDisplayAttributeInfo.h" />
@@ -83,8 +81,6 @@
     <ClCompile Include="RustStringRange.cpp" />
     <ClCompile Include="SampleIMEBaseStructure.cpp" />
     <ClCompile Include="SearchCandidateProvider.cpp" />
-    <ClCompile Include="DictionaryParser.cpp" />
-    <ClCompile Include="DictionarySearch.cpp" />
     <ClCompile Include="DisplayAttribute.cpp" />
     <ClCompile Include="DisplayAttributeInfo.cpp" />
     <ClCompile Include="DisplayAttributeProvider.cpp" />

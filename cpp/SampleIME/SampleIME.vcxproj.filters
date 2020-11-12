@@ -65,12 +65,6 @@
     <ClInclude Include="CompositionProcessorEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DictionaryParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DictionarySearch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DisplayAttributeInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -182,12 +176,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CompositionProcessorEngine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DictionaryParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DictionarySearch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DisplayAttribute.cpp">

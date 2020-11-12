@@ -7,7 +7,22 @@
 
 #include "Private.h"
 #include "TableDictionaryEngine.h"
-#include "DictionarySearch.h"
+#include "../../rust/dictionary_parser/dictionary_parser.h"
+
+static const uintptr_t MAX_BUFFER = 512;
+
+inline void Collect(const CRustStringRange& range, const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList, bool isTextSearch, bool isWildcardSearch) {
+    void* keys[MAX_BUFFER];
+    void* values[MAX_BUFFER];
+    uintptr_t length = find_all(range.GetInternal(), keyCode.GetInternal(), isTextSearch, isWildcardSearch, keys, values, MAX_BUFFER);
+
+    for (uintptr_t i = 0; i < length; i++) {
+        CRustStringRange key = CRustStringRange::from_void(keys[i]);
+        CRustStringRange value = CRustStringRange::from_void(values[i]);
+        CCandidateListItem listItem(value, key);
+        pItemList->Append(listItem);
+    }
+}
 
 //+---------------------------------------------------------------------------
 //
@@ -17,17 +32,8 @@
 
 VOID CTableDictionaryEngine::CollectWord(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList)
 {
-    CDictionaryResult* pdret = nullptr;
-    CDictionarySearch dshSearch(_locale, _pDictionaryFile, keyCode);
-
-    while (dshSearch.FindPhrase(&pdret))
-    {
-        CCandidateListItem listItem(pdret->_FoundPhrase, pdret->_FindKeyCode);
-        pItemList->Append(listItem);
-
-        delete pdret;
-        pdret = nullptr;
-    }
+    CRustStringRange range(_pDictionaryFile->GetReadBufferPointer(), _pDictionaryFile->GetFileSize());
+    Collect(range, keyCode, pItemList, false, false);
 }
 
 //+---------------------------------------------------------------------------
@@ -38,17 +44,8 @@ VOID CTableDictionaryEngine::CollectWord(const CRustStringRange& keyCode, _Inout
 
 VOID CTableDictionaryEngine::CollectWordForWildcard(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList)
 {
-    CDictionaryResult* pdret = nullptr;
-    CDictionarySearch dshSearch(_locale, _pDictionaryFile, keyCode);
-
-    while (dshSearch.FindPhraseForWildcard(&pdret))
-    {
-        CCandidateListItem listItem(pdret->_FoundPhrase, pdret->_FindKeyCode);
-        pItemList->Append(listItem);
-
-        delete pdret;
-        pdret = nullptr;
-    }
+    CRustStringRange range(_pDictionaryFile->GetReadBufferPointer(), _pDictionaryFile->GetFileSize());
+    Collect(range, keyCode, pItemList, false, true);
 }
 
 //+---------------------------------------------------------------------------
@@ -59,16 +56,7 @@ VOID CTableDictionaryEngine::CollectWordForWildcard(const CRustStringRange& keyC
 
 VOID CTableDictionaryEngine::CollectWordFromConvertedStringForWildcard(const CRustStringRange& string, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList)
 {
-    CDictionaryResult* pdret = nullptr;
-    CDictionarySearch dshSearch(_locale, _pDictionaryFile, string);
-
-    while (dshSearch.FindConvertedStringForWildcard(&pdret)) // TAIL ALL CHAR MATCH
-    {
-        CCandidateListItem listItem(pdret->_FoundPhrase, pdret->_FindKeyCode);
-        pItemList->Append(listItem);
-
-        delete pdret;
-        pdret = nullptr;
-    }
+    CRustStringRange range(_pDictionaryFile->GetReadBufferPointer(), _pDictionaryFile->GetFileSize());
+    Collect(range, string, pItemList, true, true);
 }
 

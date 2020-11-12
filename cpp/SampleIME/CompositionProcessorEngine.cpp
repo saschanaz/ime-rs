@@ -9,7 +9,6 @@
 #include "SampleIME.h"
 #include "CompositionProcessorEngine.h"
 #include "TableDictionaryEngine.h"
-#include "DictionarySearch.h"
 #include "TfInputProcessorProfile.h"
 #include "Globals.h"
 #include "Compartment.h"
