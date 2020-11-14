@@ -52,7 +52,7 @@ pub unsafe extern fn dictionary_find_items(content: *const c_void, search_key: *
     len
 }
 
-pub fn get_equalsign(s: &str) -> Option<usize> {
+fn get_equalsign(s: &str) -> Option<usize> {
     // ignore equalsign wrapped in doublequote
     let mut in_quote = false;
     let position = s.bytes().position(|c| {
