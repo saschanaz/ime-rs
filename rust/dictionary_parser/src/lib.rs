@@ -21,7 +21,7 @@ fn parse_line(line: &str) -> Option<(&str, &str)> {
     Some((unwrap(key_slice), unwrap(value_slice)))
 }
 
-fn find_all_internal<'a>(content: &'a str, search_key: &str, is_text_search: bool, is_wildcard_search: bool) -> Vec<(&'a str, &'a str)> {
+fn find_items<'a>(content: &'a str, search_key: &str, is_text_search: bool, is_wildcard_search: bool) -> Vec<(&'a str, &'a str)> {
     use compare_with_wildcard::compare_with_wildcard;
 
     let mut vec: Vec<(&'a str, &'a str)> = Vec::new();
@@ -37,11 +37,11 @@ fn find_all_internal<'a>(content: &'a str, search_key: &str, is_text_search: boo
 }
 
 #[no_mangle]
-pub unsafe extern fn find_all(content: *const c_void, search_key: *const c_void, is_text_search: bool, is_wildcard_search: bool, keys_buffer: *mut *mut c_void, values_buffer: *mut *mut c_void, buffer_length: usize) -> usize {
+pub unsafe extern fn dictionary_find_items(content: *const c_void, search_key: *const c_void, is_text_search: bool, is_wildcard_search: bool, keys_buffer: *mut *mut c_void, values_buffer: *mut *mut c_void, buffer_length: usize) -> usize {
     let content = Box::leak(RustStringRange::from_void(content as *mut _));
     let search_key = Box::leak(RustStringRange::from_void(search_key as *mut _));
 
-    let result = find_all_internal(content.as_slice(), search_key.as_slice(), is_text_search, is_wildcard_search);
+    let result = find_items(content.as_slice(), search_key.as_slice(), is_text_search, is_wildcard_search);
 
     let len = std::cmp::min(result.len(), buffer_length);
     for i in 0..len {
@@ -97,7 +97,7 @@ mod tests {
         #[test]
         fn find() {
             let input = "\"A\"=\"錒\"\n\"AES\"=\"厑\"\n\"AI\"=\"爱\"";
-            let vec = find_all_internal(input, "ai", false, false);
+            let vec = find_items(input, "ai", false, false);
             assert_eq!(vec, [("AI", "爱")]);
         }
 
@@ -105,21 +105,21 @@ mod tests {
         fn find_value() {
             let input = "\"A\"=\"錒\"\n\"AES\"=\"厑\"";
             let input_full = format!("{}{}", input, "\n\"AI\"=\"爱\"");
-            let vec = find_all_internal(&input_full[..], "厑", true, false);
+            let vec = find_items(&input_full[..], "厑", true, false);
             assert_eq!(vec, [("AES", "厑")]);
         }
 
         #[test]
         fn find_crlf() {
             let input = "\"A\"=\"錒\"\r\n\"AES\"=\"厑\"\r\n\"AI\"=\"爱\"";
-            let vec = find_all_internal(input, "ai", false, false);
+            let vec = find_items(input, "ai", false, false);
             assert_eq!(vec, [("AI", "爱")]);
         }
 
         #[test]
         fn find_all_wildcard() {
             let input = "\"A\"=\"錒\"\n\"AES\"=\"厑\"\n\"AI\"=\"爱\"\n\"AI\"=\"矮\"";
-            let vec = find_all_internal(input, "ai", false, true);
+            let vec = find_items(input, "ai", false, true);
             assert_eq!(vec, [("AI", "爱"), ("AI", "矮")]);
         }
     }

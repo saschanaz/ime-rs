@@ -14,7 +14,7 @@ static const uintptr_t MAX_BUFFER = 512;
 inline void Collect(const CRustStringRange& range, const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList, bool isTextSearch, bool isWildcardSearch) {
     void* keys[MAX_BUFFER];
     void* values[MAX_BUFFER];
-    uintptr_t length = find_all(range.GetInternal(), keyCode.GetInternal(), isTextSearch, isWildcardSearch, keys, values, MAX_BUFFER);
+    uintptr_t length = dictionary_find_items(range.GetInternal(), keyCode.GetInternal(), isTextSearch, isWildcardSearch, keys, values, MAX_BUFFER);
 
     for (uintptr_t i = 0; i < length; i++) {
         CRustStringRange key = CRustStringRange::from_void(keys[i]);
