@@ -13,6 +13,4 @@ uintptr_t find_all(const void *content,
                    void **values_buffer,
                    uintptr_t buffer_length);
 
-bool parse_line(const void *line, void **key, void **value);
-
 } // extern "C"
