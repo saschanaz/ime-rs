@@ -92,9 +92,8 @@ mod tests {
 
         #[test]
         fn find_value() {
-            let input = "\"A\"=\"錒\"\n\"AES\"=\"厑\"";
-            let input_full = format!("{}{}", input, "\n\"AI\"=\"爱\"");
-            let vec = find_items(&input_full[..], "厑", true, false);
+            let input = "\"A\"=\"錒\"\n\"AES\"=\"厑\"\n\"AI\"=\"爱\"";
+            let vec = find_items(input, "厑", true, false);
             assert_eq!(vec, [("AES", "厑")]);
         }
 
