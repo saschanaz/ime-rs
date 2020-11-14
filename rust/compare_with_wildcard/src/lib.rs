@@ -38,8 +38,12 @@ pub fn compare_with_wildcard(input: &str, target: &str) -> bool {
 }
 
 #[no_mangle]
-pub unsafe extern fn compare_with_wildcard_utf16(input_buffer: *const u16, input_len: usize, target_buffer: *const u16, target_len: usize) -> bool {
-
+pub unsafe extern "C" fn compare_with_wildcard_utf16(
+    input_buffer: *const u16,
+    input_len: usize,
+    target_buffer: *const u16,
+    target_len: usize,
+) -> bool {
     let input_slice: &[u16] = std::slice::from_raw_parts(input_buffer, input_len);
     let target_slice: &[u16] = std::slice::from_raw_parts(target_buffer, target_len);
 
@@ -63,7 +67,7 @@ mod tests {
             input_enc.as_ptr(),
             input_enc.len(),
             reference_enc.as_ptr(),
-            reference_enc.len()
+            reference_enc.len(),
         )
     }
 
