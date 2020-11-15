@@ -5,7 +5,7 @@ mod parser;
 use parser::find_items;
 
 mod engine;
-use engine::TableDictionaryEngine;
+pub use engine::TableDictionaryEngine;
 
 unsafe fn tuples_to_ffi(
     tuples: Vec<(&str, &str)>,

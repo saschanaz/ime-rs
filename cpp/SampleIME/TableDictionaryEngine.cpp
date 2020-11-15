@@ -12,7 +12,7 @@
 static const uintptr_t MAX_BUFFER = 512;
 
 CRustTableDictionaryEngine::~CRustTableDictionaryEngine() {
-    if (engine) {
+    if (engine && !weak) {
         tabledictionaryengine_free(engine);
     }
 }
@@ -21,7 +21,7 @@ std::optional<CRustTableDictionaryEngine> CRustTableDictionaryEngine::Load(CRust
     void* engine = tabledictionaryengine_load(path.GetInternal(), sort);
 
     if (engine) {
-        return CRustTableDictionaryEngine(engine);
+        return CRustTableDictionaryEngine(engine, false);
     }
 
     return std::nullopt;

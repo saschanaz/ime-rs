@@ -14,6 +14,7 @@
 #include "LanguageBar.h"
 #include "RegKey.h"
 #include "../../rust/globals/globals.h"
+#include "../../rust/composition_processor/composition_processor.h"
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -219,7 +220,7 @@ BOOL CCompositionProcessorEngine::SetupLanguageProfile(LANGID langid, REFGUID gu
     SetupLanguageBar(pThreadMgr, tfClientId, isSecureMode);
     SetupKeystroke();
     SetupConfiguration();
-    SetupDictionaryFile();
+    engine_rust.SetupDictionaryFile(Global::dllInstanceHandle, TEXTSERVICE_DIC, IsKeystrokeSort());
 
 Exit:
     return ret;
@@ -331,7 +332,7 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
             wildcardSearch = wildcardSearch.Concat(u8"*"_rs);
         }
 
-        _pTableDictionaryEngine->CollectWordForWildcard(wildcardSearch, pCandidateList);
+        engine_rust.GetTableDictionaryEngine()->CollectWordForWildcard(wildcardSearch, pCandidateList);
 
         if (0 >= pCandidateList->Count())
         {
@@ -340,11 +341,11 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
     }
     else if (isWildcardSearch)
     {
-        _pTableDictionaryEngine->CollectWordForWildcard(_keystrokeBuffer, pCandidateList);
+        engine_rust.GetTableDictionaryEngine()->CollectWordForWildcard(_keystrokeBuffer, pCandidateList);
     }
     else
     {
-        _pTableDictionaryEngine->CollectWord(_keystrokeBuffer, pCandidateList);
+        engine_rust.GetTableDictionaryEngine()->CollectWord(_keystrokeBuffer, pCandidateList);
     }
 }
 
@@ -364,7 +365,7 @@ void CCompositionProcessorEngine::GetCandidateStringInConverted(const CRustStrin
     // Search phrase from SECTION_TEXT's converted string list
     CRustStringRange wildcardSearch = searchString.Concat(u8"*"_rs);
 
-    _pTableDictionaryEngine->CollectWordFromConvertedStringForWildcard(wildcardSearch, pCandidateList);
+    engine_rust.GetTableDictionaryEngine()->CollectWordFromConvertedStringForWildcard(wildcardSearch, pCandidateList);
 }
 
 //+---------------------------------------------------------------------------
@@ -779,53 +780,6 @@ BOOL CCompositionProcessorEngine::InitLanguageBar(_In_ CLangBarItemButton *pLang
                 return TRUE;
             }
         }
-    }
-    return FALSE;
-}
-
-//+---------------------------------------------------------------------------
-//
-// SetupDictionaryFile
-//
-//----------------------------------------------------------------------------
-
-BOOL CCompositionProcessorEngine::SetupDictionaryFile()
-{
-    // Not yet registered
-    // Register CFileMapping
-    WCHAR wszFileName[MAX_PATH] = {'\0'};
-    DWORD cchA = GetModuleFileName(Global::dllInstanceHandle, wszFileName, ARRAYSIZE(wszFileName));
-    size_t iDicFileNameLen = cchA + wcslen(TEXTSERVICE_DIC);
-    WCHAR *pwszFileName = new (std::nothrow) WCHAR[iDicFileNameLen + 1];
-    if (!pwszFileName)
-    {
-        goto ErrorExit;
-    }
-    *pwszFileName = L'\0';
-
-    // find the last '/'
-    while (cchA--)
-    {
-        WCHAR wszChar = wszFileName[cchA];
-        if (wszChar == '\\' || wszChar == '/')
-        {
-            StringCchCopyN(pwszFileName, iDicFileNameLen + 1, wszFileName, cchA + 1);
-            StringCchCatN(pwszFileName, iDicFileNameLen + 1, TEXTSERVICE_DIC, wcslen(TEXTSERVICE_DIC));
-            break;
-        }
-    }
-
-    _pTableDictionaryEngine = CRustTableDictionaryEngine::Load(
-        CRustStringRange(pwszFileName, wcslen(pwszFileName)),
-        IsKeystrokeSort()
-    ).value();
-
-    delete []pwszFileName;
-    return TRUE;
-ErrorExit:
-    if (pwszFileName)
-    {
-        delete []pwszFileName;
     }
     return FALSE;
 }
@@ -1703,4 +1657,24 @@ BOOL CCompositionProcessorEngine::IsKeystrokeRange(UINT uCode, _Out_ _KEYSTROKE_
         }
     }
     return FALSE;
+}
+
+CCompositionProcessorEngine::CRustCompositionProcessorEngine::CRustCompositionProcessorEngine() {
+    engine = compositionprocessorengine_new();
+}
+
+CCompositionProcessorEngine::CRustCompositionProcessorEngine::~CRustCompositionProcessorEngine() {
+    compositionprocessorengine_free(engine);
+}
+
+void CCompositionProcessorEngine::CRustCompositionProcessorEngine::SetupDictionaryFile(HINSTANCE dllInstanceHandle, const CRustStringRange& dictionaryFileName, bool isKeystrokeSort) {
+    compositionprocessorengine_setup_dictionary_file(engine, dllInstanceHandle, dictionaryFileName.GetInternal(), isKeystrokeSort);
+}
+
+std::optional<CRustTableDictionaryEngine> CCompositionProcessorEngine::CRustCompositionProcessorEngine::GetTableDictionaryEngine() const {
+    const void* dict = compositionprocessorengine_get_table_dictionary_engine(engine);
+    if (dict) {
+        return CRustTableDictionaryEngine::WeakRef(const_cast<void*>(compositionprocessorengine_get_table_dictionary_engine(engine)));
+    }
+    return std::nullopt;
 }

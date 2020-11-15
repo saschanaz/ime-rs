@@ -5,6 +5,15 @@ name = "compare_with_wildcard"
 version = "0.1.0"
 
 [[package]]
+name = "composition_processor"
+version = "0.1.0"
+dependencies = [
+ "dictionary_parser",
+ "ruststringrange",
+ "winapi",
+]
+
+[[package]]
 name = "dictionary_parser"
 version = "0.1.0"
 dependencies = [

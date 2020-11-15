@@ -69,7 +69,7 @@ public:
     BOOL IsKeystrokeSort() { return _isKeystrokeSort; }
 
     // Dictionary engine
-    BOOL IsDictionaryAvailable() { return (_pTableDictionaryEngine ? TRUE : FALSE); }
+    BOOL IsDictionaryAvailable() { return !!engine_rust.GetTableDictionaryEngine(); }
 
     // Language bar control
     void SetLanguageBarStatus(DWORD status, BOOL isSet);
@@ -112,9 +112,6 @@ private:
     void PrivateCompartmentsUpdated(_In_ ITfThreadMgr *pThreadMgr);
     void KeyboardOpenCompartmentUpdated(_In_ ITfThreadMgr *pThreadMgr);
 
-
-    BOOL SetupDictionaryFile();
-
 private:
     struct _KEYSTROKE
     {
@@ -131,7 +128,6 @@ private:
     };
     _KEYSTROKE _keystrokeTable[26];
 
-    std::optional<CRustTableDictionaryEngine> _pTableDictionaryEngine;
     CRustStringRange _keystrokeBuffer = ""_rs;
 
     BOOL _hasWildcardIncludedInKeystrokeBuffer;
@@ -191,5 +187,17 @@ private:
     UINT _candidateWndWidth;
 
     static const int OUT_OF_FILE_INDEX = -1;
+
+    // Rust port
+    class CRustCompositionProcessorEngine {
+        void* engine;
+    public:
+        CRustCompositionProcessorEngine();
+        ~CRustCompositionProcessorEngine();
+        void SetupDictionaryFile(HINSTANCE dllInstanceHandle, const CRustStringRange& dictionaryFileName, bool isKeystrokeSort);
+        std::optional<CRustTableDictionaryEngine> GetTableDictionaryEngine() const;
+    };
+
+    CRustCompositionProcessorEngine engine_rust;
 };
 
