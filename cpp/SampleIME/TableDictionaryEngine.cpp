@@ -42,7 +42,7 @@ inline void arrays_to_array(void** keys, void** values, uintptr_t length, _Inout
 //
 //----------------------------------------------------------------------------
 
-void CRustTableDictionaryEngine::CollectWord(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList) {
+void CRustTableDictionaryEngine::CollectWord(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList) const {
     void* keys[MAX_BUFFER];
     void* values[MAX_BUFFER];
     uintptr_t length = tabledictionaryengine_collect_word(this->engine, keyCode.GetInternal(), keys, values, MAX_BUFFER);
@@ -56,7 +56,7 @@ void CRustTableDictionaryEngine::CollectWord(const CRustStringRange& keyCode, _I
 //----------------------------------------------------------------------------
 
 
-void CRustTableDictionaryEngine::CollectWordForWildcard(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList) {
+void CRustTableDictionaryEngine::CollectWordForWildcard(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList) const {
     void* keys[MAX_BUFFER];
     void* values[MAX_BUFFER];
     uintptr_t length = tabledictionaryengine_collect_word_for_wildcard(this->engine, keyCode.GetInternal(), keys, values, MAX_BUFFER);
@@ -70,7 +70,7 @@ void CRustTableDictionaryEngine::CollectWordForWildcard(const CRustStringRange& 
 //----------------------------------------------------------------------------
 
 
-void CRustTableDictionaryEngine::CollectWordFromConvertedStringForWildcard(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList) {
+void CRustTableDictionaryEngine::CollectWordFromConvertedStringForWildcard(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList) const {
     void* keys[MAX_BUFFER];
     void* values[MAX_BUFFER];
     uintptr_t length = tabledictionaryengine_collect_word_from_converted_string_for_wildcard(this->engine, keyCode.GetInternal(), keys, values, MAX_BUFFER);
