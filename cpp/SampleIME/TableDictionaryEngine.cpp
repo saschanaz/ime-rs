@@ -11,11 +11,7 @@
 
 static const uintptr_t MAX_BUFFER = 512;
 
-inline void Collect(const CRustStringRange& range, const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList, bool isTextSearch, bool isWildcardSearch) {
-    void* keys[MAX_BUFFER];
-    void* values[MAX_BUFFER];
-    uintptr_t length = dictionary_find_items(range.GetInternal(), keyCode.GetInternal(), isTextSearch, isWildcardSearch, keys, values, MAX_BUFFER);
-
+inline void arrays_to_array(void** keys, void** values, uintptr_t length, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList) {
     for (uintptr_t i = 0; i < length; i++) {
         CRustStringRange key = CRustStringRange::from_void(keys[i]);
         CRustStringRange value = CRustStringRange::from_void(values[i]);
@@ -30,10 +26,11 @@ inline void Collect(const CRustStringRange& range, const CRustStringRange& keyCo
 //
 //----------------------------------------------------------------------------
 
-VOID CTableDictionaryEngine::CollectWord(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList)
-{
-    CRustStringRange range(_pDictionaryFile->GetReadBufferPointer(), _pDictionaryFile->GetFileSize());
-    Collect(range, keyCode, pItemList, false, false);
+void CRustTableDictionaryEngine::CollectWord(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList) {
+    void* keys[MAX_BUFFER];
+    void* values[MAX_BUFFER];
+    uintptr_t length = tabledictionaryengine_collect_word(this->engine, keyCode.GetInternal(), keys, values, MAX_BUFFER);
+    arrays_to_array(keys, values, length, pItemList);
 }
 
 //+---------------------------------------------------------------------------
@@ -42,10 +39,12 @@ VOID CTableDictionaryEngine::CollectWord(const CRustStringRange& keyCode, _Inout
 //
 //----------------------------------------------------------------------------
 
-VOID CTableDictionaryEngine::CollectWordForWildcard(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList)
-{
-    CRustStringRange range(_pDictionaryFile->GetReadBufferPointer(), _pDictionaryFile->GetFileSize());
-    Collect(range, keyCode, pItemList, false, true);
+
+void CRustTableDictionaryEngine::CollectWordForWildcard(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList) {
+    void* keys[MAX_BUFFER];
+    void* values[MAX_BUFFER];
+    uintptr_t length = tabledictionaryengine_collect_word_for_wildcard(this->engine, keyCode.GetInternal(), keys, values, MAX_BUFFER);
+    arrays_to_array(keys, values, length, pItemList);
 }
 
 //+---------------------------------------------------------------------------
@@ -54,9 +53,11 @@ VOID CTableDictionaryEngine::CollectWordForWildcard(const CRustStringRange& keyC
 //
 //----------------------------------------------------------------------------
 
-VOID CTableDictionaryEngine::CollectWordFromConvertedStringForWildcard(const CRustStringRange& string, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList)
-{
-    CRustStringRange range(_pDictionaryFile->GetReadBufferPointer(), _pDictionaryFile->GetFileSize());
-    Collect(range, string, pItemList, true, true);
+
+void CRustTableDictionaryEngine::CollectWordFromConvertedStringForWildcard(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList) {
+    void* keys[MAX_BUFFER];
+    void* values[MAX_BUFFER];
+    uintptr_t length = tabledictionaryengine_collect_word_from_converted_string_for_wildcard(this->engine, keyCode.GetInternal(), keys, values, MAX_BUFFER);
+    arrays_to_array(keys, values, length, pItemList);
 }
 

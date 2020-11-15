@@ -47,9 +47,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BaseDictionaryEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BaseWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -155,9 +152,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ActiveLanguageProfileNotifySink.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseDictionaryEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BaseWindow.cpp">

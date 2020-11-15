@@ -8,7 +8,6 @@
 #include "Private.h"
 #include "SampleIME.h"
 #include "CompositionProcessorEngine.h"
-#include "TableDictionaryEngine.h"
 #include "TfInputProcessorProfile.h"
 #include "Globals.h"
 #include "Compartment.h"
@@ -98,7 +97,6 @@ BOOL CSampleIME::_AddTextProcessorEngine()
 
 CCompositionProcessorEngine::CCompositionProcessorEngine()
 {
-    _pTableDictionaryEngine = nullptr;
     _pDictionaryFile = nullptr;
 
     _langid = 0xffff;
@@ -137,12 +135,6 @@ CCompositionProcessorEngine::CCompositionProcessorEngine()
 
 CCompositionProcessorEngine::~CCompositionProcessorEngine()
 {
-    if (_pTableDictionaryEngine)
-    {
-        delete _pTableDictionaryEngine;
-        _pTableDictionaryEngine = nullptr;
-    }
-
     if (_pLanguageBar_IMEMode)
     {
         _pLanguageBar_IMEMode->CleanUp();
@@ -353,11 +345,6 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
         {
             return;
         }
-
-        if (IsKeystrokeSort())
-        {
-            _pTableDictionaryEngine->SortListItemByFindKeyCode(pCandidateList);
-        }
     }
     else if (isWildcardSearch)
     {
@@ -386,11 +373,6 @@ void CCompositionProcessorEngine::GetCandidateStringInConverted(const CRustStrin
     CRustStringRange wildcardSearch = searchString.Concat(u8"*"_rs);
 
     _pTableDictionaryEngine->CollectWordFromConvertedStringForWildcard(wildcardSearch, pCandidateList);
-
-    if (IsKeystrokeSort())
-    {
-        _pTableDictionaryEngine->SortListItemByFindKeyCode(pCandidateList);
-    }
 }
 
 //+---------------------------------------------------------------------------
@@ -855,11 +837,10 @@ BOOL CCompositionProcessorEngine::SetupDictionaryFile()
         goto ErrorExit;
     }
 
-    _pTableDictionaryEngine = new (std::nothrow) CTableDictionaryEngine(GetLocale(), _pDictionaryFile);
-    if (!_pTableDictionaryEngine)
-    {
-        goto ErrorExit;
-    }
+    _pTableDictionaryEngine = CRustTableDictionaryEngine::Load(
+        CRustStringRange(pwszFileName, wcslen(pwszFileName)),
+        IsKeystrokeSort()
+    ).value();
 
     delete []pwszFileName;
     return TRUE;

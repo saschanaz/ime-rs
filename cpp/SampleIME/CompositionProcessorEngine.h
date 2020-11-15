@@ -132,7 +132,7 @@ private:
     };
     _KEYSTROKE _keystrokeTable[26];
 
-    CTableDictionaryEngine* _pTableDictionaryEngine;
+    std::optional<CRustTableDictionaryEngine> _pTableDictionaryEngine;
     CRustStringRange _keystrokeBuffer = ""_rs;
 
     BOOL _hasWildcardIncludedInKeystrokeBuffer;

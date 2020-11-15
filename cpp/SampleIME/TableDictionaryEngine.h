@@ -7,23 +7,49 @@
 
 #pragma once
 
-#include "BaseDictionaryEngine.h"
+#include <optional>
 
-class CTableDictionaryEngine : public CBaseDictionaryEngine
-{
+#include "SampleIMEBaseStructure.h"
+#include "RustStringRange.h"
+#include "../../rust/dictionary_parser/dictionary_parser.h"
+
+class CRustTableDictionaryEngine {
+    void* engine;
+
+    CRustTableDictionaryEngine(void* engine) {
+        this->engine = engine;
+    }
+
 public:
-    CTableDictionaryEngine(LCID locale, _In_ CFile *pDictionaryFile) : CBaseDictionaryEngine(locale, pDictionaryFile) { }
-    virtual ~CTableDictionaryEngine() { }
+    ~CRustTableDictionaryEngine() {
+        if (engine) {
+            tabledictionaryengine_free(engine);
+        }
+    }
 
-    // Collect word from phrase string.
-    // param
-    //     [in] psrgKeyCode - Specified key code pointer
-    //     [out] pasrgWordString - Specified returns pointer of word as CStringRange.
-    // returns
-    //     none.
-    VOID CollectWord(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList);
+    CRustTableDictionaryEngine(CRustTableDictionaryEngine&& that) noexcept {
+        engine = that.engine;
+        that.engine = nullptr;
+    }
 
-    VOID CollectWordForWildcard(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList);
+    CRustTableDictionaryEngine& operator=(CRustTableDictionaryEngine en) {
+        std::swap(engine, en.engine);
+        return *this;
+    }
 
-    VOID CollectWordFromConvertedStringForWildcard(const CRustStringRange& string, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList);
+    static std::optional<CRustTableDictionaryEngine> Load(CRustStringRange path, bool sort) {
+        void* engine = tabledictionaryengine_load(path.GetInternal(), sort);
+
+        if (engine) {
+            return CRustTableDictionaryEngine(engine);
+        }
+
+        return std::nullopt;
+    }
+
+    void CollectWord(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList);
+
+    void CollectWordForWildcard(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList);
+
+    void CollectWordFromConvertedStringForWildcard(const CRustStringRange& string, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList);
 };
