@@ -55,7 +55,7 @@ pub unsafe extern "C" fn tabledictionaryengine_load(
     let path = Box::leak(RustStringRange::from_void(path as *mut _));
     let result = TableDictionaryEngine::load(path.as_slice(), sort);
     if result.is_err() {
-        0 as *mut c_void
+        std::ptr::null_mut()
     } else {
         Box::into_raw(Box::new(result.unwrap())) as *mut c_void
     }
