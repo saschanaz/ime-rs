@@ -6,7 +6,7 @@ edition = "2018"
 
 [lib]
 name = "compare_with_wildcard"
-crate-type = ["staticlib", "rlib"]
+crate-type = ["rlib", "staticlib"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

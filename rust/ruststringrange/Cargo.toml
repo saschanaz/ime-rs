@@ -8,7 +8,7 @@ edition = "2018"
 
 [lib]
 name = "ruststringrange"
-crate-type = ["staticlib", "rlib"]
+crate-type = ["rlib", "staticlib"]
 
 [dependencies]
 compare_with_wildcard = { path = "../compare_with_wildcard" }
