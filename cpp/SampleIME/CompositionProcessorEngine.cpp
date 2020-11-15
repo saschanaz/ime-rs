@@ -97,8 +97,6 @@ BOOL CSampleIME::_AddTextProcessorEngine()
 
 CCompositionProcessorEngine::CCompositionProcessorEngine()
 {
-    _pDictionaryFile = nullptr;
-
     _langid = 0xffff;
     _guidProfile = GUID_NULL;
     _tfClientId = TF_CLIENTID_NULL;
@@ -182,12 +180,6 @@ CCompositionProcessorEngine::~CCompositionProcessorEngine()
         _pCompartmentPunctuationEventSink->_Unadvise();
         delete _pCompartmentPunctuationEventSink;
         _pCompartmentPunctuationEventSink = nullptr;
-    }
-
-    if (_pDictionaryFile)
-    {
-        delete _pDictionaryFile;
-        _pDictionaryFile = nullptr;
     }
 }
 
@@ -823,20 +815,6 @@ BOOL CCompositionProcessorEngine::SetupDictionaryFile()
         }
     }
 
-    // create CFileMapping object
-    if (_pDictionaryFile == nullptr)
-    {
-        _pDictionaryFile = new (std::nothrow) CFileMapping();
-        if (!_pDictionaryFile)
-        {
-            goto ErrorExit;
-        }
-    }
-    if (!(_pDictionaryFile)->CreateFile(pwszFileName, GENERIC_READ, OPEN_EXISTING, FILE_SHARE_READ))
-    {
-        goto ErrorExit;
-    }
-
     _pTableDictionaryEngine = CRustTableDictionaryEngine::Load(
         CRustStringRange(pwszFileName, wcslen(pwszFileName)),
         IsKeystrokeSort()
@@ -850,17 +828,6 @@ ErrorExit:
         delete []pwszFileName;
     }
     return FALSE;
-}
-
-//+---------------------------------------------------------------------------
-//
-// GetDictionaryFile
-//
-//----------------------------------------------------------------------------
-
-CFile* CCompositionProcessorEngine::GetDictionaryFile()
-{
-    return _pDictionaryFile;
 }
 
 //+---------------------------------------------------------------------------

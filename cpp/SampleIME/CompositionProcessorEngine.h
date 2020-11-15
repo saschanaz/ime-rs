@@ -114,7 +114,6 @@ private:
 
 
     BOOL SetupDictionaryFile();
-    CFile* GetDictionaryFile();
 
 private:
     struct _KEYSTROKE
@@ -190,8 +189,6 @@ private:
     CCandidateRange _candidateListIndexRange;
     UINT _candidateListPhraseModifier;
     UINT _candidateWndWidth;
-
-    CFileMapping* _pDictionaryFile;
 
     static const int OUT_OF_FILE_INDEX = -1;
 };
