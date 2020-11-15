@@ -11,7 +11,6 @@
 
 #include "SampleIMEBaseStructure.h"
 #include "RustStringRange.h"
-#include "../../rust/dictionary_parser/dictionary_parser.h"
 
 class CRustTableDictionaryEngine {
     void* engine;
@@ -21,11 +20,7 @@ class CRustTableDictionaryEngine {
     }
 
 public:
-    ~CRustTableDictionaryEngine() {
-        if (engine) {
-            tabledictionaryengine_free(engine);
-        }
-    }
+    ~CRustTableDictionaryEngine();
 
     CRustTableDictionaryEngine(CRustTableDictionaryEngine&& that) noexcept {
         engine = that.engine;
@@ -37,15 +32,7 @@ public:
         return *this;
     }
 
-    static std::optional<CRustTableDictionaryEngine> Load(CRustStringRange path, bool sort) {
-        void* engine = tabledictionaryengine_load(path.GetInternal(), sort);
-
-        if (engine) {
-            return CRustTableDictionaryEngine(engine);
-        }
-
-        return std::nullopt;
-    }
+    static std::optional<CRustTableDictionaryEngine> Load(CRustStringRange path, bool sort);
 
     void CollectWord(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList);
 
