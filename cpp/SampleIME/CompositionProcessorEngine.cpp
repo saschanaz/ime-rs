@@ -245,6 +245,10 @@ BOOL CCompositionProcessorEngine::AddVirtualKey(WCHAR wch)
 
     _keystrokeBuffer = _keystrokeBuffer.Concat(CRustStringRange(CStringRangeUtf16(wch)));
 
+    if (IsWildcard()) {
+        _hasWildcardIncludedInKeystrokeBuffer = wch == u'*' || wch == u'?';
+    }
+
     return TRUE;
 }
 
@@ -285,15 +289,8 @@ void CCompositionProcessorEngine::PurgeVirtualKey()
 
 std::optional<std::tuple<CRustStringRange, bool>> CCompositionProcessorEngine::GetReadingString()
 {
-    _hasWildcardIncludedInKeystrokeBuffer = FALSE;
-
     if (_keystrokeBuffer.GetLengthUtf8())
     {
-        if (IsWildcard())
-        {
-            _hasWildcardIncludedInKeystrokeBuffer = _keystrokeBuffer.Contains(u8'*') || _keystrokeBuffer.Contains(u8'?');
-        }
-
         return std::tuple<CRustStringRange, bool>(_keystrokeBuffer, _hasWildcardIncludedInKeystrokeBuffer);
     }
 
