@@ -57,7 +57,7 @@ impl CompositionProcessorEngine {
         dictionary_file_name: &str,
         is_keystroke_sort: bool,
     ) {
-        let mut file_name: [u16; MAX_PATH] = [0; MAX_PATH];
+        let mut file_name = [0u16; MAX_PATH];
         unsafe {
             GetModuleFileNameW(dll_instance_handle, file_name.as_mut_ptr(), MAX_PATH as u32);
         }
