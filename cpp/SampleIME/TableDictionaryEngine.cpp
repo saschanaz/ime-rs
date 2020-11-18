@@ -27,10 +27,10 @@ std::optional<CRustTableDictionaryEngine> CRustTableDictionaryEngine::Load(CRust
     return std::nullopt;
 }
 
-inline void arrays_to_array(void** keys, void** values, uintptr_t length, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList) {
+inline void ArraysToArray(void** keys, void** values, uintptr_t length, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList) {
     for (uintptr_t i = 0; i < length; i++) {
-        CRustStringRange key = CRustStringRange::from_void(keys[i]);
-        CRustStringRange value = CRustStringRange::from_void(values[i]);
+        CRustStringRange key = CRustStringRange::FromVoid(keys[i]);
+        CRustStringRange value = CRustStringRange::FromVoid(values[i]);
         CCandidateListItem listItem(value, key);
         pItemList->Append(listItem);
     }
@@ -46,7 +46,7 @@ void CRustTableDictionaryEngine::CollectWord(const CRustStringRange& keyCode, _I
     void* keys[MAX_BUFFER];
     void* values[MAX_BUFFER];
     uintptr_t length = tabledictionaryengine_collect_word(this->engine, keyCode.GetInternal(), keys, values, MAX_BUFFER);
-    arrays_to_array(keys, values, length, pItemList);
+    ArraysToArray(keys, values, length, pItemList);
 }
 
 //+---------------------------------------------------------------------------
@@ -60,7 +60,7 @@ void CRustTableDictionaryEngine::CollectWordForWildcard(const CRustStringRange& 
     void* keys[MAX_BUFFER];
     void* values[MAX_BUFFER];
     uintptr_t length = tabledictionaryengine_collect_word_for_wildcard(this->engine, keyCode.GetInternal(), keys, values, MAX_BUFFER);
-    arrays_to_array(keys, values, length, pItemList);
+    ArraysToArray(keys, values, length, pItemList);
 }
 
 //+---------------------------------------------------------------------------
@@ -74,6 +74,6 @@ void CRustTableDictionaryEngine::CollectWordFromConvertedStringForWildcard(const
     void* keys[MAX_BUFFER];
     void* values[MAX_BUFFER];
     uintptr_t length = tabledictionaryengine_collect_word_from_converted_string_for_wildcard(this->engine, keyCode.GetInternal(), keys, values, MAX_BUFFER);
-    arrays_to_array(keys, values, length, pItemList);
+    ArraysToArray(keys, values, length, pItemList);
 }
 

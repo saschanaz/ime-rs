@@ -14,7 +14,7 @@ class CRustStringRange {
   }
 
  public:
-  static CRustStringRange from_void(void* range_raw) {
+  static CRustStringRange FromVoid(void* range_raw) {
     return CRustStringRange(range_raw);
   }
   CRustStringRange(const CRustStringRange& that) {
