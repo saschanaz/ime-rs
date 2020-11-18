@@ -112,8 +112,6 @@ CCompositionProcessorEngine::CCompositionProcessorEngine()
     _pCompartmentDoubleSingleByteEventSink = nullptr;
     _pCompartmentPunctuationEventSink = nullptr;
 
-    _hasWildcardIncludedInKeystrokeBuffer = FALSE;
-
     _isWildcard = FALSE;
     _isDisableWildcardAtFirst = FALSE;
     _hasMakePhraseFromText = FALSE;
@@ -238,18 +236,7 @@ Exit:
 
 BOOL CCompositionProcessorEngine::AddVirtualKey(WCHAR wch)
 {
-    if (!wch)
-    {
-        return FALSE;
-    }
-
-    _keystrokeBuffer = _keystrokeBuffer.Concat(CRustStringRange(CStringRangeUtf16(wch)));
-
-    if (IsWildcard()) {
-        _hasWildcardIncludedInKeystrokeBuffer = wch == u'*' || wch == u'?';
-    }
-
-    return TRUE;
+    return engine_rust.AddVirtualKey(wch);
 }
 
 //+---------------------------------------------------------------------------
@@ -262,7 +249,7 @@ BOOL CCompositionProcessorEngine::AddVirtualKey(WCHAR wch)
 
 void CCompositionProcessorEngine::PopVirtualKey()
 {
-    _keystrokeBuffer = CRustStringRange(_keystrokeBuffer).CutLast();
+    engine_rust.PopVirtualKey();
 }
 
 //+---------------------------------------------------------------------------
@@ -277,7 +264,12 @@ void CCompositionProcessorEngine::PopVirtualKey()
 
 void CCompositionProcessorEngine::PurgeVirtualKey()
 {
-    _keystrokeBuffer = ""_rs;
+    engine_rust.PurgeVirtualKey();
+}
+
+bool CCompositionProcessorEngine::HasVirtualKey()
+{
+    return engine_rust.HasVirtualKey();
 }
 
 //+---------------------------------------------------------------------------
@@ -289,9 +281,9 @@ void CCompositionProcessorEngine::PurgeVirtualKey()
 
 std::optional<std::tuple<CRustStringRange, bool>> CCompositionProcessorEngine::GetReadingString()
 {
-    if (_keystrokeBuffer.GetLengthUtf8())
+    if (engine_rust.HasVirtualKey())
     {
-        return std::tuple<CRustStringRange, bool>(_keystrokeBuffer, _hasWildcardIncludedInKeystrokeBuffer);
+        return std::tuple<CRustStringRange, bool>(engine_rust.GetReadingString(), engine_rust.KeystrokeBufferIncludesWildcard());
     }
 
     return std::nullopt;
@@ -312,7 +304,7 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
 
     if (isIncrementalWordSearch)
     {
-        CRustStringRange wildcardSearch(_keystrokeBuffer);
+        CRustStringRange wildcardSearch = engine_rust.GetReadingString();
 
         // check keystroke buffer already has wildcard char which end user want wildcard serach
         DWORD wildcardIndex = 0;
@@ -338,11 +330,11 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
     }
     else if (isWildcardSearch)
     {
-        engine_rust.GetTableDictionaryEngine()->CollectWordForWildcard(_keystrokeBuffer, pCandidateList);
+        engine_rust.GetTableDictionaryEngine()->CollectWordForWildcard(engine_rust.GetReadingString(), pCandidateList);
     }
     else
     {
-        engine_rust.GetTableDictionaryEngine()->CollectWord(_keystrokeBuffer, pCandidateList);
+        engine_rust.GetTableDictionaryEngine()->CollectWord(engine_rust.GetReadingString(), pCandidateList);
     }
 }
 
@@ -1312,7 +1304,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, _In_reads_(1) WCH
             return TRUE;
         }
         else if ((IsWildcard() && IsWildcardChar(*pwch) && !IsDisableWildcardAtFirst()) ||
-            (IsWildcard() && IsWildcardChar(*pwch) &&  IsDisableWildcardAtFirst() && _keystrokeBuffer.GetLengthUtf8()))
+            (IsWildcard() && IsWildcardChar(*pwch) &&  IsDisableWildcardAtFirst() && engine_rust.HasVirtualKey()))
         {
             if (pKeyState)
             {
@@ -1321,7 +1313,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, _In_reads_(1) WCH
             }
             return TRUE;
         }
-        else if (_hasWildcardIncludedInKeystrokeBuffer && uCode == VK_SPACE)
+        else if (engine_rust.KeystrokeBufferIncludesWildcard() && uCode == VK_SPACE)
         {
             if (pKeyState) { pKeyState->Category = CATEGORY_COMPOSING; pKeyState->Function = FUNCTION_CONVERT_WILDCARD; } return TRUE;
         }
@@ -1662,6 +1654,31 @@ CCompositionProcessorEngine::CRustCompositionProcessorEngine::CRustCompositionPr
 
 CCompositionProcessorEngine::CRustCompositionProcessorEngine::~CRustCompositionProcessorEngine() {
     compositionprocessorengine_free(engine);
+}
+
+bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::AddVirtualKey(char16_t wch) {
+    return compositionprocessorengine_add_virtual_key(engine, wch);
+}
+
+void CCompositionProcessorEngine::CRustCompositionProcessorEngine::PopVirtualKey() {
+    compositionprocessorengine_pop_virtual_key(engine);
+}
+
+void CCompositionProcessorEngine::CRustCompositionProcessorEngine::PurgeVirtualKey() {
+    compositionprocessorengine_purge_virtual_key(engine);
+}
+
+bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::HasVirtualKey() {
+    return compositionprocessorengine_has_virtual_key(engine);
+}
+
+CRustStringRange CCompositionProcessorEngine::CRustCompositionProcessorEngine::GetReadingString() {
+    void* str = compositionprocessorengine_get_reading_string(engine);
+    return CRustStringRange::FromVoid(str);
+}
+
+bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::KeystrokeBufferIncludesWildcard() {
+    return compositionprocessorengine_keystroke_buffer_includes_wildcard(engine);
 }
 
 void CCompositionProcessorEngine::CRustCompositionProcessorEngine::SetupDictionaryFile(HINSTANCE dllInstanceHandle, const CRustStringRange& dictionaryFileName, bool isKeystrokeSort) {

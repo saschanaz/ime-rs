@@ -46,7 +46,7 @@ public:
     void PopVirtualKey();
     void PurgeVirtualKey();
 
-    bool HasVirtualKey() { return _keystrokeBuffer.GetLengthUtf8(); }
+    bool HasVirtualKey();
 
     std::optional<std::tuple<CRustStringRange, bool>> GetReadingString();
     void GetCandidateList(_Inout_ CSampleImeArray<CCandidateListItem> *pCandidateList, BOOL isIncrementalWordSearch, BOOL isWildcardSearch);
@@ -128,10 +128,6 @@ private:
     };
     _KEYSTROKE _keystrokeTable[26];
 
-    CRustStringRange _keystrokeBuffer = ""_rs;
-
-    BOOL _hasWildcardIncludedInKeystrokeBuffer;
-
     LANGID _langid;
     GUID _guidProfile;
     TfClientId  _tfClientId;
@@ -194,6 +190,14 @@ private:
     public:
         CRustCompositionProcessorEngine();
         ~CRustCompositionProcessorEngine();
+
+        bool AddVirtualKey(char16_t wch);
+        void PopVirtualKey();
+        void PurgeVirtualKey();
+        bool HasVirtualKey();
+        CRustStringRange GetReadingString();
+        bool KeystrokeBufferIncludesWildcard();
+
         void SetupDictionaryFile(HINSTANCE dllInstanceHandle, const CRustStringRange& dictionaryFileName, bool isKeystrokeSort);
         std::optional<CRustTableDictionaryEngine> GetTableDictionaryEngine() const;
     };
