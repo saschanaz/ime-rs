@@ -1321,17 +1321,16 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, _In_reads_(1) WCH
 
     if (candidateMode == CANDIDATE_ORIGINAL || candidateMode == CANDIDATE_PHRASE || candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION)
     {
-        BOOL isRetCode = TRUE;
-        if (IsVirtualKeyKeystrokeCandidate(uCode, pKeyState, candidateMode, &isRetCode, &_KeystrokeCandidate))
+        if (IsVirtualKeyKeystrokeCandidate(uCode, pKeyState, candidateMode, &_KeystrokeCandidate))
         {
-            return isRetCode;
+            return true;
         }
 
         if (hasCandidateWithWildcard)
         {
-            if (IsVirtualKeyKeystrokeCandidate(uCode, pKeyState, candidateMode, &isRetCode, &_KeystrokeCandidateWildcard))
+            if (IsVirtualKeyKeystrokeCandidate(uCode, pKeyState, candidateMode, &_KeystrokeCandidateWildcard))
             {
-                return isRetCode;
+                return true;
             }
         }
 
@@ -1353,10 +1352,9 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, _In_reads_(1) WCH
     // CANDIDATE_INCREMENTAL should process Keystroke.Candidate virtual keys.
     else if (candidateMode == CANDIDATE_INCREMENTAL)
     {
-        BOOL isRetCode = TRUE;
-        if (IsVirtualKeyKeystrokeCandidate(uCode, pKeyState, candidateMode, &isRetCode, &_KeystrokeCandidate))
+        if (IsVirtualKeyKeystrokeCandidate(uCode, pKeyState, candidateMode, &_KeystrokeCandidate))
         {
-            return isRetCode;
+            return true;
         }
     }
 
@@ -1567,20 +1565,12 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode, _
 //
 //----------------------------------------------------------------------------
 
-BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeCandidate(UINT uCode, _In_ _KEYSTROKE_STATE *pKeyState, CANDIDATE_MODE candidateMode, _Out_ BOOL *pfRetCode, _In_ CSampleImeArray<_KEYSTROKE> *pKeystrokeMetric)
+BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeCandidate(UINT uCode, _In_ _KEYSTROKE_STATE *pKeyState, CANDIDATE_MODE candidateMode, _In_ CSampleImeArray<_KEYSTROKE> *pKeystrokeMetric)
 {
-    if (pfRetCode == nullptr)
-    {
-        return FALSE;
-    }
-    *pfRetCode = FALSE;
-
     for (const auto& keystroke : *pKeystrokeMetric)
     {
-
         if ((keystroke.VirtualKey == uCode) && Global::CheckModifiers(Global::ModifiersValue, keystroke.Modifiers))
         {
-            *pfRetCode = TRUE;
             if (pKeyState)
             {
                 pKeyState->Category = (candidateMode == CANDIDATE_ORIGINAL ? CATEGORY_CANDIDATE :
