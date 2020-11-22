@@ -117,7 +117,6 @@ extern const CLSID SampleIMEGuidDoubleSingleBytePreserveKey;
 extern const CLSID SampleIMEGuidPunctuationPreserveKey;
 
 LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
-BOOL CheckModifiers(UINT uModCurrent, UINT uMod);
 BOOL UpdateModifiers(WPARAM wParam, LPARAM lParam);
 
 extern USHORT ModifiersValue;

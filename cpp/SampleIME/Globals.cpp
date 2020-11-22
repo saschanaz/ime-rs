@@ -119,62 +119,9 @@ extern const struct _PUNCTUATION PunctuationTable[14] = {
     {L'_',  0x2014}
 };
 
-//+---------------------------------------------------------------------------
-//
-// CheckModifiers
-//
-//----------------------------------------------------------------------------
-
 #define TF_MOD_ALLALT     (TF_MOD_RALT | TF_MOD_LALT | TF_MOD_ALT)
 #define TF_MOD_ALLCONTROL (TF_MOD_RCONTROL | TF_MOD_LCONTROL | TF_MOD_CONTROL)
 #define TF_MOD_ALLSHIFT   (TF_MOD_RSHIFT | TF_MOD_LSHIFT | TF_MOD_SHIFT)
-#define TF_MOD_RLALT      (TF_MOD_RALT | TF_MOD_LALT)
-#define TF_MOD_RLCONTROL  (TF_MOD_RCONTROL | TF_MOD_LCONTROL)
-#define TF_MOD_RLSHIFT    (TF_MOD_RSHIFT | TF_MOD_LSHIFT)
-
-#define CheckMod(m0, m1, mod)        \
-    if (m1 & TF_MOD_ ## mod ##)      \
-{ \
-    if (!(m0 & TF_MOD_ ## mod ##)) \
-{      \
-    return FALSE;   \
-}      \
-} \
-    else       \
-{ \
-    if ((m1 ^ m0) & TF_MOD_RL ## mod ##)    \
-{      \
-    return FALSE;   \
-}      \
-} \
-
-
-
-BOOL CheckModifiers(UINT modCurrent, UINT mod)
-{
-    mod &= ~TF_MOD_ON_KEYUP;
-
-    if (mod & TF_MOD_IGNORE_ALL_MODIFIER)
-    {
-        return TRUE;
-    }
-
-    if (modCurrent == mod)
-    {
-        return TRUE;
-    }
-
-    if (modCurrent && !mod)
-    {
-        return FALSE;
-    }
-
-    CheckMod(modCurrent, mod, ALT);
-    CheckMod(modCurrent, mod, SHIFT);
-    CheckMod(modCurrent, mod, CONTROL);
-
-    return TRUE;
-}
 
 //+---------------------------------------------------------------------------
 //

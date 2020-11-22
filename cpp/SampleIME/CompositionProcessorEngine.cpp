@@ -1514,7 +1514,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode, _
 
     for (const auto& keystroke : _KeystrokeComposition)
     {
-        if ((keystroke.VirtualKey == uCode) && Global::CheckModifiers(Global::ModifiersValue, 0))
+        if ((keystroke.VirtualKey == uCode) && Global::ModifiersValue == 0)
         {
             if (function == FUNCTION_NONE)
             {
