@@ -1295,7 +1295,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, _In_reads_(1) WCH
 
     if (fComposing || candidateMode == CANDIDATE_INCREMENTAL || candidateMode == CANDIDATE_NONE)
     {
-        if (IsVirtualKeyKeystrokeComposition(uCode, pKeyState, FUNCTION_NONE))
+        if (IsVirtualKeyKeystrokeComposition(uCode, pKeyState))
         {
             return TRUE;
         }
@@ -1318,7 +1318,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, _In_reads_(1) WCH
     if (candidateMode == CANDIDATE_ORIGINAL || candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION)
     {
         // Candidate list could not handle key. We can try to restart the composition.
-        if (IsVirtualKeyKeystrokeComposition(uCode, pKeyState, FUNCTION_INPUT))
+        if (IsVirtualKeyKeystrokeComposition(uCode, pKeyState))
         {
             if (candidateMode != CANDIDATE_ORIGINAL)
             {
@@ -1334,7 +1334,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, _In_reads_(1) WCH
 
     if (!fComposing && candidateMode != CANDIDATE_ORIGINAL && candidateMode != CANDIDATE_WITH_NEXT_COMPOSITION)
     {
-        if (IsVirtualKeyKeystrokeComposition(uCode, pKeyState, FUNCTION_INPUT))
+        if (IsVirtualKeyKeystrokeComposition(uCode, pKeyState))
         {
             return TRUE;
         }
@@ -1449,7 +1449,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, _In_reads_(1) WCH
 
         if (candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION)
         {
-            if (IsVirtualKeyKeystrokeComposition(uCode, NULL, FUNCTION_NONE))
+            if (IsVirtualKeyKeystrokeComposition(uCode, NULL))
             {
                 if (pKeyState) { pKeyState->Category = CATEGORY_COMPOSING; pKeyState->Function = FUNCTION_FINALIZE_TEXTSTORE_AND_INPUT; } return TRUE;
             }
@@ -1465,7 +1465,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, _In_reads_(1) WCH
         return FALSE;
     }
 
-    if (*pwch && !IsVirtualKeyKeystrokeComposition(uCode, pKeyState, FUNCTION_NONE))
+    if (*pwch && !IsVirtualKeyKeystrokeComposition(uCode, pKeyState))
     {
         if (pKeyState)
         {
@@ -1484,7 +1484,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, _In_reads_(1) WCH
 //
 //----------------------------------------------------------------------------
 
-BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode, _Out_opt_ _KEYSTROKE_STATE *pKeyState, KEYSTROKE_FUNCTION function)
+BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode, _Out_opt_ _KEYSTROKE_STATE *pKeyState)
 {
     if (pKeyState == nullptr)
     {
@@ -1498,12 +1498,9 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode, _
     {
         if (keystroke.VirtualKey == uCode && Global::ModifiersValue == 0)
         {
-            if (function == FUNCTION_NONE || function == FUNCTION_INPUT)
-            {
-                pKeyState->Category = CATEGORY_COMPOSING;
-                pKeyState->Function = FUNCTION_INPUT;
-                return TRUE;
-            }
+            pKeyState->Category = CATEGORY_COMPOSING;
+            pKeyState->Function = FUNCTION_INPUT;
+            return TRUE;
         }
     }
 
