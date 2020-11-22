@@ -228,8 +228,7 @@ HRESULT CSampleIME::_CreateAndStartCandidate(_In_ CCompositionProcessorEngine *p
 {
     HRESULT hr = S_OK;
 
-    if (((_candidateMode == CANDIDATE_PHRASE) && (_pCandidateListUIPresenter))
-        || ((_candidateMode == CANDIDATE_NONE) && (_pCandidateListUIPresenter)))
+    if ((_candidateMode == CANDIDATE_NONE) && (_pCandidateListUIPresenter))
     {
         // Recreate candidate list
         _pCandidateListUIPresenter->_EndCandidateList();
