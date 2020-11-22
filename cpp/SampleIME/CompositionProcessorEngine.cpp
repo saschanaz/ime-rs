@@ -1219,7 +1219,6 @@ void CCompositionProcessorEngine::InitKeyStrokeTable()
     for (int i = 0; i < 26; i++)
     {
         _keystrokeTable[i].VirtualKey = 'A' + i;
-        _keystrokeTable[i].Modifiers = 0;
         _keystrokeTable[i].Function = FUNCTION_INPUT;
     }
 }
@@ -1515,7 +1514,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode, _
 
     for (const auto& keystroke : _KeystrokeComposition)
     {
-        if ((keystroke.VirtualKey == uCode) && Global::CheckModifiers(Global::ModifiersValue, keystroke.Modifiers))
+        if ((keystroke.VirtualKey == uCode) && Global::CheckModifiers(Global::ModifiersValue, 0))
         {
             if (function == FUNCTION_NONE)
             {

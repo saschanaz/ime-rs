@@ -114,13 +114,11 @@ private:
     struct _KEYSTROKE
     {
         UINT VirtualKey;
-        UINT Modifiers;
         KEYSTROKE_FUNCTION Function;
 
         _KEYSTROKE()
         {
             VirtualKey = 0;
-            Modifiers = 0;
             Function = FUNCTION_NONE;
         }
     };
