@@ -117,8 +117,6 @@ CCompositionProcessorEngine::CCompositionProcessorEngine()
     _hasMakePhraseFromText = FALSE;
     _isKeystrokeSort = FALSE;
 
-    _candidateListPhraseModifier = 0;
-
     _candidateWndWidth = CAND_WIDTH;
 
     InitKeyStrokeTable();
@@ -1558,8 +1556,7 @@ BOOL CCompositionProcessorEngine::IsKeystrokeRange(UINT uCode, _Out_ _KEYSTROKE_
         if (candidateMode == CANDIDATE_PHRASE)
         {
             // Candidate phrase could specify modifier
-            if ((GetCandidateListPhraseModifier() == 0 && Global::ModifiersValue == 0) ||
-                (GetCandidateListPhraseModifier() != 0 && Global::CheckModifiers(Global::ModifiersValue, GetCandidateListPhraseModifier())))
+            if (Global::ModifiersValue == 0)
             {
                 pKeyState->Category = CATEGORY_PHRASE; pKeyState->Function = FUNCTION_SELECT_BY_NUMBER;
                 return TRUE;
@@ -1573,8 +1570,7 @@ BOOL CCompositionProcessorEngine::IsKeystrokeRange(UINT uCode, _Out_ _KEYSTROKE_
         else if (candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION)
         {
             // Candidate phrase could specify modifier
-            if ((GetCandidateListPhraseModifier() == 0 && Global::ModifiersValue == 0) ||
-                (GetCandidateListPhraseModifier() != 0 && Global::CheckModifiers(Global::ModifiersValue, GetCandidateListPhraseModifier())))
+            if (Global::ModifiersValue == 0)
             {
                 pKeyState->Category = CATEGORY_CANDIDATE; pKeyState->Function = FUNCTION_SELECT_BY_NUMBER;
                 return TRUE;

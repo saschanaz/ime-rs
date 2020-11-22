@@ -80,7 +80,6 @@ public:
     void HideAllLanguageBarIcons();
 
     inline CCandidateRange *GetCandidateListIndexRange() { return &_candidateListIndexRange; }
-    inline UINT GetCandidateListPhraseModifier() { return _candidateListPhraseModifier; }
     inline UINT GetCandidateWindowWidth() { return _candidateWndWidth; }
 
 private:
@@ -174,7 +173,6 @@ private:
     bool _isKeystrokeSort;
     bool _isComLessMode;
     CCandidateRange _candidateListIndexRange;
-    UINT _candidateListPhraseModifier;
     UINT _candidateWndWidth;
 
     static const int OUT_OF_FILE_INDEX = -1;
