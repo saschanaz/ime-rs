@@ -114,12 +114,10 @@ private:
     struct _KEYSTROKE
     {
         UINT VirtualKey;
-        KEYSTROKE_FUNCTION Function;
 
         _KEYSTROKE()
         {
             VirtualKey = 0;
-            Function = FUNCTION_NONE;
         }
     };
     _KEYSTROKE _keystrokeTable[26];
