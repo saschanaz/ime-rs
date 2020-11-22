@@ -77,7 +77,6 @@ CSampleIME::CSampleIME()
 
     _candidateMode = CANDIDATE_NONE;
     _pCandidateListUIPresenter = nullptr;
-    _isCandidateWithWildcard = FALSE;
 
     _pDocMgrLastFocused = nullptr;
 
@@ -307,7 +306,6 @@ STDAPI CSampleIME::Deactivate()
         }
 
         _candidateMode = CANDIDATE_NONE;
-        _isCandidateWithWildcard = FALSE;
     }
 
     _UninitFunctionProviderSink();

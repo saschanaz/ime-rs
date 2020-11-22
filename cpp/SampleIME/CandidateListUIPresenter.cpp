@@ -161,7 +161,6 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
             _pCandidateListUIPresenter = nullptr;
 
             _candidateMode = CANDIDATE_NONE;
-            _isCandidateWithWildcard = FALSE;
         }
 
         if (hrReturn == S_OK)
@@ -170,7 +169,6 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
             _pCandidateListUIPresenter = pTempCandListUIPresenter;
 
             _candidateMode = tempCandMode;
-            _isCandidateWithWildcard = FALSE;
         }
     }
     else

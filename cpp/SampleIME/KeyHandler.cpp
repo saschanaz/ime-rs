@@ -64,7 +64,6 @@ VOID CSampleIME::_DeleteCandidateList(BOOL isForce, _In_opt_ ITfContext *pContex
         _pCandidateListUIPresenter->_EndCandidateList();
 
         _candidateMode = CANDIDATE_NONE;
-        _isCandidateWithWildcard = FALSE;
     }
 }
 
@@ -238,7 +237,6 @@ HRESULT CSampleIME::_CreateAndStartCandidate(_In_ CCompositionProcessorEngine *p
         _pCandidateListUIPresenter = nullptr;
 
         _candidateMode = CANDIDATE_NONE;
-        _isCandidateWithWildcard = FALSE;
     }
 
     if (_pCandidateListUIPresenter == nullptr)
@@ -253,7 +251,6 @@ HRESULT CSampleIME::_CreateAndStartCandidate(_In_ CCompositionProcessorEngine *p
         }
 
         _candidateMode = CANDIDATE_INCREMENTAL;
-        _isCandidateWithWildcard = FALSE;
 
         // we don't cache the document manager object. So get it from pContext.
         ITfDocumentMgr* pDocumentMgr = nullptr;
@@ -362,7 +359,6 @@ HRESULT CSampleIME::_HandleCompositionConvert(TfEditCookie ec, _In_ ITfContext *
             _pCandidateListUIPresenter = nullptr;
 
             _candidateMode = CANDIDATE_NONE;
-            _isCandidateWithWildcard = FALSE;
         }
 
         //
@@ -381,8 +377,6 @@ HRESULT CSampleIME::_HandleCompositionConvert(TfEditCookie ec, _In_ ITfContext *
 
             _candidateMode = CANDIDATE_ORIGINAL;
         }
-
-        _isCandidateWithWildcard = isWildcardSearch;
 
         // we don't cache the document manager object. So get it from pContext.
         ITfDocumentMgr* pDocumentMgr = nullptr;
