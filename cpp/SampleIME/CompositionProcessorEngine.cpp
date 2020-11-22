@@ -1539,32 +1539,6 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode, _
 
 //+---------------------------------------------------------------------------
 //
-// CCompositionProcessorEngine::IsVirtualKeyKeystrokeCandidate
-//
-//----------------------------------------------------------------------------
-
-BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeCandidate(UINT uCode, _In_ _KEYSTROKE_STATE *pKeyState, CANDIDATE_MODE candidateMode, _In_ CSampleImeArray<_KEYSTROKE> *pKeystrokeMetric)
-{
-    for (const auto& keystroke : *pKeystrokeMetric)
-    {
-        if ((keystroke.VirtualKey == uCode) && Global::CheckModifiers(Global::ModifiersValue, keystroke.Modifiers))
-        {
-            if (pKeyState)
-            {
-                pKeyState->Category = (candidateMode == CANDIDATE_ORIGINAL ? CATEGORY_CANDIDATE :
-                    candidateMode == CANDIDATE_PHRASE ? CATEGORY_PHRASE : CATEGORY_CANDIDATE);
-
-                pKeyState->Function = keystroke.Function;
-            }
-            return TRUE;
-        }
-    }
-
-    return FALSE;
-}
-
-//+---------------------------------------------------------------------------
-//
 // CCompositionProcessorEngine::IsKeyKeystrokeRange
 //
 //----------------------------------------------------------------------------
