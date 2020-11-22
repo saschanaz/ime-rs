@@ -1321,19 +1321,6 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, _In_reads_(1) WCH
 
     if (candidateMode == CANDIDATE_ORIGINAL || candidateMode == CANDIDATE_PHRASE || candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION)
     {
-        if (IsVirtualKeyKeystrokeCandidate(uCode, pKeyState, candidateMode, &_KeystrokeCandidate))
-        {
-            return true;
-        }
-
-        if (hasCandidateWithWildcard)
-        {
-            if (IsVirtualKeyKeystrokeCandidate(uCode, pKeyState, candidateMode, &_KeystrokeCandidateWildcard))
-            {
-                return true;
-            }
-        }
-
         // Candidate list could not handle key. We can try to restart the composition.
         if (IsVirtualKeyKeystrokeComposition(uCode, pKeyState, FUNCTION_INPUT))
         {
@@ -1346,15 +1333,6 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, _In_reads_(1) WCH
                 if (pKeyState) { pKeyState->Category = CATEGORY_CANDIDATE; pKeyState->Function = FUNCTION_FINALIZE_CANDIDATELIST_AND_INPUT; }
                 return TRUE;
             }
-        }
-    }
-
-    // CANDIDATE_INCREMENTAL should process Keystroke.Candidate virtual keys.
-    else if (candidateMode == CANDIDATE_INCREMENTAL)
-    {
-        if (IsVirtualKeyKeystrokeCandidate(uCode, pKeyState, candidateMode, &_KeystrokeCandidate))
-        {
-            return true;
         }
     }
 

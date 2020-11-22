@@ -133,10 +133,6 @@ private:
     TfClientId  _tfClientId;
 
     CSampleImeArray<_KEYSTROKE> _KeystrokeComposition;
-    CSampleImeArray<_KEYSTROKE> _KeystrokeCandidate;
-    CSampleImeArray<_KEYSTROKE> _KeystrokeCandidateWildcard;
-    CSampleImeArray<_KEYSTROKE> _KeystrokeCandidateSymbol;
-    CSampleImeArray<_KEYSTROKE> _KeystrokeSymbol;
 
     // Preserved key data
     class XPreservedKey
