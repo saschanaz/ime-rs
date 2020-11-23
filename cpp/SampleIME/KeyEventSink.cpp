@@ -77,11 +77,8 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_ UINT 
     CCompartment CompartmentPunctuation(_pThreadMgr, _tfClientId, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION);
     CompartmentPunctuation._GetCompartmentBOOL(isPunctuation);
 
-    if (pKeyState)
-    {
-        pKeyState->Category = CATEGORY_NONE;
-        pKeyState->Function = FUNCTION_NONE;
-    }
+    pKeyState->Category = CATEGORY_NONE;
+    pKeyState->Function = FUNCTION_NONE;
     if (pwch)
     {
         *pwch = L'\0';
@@ -146,11 +143,8 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_ UINT 
     {
         if ((_candidateMode == CANDIDATE_NONE) && isPunctuation)
         {
-            if (pKeyState)
-            {
-                pKeyState->Category = CATEGORY_COMPOSING;
-                pKeyState->Function = FUNCTION_PUNCTUATION;
-            }
+            pKeyState->Category = CATEGORY_COMPOSING;
+            pKeyState->Function = FUNCTION_PUNCTUATION;
             return TRUE;
         }
     }
@@ -162,11 +156,8 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_ UINT 
     {
         if (_candidateMode == CANDIDATE_NONE)
         {
-            if (pKeyState)
-            {
-                pKeyState->Category = CATEGORY_COMPOSING;
-                pKeyState->Function = FUNCTION_DOUBLE_SINGLE_BYTE;
-            }
+            pKeyState->Category = CATEGORY_COMPOSING;
+            pKeyState->Function = FUNCTION_DOUBLE_SINGLE_BYTE;
             return TRUE;
         }
     }
@@ -365,10 +356,11 @@ STDAPI CSampleIME::OnTestKeyUp(ITfContext *pContext, WPARAM wParam, LPARAM lPara
 
     Global::UpdateModifiers(wParam, lParam);
 
+    _KEYSTROKE_STATE keystrokeState;
     WCHAR wch = '\0';
     UINT code = 0;
 
-    *pIsEaten = _IsKeyEaten(pContext, (UINT)wParam, &code, &wch, NULL);
+    *pIsEaten = _IsKeyEaten(pContext, (UINT)wParam, &code, &wch, &keystrokeState);
 
     return S_OK;
 }
@@ -385,10 +377,11 @@ STDAPI CSampleIME::OnKeyUp(ITfContext *pContext, WPARAM wParam, LPARAM lParam, B
 {
     Global::UpdateModifiers(wParam, lParam);
 
+    _KEYSTROKE_STATE keystrokeState;
     WCHAR wch = '\0';
     UINT code = 0;
 
-    *pIsEaten = _IsKeyEaten(pContext, (UINT)wParam, &code, &wch, NULL);
+    *pIsEaten = _IsKeyEaten(pContext, (UINT)wParam, &code, &wch, &keystrokeState);
 
     return S_OK;
 }
