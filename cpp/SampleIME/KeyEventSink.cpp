@@ -77,8 +77,7 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_ UINT 
     CCompartment CompartmentPunctuation(_pThreadMgr, _tfClientId, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION);
     CompartmentPunctuation._GetCompartmentBOOL(isPunctuation);
 
-    pKeyState->Category = CATEGORY_NONE;
-    pKeyState->Function = FUNCTION_NONE;
+    *pKeyState = { CATEGORY_NONE, FUNCTION_NONE };
     if (pwch)
     {
         *pwch = L'\0';
@@ -143,8 +142,7 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_ UINT 
     {
         if ((_candidateMode == CANDIDATE_NONE) && isPunctuation)
         {
-            pKeyState->Category = CATEGORY_COMPOSING;
-            pKeyState->Function = FUNCTION_PUNCTUATION;
+            *pKeyState = { CATEGORY_COMPOSING, FUNCTION_PUNCTUATION };
             return TRUE;
         }
     }
@@ -156,8 +154,7 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_ UINT 
     {
         if (_candidateMode == CANDIDATE_NONE)
         {
-            pKeyState->Category = CATEGORY_COMPOSING;
-            pKeyState->Function = FUNCTION_DOUBLE_SINGLE_BYTE;
+            *pKeyState = { CATEGORY_COMPOSING, FUNCTION_DOUBLE_SINGLE_BYTE };
             return TRUE;
         }
     }
