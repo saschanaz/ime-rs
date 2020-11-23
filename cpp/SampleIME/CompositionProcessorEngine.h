@@ -40,7 +40,7 @@ public:
         return MAKELCID(_langid, SORT_DEFAULT);
     }
 
-    BOOL IsVirtualKeyNeed(UINT uCode, _In_reads_(1) WCHAR *pwch, BOOL fComposing, CANDIDATE_MODE candidateMode, _Out_opt_ _KEYSTROKE_STATE *pKeyState);
+    BOOL IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL fComposing, CANDIDATE_MODE candidateMode, _Out_opt_ _KEYSTROKE_STATE *pKeyState);
 
     BOOL AddVirtualKey(WCHAR wch);
     void PopVirtualKey();

@@ -1280,7 +1280,7 @@ void CCompositionProcessorEngine::SetDefaultCandidateTextFont()
 //     If engine need this virtual key code, returns true. Otherwise returns false.
 //----------------------------------------------------------------------------
 
-BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, _In_reads_(1) WCHAR *pwch, BOOL fComposing, CANDIDATE_MODE candidateMode, _Out_opt_ _KEYSTROKE_STATE *pKeyState)
+BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL fComposing, CANDIDATE_MODE candidateMode, _Out_opt_ _KEYSTROKE_STATE *pKeyState)
 {
     *pKeyState = { CATEGORY_NONE, FUNCTION_NONE };
 
@@ -1295,8 +1295,8 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, _In_reads_(1) WCH
         {
             return TRUE;
         }
-        else if ((IsWildcard() && IsWildcardChar(*pwch) && !IsDisableWildcardAtFirst()) ||
-            (IsWildcard() && IsWildcardChar(*pwch) &&  IsDisableWildcardAtFirst() && engine_rust.HasVirtualKey()))
+        else if ((IsWildcard() && IsWildcardChar(wch) && !IsDisableWildcardAtFirst()) ||
+            (IsWildcard() && IsWildcardChar(wch) &&  IsDisableWildcardAtFirst() && engine_rust.HasVirtualKey()))
         {
             *pKeyState = { CATEGORY_COMPOSING, FUNCTION_INPUT };
             return TRUE;
@@ -1447,7 +1447,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, _In_reads_(1) WCH
         return FALSE;
     }
 
-    if (*pwch && !IsVirtualKeyKeystrokeComposition(uCode, pKeyState))
+    if (wch && !IsVirtualKeyKeystrokeComposition(uCode, pKeyState))
     {
         *pKeyState = { CATEGORY_INVOKE_COMPOSITION_EDIT_SESSION, FUNCTION_FINALIZE_TEXTSTORE };
         return FALSE;
