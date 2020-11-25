@@ -1336,7 +1336,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL f
     // System pre-defined keystroke
     if (fComposing)
     {
-        if ((candidateMode != CANDIDATE_INCREMENTAL))
+        if (candidateMode != CANDIDATE_INCREMENTAL)
         {
             switch (uCode)
             {
@@ -1357,7 +1357,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL f
             case VK_SPACE:  *pKeyState = { CATEGORY_COMPOSING, FUNCTION_CONVERT }; return TRUE;
             }
         }
-        else if ((candidateMode == CANDIDATE_INCREMENTAL))
+        else
         {
             switch (uCode)
             {
@@ -1382,19 +1382,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL f
             case VK_HOME:   *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_MOVE_PAGE_TOP }; return TRUE;
             case VK_END:    *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_MOVE_PAGE_BOTTOM }; return TRUE;
 
-            case VK_SPACE:
-                {
-                    if (candidateMode == CANDIDATE_INCREMENTAL)
-                    {
-                        *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_CONVERT };
-                        return TRUE;
-                    }
-                    else
-                    {
-                        *pKeyState = { CATEGORY_COMPOSING, FUNCTION_CONVERT };
-                        return TRUE;
-                    }
-                }
+            case VK_SPACE:  *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_CONVERT }; return TRUE;
             }
         }
     }
