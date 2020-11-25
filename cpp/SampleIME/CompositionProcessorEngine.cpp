@@ -1291,11 +1291,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL f
 
     if (fComposing || candidateMode == CANDIDATE_INCREMENTAL || candidateMode == CANDIDATE_NONE)
     {
-        if (IsVirtualKeyKeystrokeComposition(uCode, pKeyState))
-        {
-            return TRUE;
-        }
-        else if ((IsWildcard() && IsWildcardChar(wch) && !IsDisableWildcardAtFirst()) ||
+        if ((IsWildcard() && IsWildcardChar(wch) && !IsDisableWildcardAtFirst()) ||
             (IsWildcard() && IsWildcardChar(wch) &&  IsDisableWildcardAtFirst() && engine_rust.HasVirtualKey()))
         {
             *pKeyState = { CATEGORY_COMPOSING, FUNCTION_INPUT };
@@ -1315,10 +1311,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL f
         {
             *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_FINALIZE_CANDIDATELIST_AND_INPUT };
         }
-        if (!fComposing || candidateMode == CANDIDATE_ORIGINAL || candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION)
-        {
-            return TRUE;
-        }
+        return TRUE;
     }
 
     // System pre-defined keystroke
