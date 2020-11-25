@@ -42,10 +42,6 @@ CKeyStateCategory* CKeyStateCategoryFactory::MakeKeyStateCategory(KEYSTROKE_CATE
         pKeyState = new (std::nothrow) CKeyStateCandidate(pTextService);
         break;
 
-    case CATEGORY_PHRASE:
-        pKeyState = new (std::nothrow) CKeyStatePhrase(pTextService);
-        break;
-
     default:
         pKeyState = new (std::nothrow) CKeyStateNull(pTextService);
         break;
