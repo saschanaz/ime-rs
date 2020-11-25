@@ -80,7 +80,6 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
     HRESULT hrReturn = E_FAIL;
     DWORD_PTR candidateLen = 0;
     const WCHAR* pCandidateString = nullptr;
-    BSTR pbstr = nullptr;
     std::optional<CRustStringRange> candidateString;
     CSampleImeArray<CCandidateListItem> candidatePhraseList;
 
@@ -174,11 +173,6 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
     else
     {
         hrReturn = _HandleCandidateFinalize(ec, pContext);
-    }
-
-    if (pbstr)
-    {
-        SysFreeString(pbstr);
     }
 
 Exit:
