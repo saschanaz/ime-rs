@@ -1308,26 +1308,14 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL f
         }
     }
 
-    if (candidateMode == CANDIDATE_ORIGINAL || candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION)
+    // Candidate list could not handle key. We can try to restart the composition.
+    if (IsVirtualKeyKeystrokeComposition(uCode, pKeyState))
     {
-        // Candidate list could not handle key. We can try to restart the composition.
-        if (IsVirtualKeyKeystrokeComposition(uCode, pKeyState))
+        if (candidateMode == CANDIDATE_ORIGINAL)
         {
-            if (candidateMode != CANDIDATE_ORIGINAL)
-            {
-                return TRUE;
-            }
-            else
-            {
-                *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_FINALIZE_CANDIDATELIST_AND_INPUT };
-                return TRUE;
-            }
+            *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_FINALIZE_CANDIDATELIST_AND_INPUT };
         }
-    }
-
-    if (!fComposing && candidateMode != CANDIDATE_ORIGINAL && candidateMode != CANDIDATE_WITH_NEXT_COMPOSITION)
-    {
-        if (IsVirtualKeyKeystrokeComposition(uCode, pKeyState))
+        if (!fComposing || candidateMode == CANDIDATE_ORIGINAL || candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION)
         {
             return TRUE;
         }
