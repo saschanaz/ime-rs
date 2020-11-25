@@ -346,7 +346,7 @@ HRESULT CSampleIME::_HandleCompositionConvert(TfEditCookie ec, _In_ ITfContext *
     pCompositionProcessorEngine = _pCompositionProcessorEngine;
     pCompositionProcessorEngine->GetCandidateList(&candidateList, FALSE, isWildcardSearch);
 
-    // If there is no candlidate listin the current reading string, we don't do anything. Just wait for
+    // If there is no candlidate listing the current reading string, we don't do anything. Just wait for
     // next char to be ready for the conversion with it.
     int nCount = candidateList.Count();
     if (nCount)
@@ -363,19 +363,16 @@ HRESULT CSampleIME::_HandleCompositionConvert(TfEditCookie ec, _In_ ITfContext *
         //
         // create an instance of the candidate list class.
         //
-        if (_pCandidateListUIPresenter == nullptr)
+        _pCandidateListUIPresenter = new (std::nothrow) CCandidateListUIPresenter(this, Global::AtomCandidateWindow,
+            CATEGORY_CANDIDATE,
+            pCompositionProcessorEngine->GetCandidateListIndexRange(),
+            FALSE);
+        if (!_pCandidateListUIPresenter)
         {
-            _pCandidateListUIPresenter = new (std::nothrow) CCandidateListUIPresenter(this, Global::AtomCandidateWindow,
-                CATEGORY_CANDIDATE,
-                pCompositionProcessorEngine->GetCandidateListIndexRange(),
-                FALSE);
-            if (!_pCandidateListUIPresenter)
-            {
-                return E_OUTOFMEMORY;
-            }
-
-            _candidateMode = CANDIDATE_ORIGINAL;
+            return E_OUTOFMEMORY;
         }
+
+        _candidateMode = CANDIDATE_ORIGINAL;
 
         // we don't cache the document manager object. So get it from pContext.
         ITfDocumentMgr* pDocumentMgr = nullptr;
