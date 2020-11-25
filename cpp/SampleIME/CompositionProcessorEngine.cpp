@@ -1280,7 +1280,7 @@ void CCompositionProcessorEngine::SetDefaultCandidateTextFont()
 //     If engine need this virtual key code, returns true. Otherwise returns false.
 //----------------------------------------------------------------------------
 
-BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL fComposing, CANDIDATE_MODE candidateMode, _Out_opt_ _KEYSTROKE_STATE *pKeyState)
+BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL fComposing, CANDIDATE_MODE candidateMode, _Out_ _KEYSTROKE_STATE *pKeyState)
 {
     *pKeyState = { CATEGORY_NONE, FUNCTION_NONE };
 
@@ -1427,15 +1427,6 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL f
                 }
             }
         }
-
-        if (candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION)
-        {
-            if (IsVirtualKeyKeystrokeComposition(uCode, NULL))
-            {
-                *pKeyState = { CATEGORY_COMPOSING, FUNCTION_FINALIZE_TEXTSTORE_AND_INPUT };
-                return TRUE;
-            }
-        }
     }
 
     if (IsKeystrokeRange(uCode, pKeyState, candidateMode))
@@ -1462,13 +1453,8 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL f
 //
 //----------------------------------------------------------------------------
 
-BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode, _Out_opt_ _KEYSTROKE_STATE *pKeyState)
+BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode, _Out_ _KEYSTROKE_STATE *pKeyState)
 {
-    if (pKeyState == nullptr)
-    {
-        return FALSE;
-    }
-
     *pKeyState = { CATEGORY_NONE, FUNCTION_NONE };
 
     for (const auto& keystroke : _KeystrokeComposition)
