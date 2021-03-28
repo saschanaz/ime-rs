@@ -1,3 +1,5 @@
+#![allow(clippy::missing_safety_doc)]
+
 pub fn compare_with_wildcard(input: &str, target: &str) -> bool {
     if input.is_empty() {
         return target.is_empty();
