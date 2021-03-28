@@ -1,6 +1,6 @@
 #![allow(clippy::missing_safety_doc)]
-#![allow(clippy::len-without-is-empty)]
-#![allow(clippy::should-implement-trait)]
+#![allow(clippy::len_without_is_empty)]
+#![allow(clippy::should_implement_trait)]
 
 use core::ffi::c_void;
 use std::cmp::Ordering;
