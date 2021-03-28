@@ -113,7 +113,7 @@ pub unsafe extern "C" fn ruststringrange_new_utf8(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn ruststringrange_free(p: *mut c_void) -> () {
+pub unsafe extern "C" fn ruststringrange_free(p: *mut c_void) {
     RustStringRange::from_void(p); // implicit cleanup
 }
 
