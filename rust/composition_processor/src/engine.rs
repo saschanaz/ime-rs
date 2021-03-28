@@ -48,7 +48,8 @@ impl CompositionProcessorEngine {
     }
 
     pub fn keystroke_buffer_includes_wildcard(&self) -> bool {
-        self.keystroke_buffer.contains(&(b'*' as u16)) || self.keystroke_buffer.contains(&(b'?' as u16))
+        self.keystroke_buffer.contains(&(b'*' as u16))
+            || self.keystroke_buffer.contains(&(b'?' as u16))
     }
 
     pub fn setup_dictionary_file(
