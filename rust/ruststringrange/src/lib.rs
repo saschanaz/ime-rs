@@ -56,7 +56,7 @@ impl RustStringRange {
     }
 
     pub unsafe fn as_ptr(&self) -> *const u8 {
-        self.string.as_ptr().offset(self.offset as isize)
+        self.string.as_ptr().add(self.offset)
     }
 
     pub fn cut_last(&self) -> RustStringRange {

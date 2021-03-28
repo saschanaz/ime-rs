@@ -1,3 +1,5 @@
+#![allow(clippy::missing_safety_doc)]
+
 use core::ffi::c_void;
 use ruststringrange::RustStringRange;
 
@@ -14,11 +16,11 @@ unsafe fn tuples_to_ffi(
     buffer_length: usize,
 ) -> usize {
     let len = std::cmp::min(tuples.len(), buffer_length);
-    for i in 0..len {
-        *keys_buffer.offset(i as isize) =
-            Box::into_raw(Box::new(RustStringRange::from_str(tuples[i].0))) as *mut c_void;
-        *values_buffer.offset(i as isize) =
-            Box::into_raw(Box::new(RustStringRange::from_str(tuples[i].1))) as *mut c_void;
+    for (i, tuple) in tuples.iter().enumerate().take(len) {
+        *keys_buffer.add(i) =
+            Box::into_raw(Box::new(RustStringRange::from_str(tuple.0))) as *mut c_void;
+        *values_buffer.add(i) =
+            Box::into_raw(Box::new(RustStringRange::from_str(tuple.1))) as *mut c_void;
     }
 
     len
@@ -54,10 +56,10 @@ pub unsafe extern "C" fn tabledictionaryengine_load(
 ) -> *mut c_void {
     let path = Box::leak(RustStringRange::from_void(path as *mut _));
     let result = TableDictionaryEngine::load(path.as_slice(), sort);
-    if result.is_err() {
-        std::ptr::null_mut()
+    if let Some(engine) = result.ok() {
+        Box::into_raw(Box::new(engine)) as *mut c_void
     } else {
-        Box::into_raw(Box::new(result.unwrap())) as *mut c_void
+        std::ptr::null_mut()
     }
 }
 

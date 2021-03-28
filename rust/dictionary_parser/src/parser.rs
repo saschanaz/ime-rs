@@ -18,16 +18,14 @@ fn get_equalsign(s: &str) -> Option<usize> {
 fn parse_line(line: &str) -> Option<(&str, &str)> {
     fn unwrap(text: &str) -> &str {
         let mut result = text;
-        if text.starts_with("\"") && text.ends_with("\"") {
+        if text.starts_with('\"') && text.ends_with('\"') {
             result = &text[1..text.len() - 1];
         }
         result.trim()
     }
 
     let equalsign = get_equalsign(line);
-    if equalsign.is_none() {
-        return None;
-    }
+    equalsign?;
 
     let key_slice = &line[0..equalsign.unwrap()];
     let value_slice = &line[equalsign.unwrap() + 1..];
@@ -138,6 +136,14 @@ mod tests {
         #[test]
         fn equalsign_wrapped_nomatch() {
             let s = "\"abc=\"";
+
+            let result = get_equalsign(s);
+            assert!(result.is_none());
+        }
+
+        #[test]
+        fn equalsign_no_equal() {
+            let s = "\"abc\"";
 
             let result = get_equalsign(s);
             assert!(result.is_none());

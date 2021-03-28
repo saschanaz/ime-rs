@@ -1,3 +1,5 @@
+#![allow(clippy::missing_safety_doc)]
+
 use std::fs::File;
 use std::io::prelude::*;
 
