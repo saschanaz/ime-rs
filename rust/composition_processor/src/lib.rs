@@ -1,4 +1,5 @@
-#[allow(clippy::missing_safety_doc)]
+#![allow(clippy::missing_safety_doc)]
+
 use core::ffi::c_void;
 use dictionary_parser::TableDictionaryEngine;
 use ruststringrange::RustStringRange;

@@ -1,6 +1,6 @@
 pub fn compare_with_wildcard(input: &str, target: &str) -> bool {
-    if input.len() == 0 {
-        return target.len() == 0;
+    if input.is_empty() {
+        return target.is_empty();
     }
 
     let input_char = input.chars().next().unwrap();
@@ -15,13 +15,13 @@ pub fn compare_with_wildcard(input: &str, target: &str) -> bool {
         if compare_with_wildcard(&input[input_charlen..], target) {
             return true;
         }
-        if target.len() == 0 {
+        if target.is_empty() {
             return false;
         }
         return compare_with_wildcard(input, &target[target_charlen.unwrap()..]);
     }
 
-    if target.len() == 0 {
+    if target.is_empty() {
         return false;
     }
 
