@@ -21,12 +21,11 @@ jobs:
           toolchain: stable
           override: true
 
-      - run: cd rust
-
       - name: Run cargo test
         uses: actions-rs/cargo@v1
         with:
           command: test
+          args: --manifest-path rust/Cargo.toml
 
   lints:
     name: Lints
@@ -45,16 +44,14 @@ jobs:
           override: true
           components: rustfmt, clippy
 
-      - run: cd rust
-
       - name: Run cargo fmt
         uses: actions-rs/cargo@v1
         with:
           command: fmt
-          args: --all -- --check
+          args: --all -- --check --manifest-path rust/Cargo.toml
 
       - name: Run cargo clippy
         uses: actions-rs/cargo@v1
         with:
           command: clippy
-          args: -- -D warnings
+          args: -- -D warnings --manifest-path rust/Cargo.toml
