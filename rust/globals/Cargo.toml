@@ -11,4 +11,4 @@ name = "globals"
 crate-type = ["staticlib"]
 
 [dependencies]
-winapi = "0.3.8"
+winapi = { version = "0.3.9", features = ["guiddef"] }
