@@ -1305,8 +1305,9 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL f
     }
 
     // Candidate list could not handle key. We can try to restart the composition.
-    if (IsVirtualKeyKeystrokeComposition(uCode, pKeyState))
+    if (IsVirtualKeyKeystrokeComposition(uCode))
     {
+        *pKeyState = { CATEGORY_COMPOSING, FUNCTION_INPUT };
         if (candidateMode == CANDIDATE_ORIGINAL)
         {
             *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_FINALIZE_CANDIDATELIST_AND_INPUT };
@@ -1407,10 +1408,14 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL f
         return FALSE;
     }
 
-    if (wch && !IsVirtualKeyKeystrokeComposition(uCode, pKeyState))
+    if (wch)
     {
-        *pKeyState = { CATEGORY_INVOKE_COMPOSITION_EDIT_SESSION, FUNCTION_FINALIZE_TEXTSTORE };
-        return FALSE;
+        if (IsVirtualKeyKeystrokeComposition(uCode)) {
+            *pKeyState = { CATEGORY_COMPOSING, FUNCTION_INPUT };
+        } else {
+            *pKeyState = { CATEGORY_INVOKE_COMPOSITION_EDIT_SESSION, FUNCTION_FINALIZE_TEXTSTORE };
+            return FALSE;
+        }
     }
 
     return FALSE;
@@ -1422,15 +1427,12 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL f
 //
 //----------------------------------------------------------------------------
 
-BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode, _Out_ _KEYSTROKE_STATE *pKeyState)
+BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode)
 {
-    *pKeyState = { CATEGORY_NONE, FUNCTION_NONE };
-
     for (const auto& keystroke : _KeystrokeComposition)
     {
         if (keystroke.VirtualKey == uCode && Global::ModifiersValue == 0)
         {
-            *pKeyState = { CATEGORY_COMPOSING, FUNCTION_INPUT };
             return TRUE;
         }
     }
