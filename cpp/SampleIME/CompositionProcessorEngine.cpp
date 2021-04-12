@@ -1399,8 +1399,9 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL f
         }
     }
 
-    if (IsKeystrokeRange(uCode, pKeyState, candidateMode))
+    if (IsKeystrokeRange(uCode, candidateMode))
     {
+        *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_SELECT_BY_NUMBER };
         return TRUE;
     }
     else if (pKeyState->Category != CATEGORY_NONE)
@@ -1446,15 +1447,8 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode)
 //
 //----------------------------------------------------------------------------
 
-BOOL CCompositionProcessorEngine::IsKeystrokeRange(UINT uCode, _Out_ _KEYSTROKE_STATE *pKeyState, CANDIDATE_MODE candidateMode)
+BOOL CCompositionProcessorEngine::IsKeystrokeRange(UINT uCode, CANDIDATE_MODE candidateMode)
 {
-    if (pKeyState == nullptr)
-    {
-        return FALSE;
-    }
-
-    *pKeyState = { CATEGORY_NONE, FUNCTION_NONE };
-
     if (_candidateListIndexRange.IsRange(uCode))
     {
         if (candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION)
@@ -1462,14 +1456,12 @@ BOOL CCompositionProcessorEngine::IsKeystrokeRange(UINT uCode, _Out_ _KEYSTROKE_
             // Candidate phrase could specify modifier
             if (Global::ModifiersValue == 0)
             {
-                *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_SELECT_BY_NUMBER };
                 return TRUE;
             }
             // else next composition
         }
         else if (candidateMode != CANDIDATE_NONE)
         {
-            *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_SELECT_BY_NUMBER };
             return TRUE;
         }
     }
