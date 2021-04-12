@@ -1280,10 +1280,8 @@ void CCompositionProcessorEngine::SetDefaultCandidateTextFont()
 //     If engine need this virtual key code, returns true. Otherwise returns false.
 //----------------------------------------------------------------------------
 
-BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL fComposing, CANDIDATE_MODE candidateMode, _Out_ _KEYSTROKE_STATE *pKeyState)
+std::tuple<bool, _KEYSTROKE_STATE> CCompositionProcessorEngine::TestVirtualKey(UINT uCode, WCHAR wch, BOOL fComposing, CANDIDATE_MODE candidateMode)
 {
-    *pKeyState = { CATEGORY_NONE, FUNCTION_NONE };
-
     if (candidateMode == CANDIDATE_ORIGINAL || candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION)
     {
         fComposing = FALSE;
@@ -1294,25 +1292,22 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL f
         if ((IsWildcard() && IsWildcardChar(wch) && !IsDisableWildcardAtFirst()) ||
             (IsWildcard() && IsWildcardChar(wch) &&  IsDisableWildcardAtFirst() && engine_rust.HasVirtualKey()))
         {
-            *pKeyState = { CATEGORY_COMPOSING, FUNCTION_INPUT };
-            return TRUE;
+            return std::make_tuple(true, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_INPUT });
         }
         else if (engine_rust.KeystrokeBufferIncludesWildcard() && uCode == VK_SPACE)
         {
-            *pKeyState = { CATEGORY_COMPOSING, FUNCTION_CONVERT_WILDCARD };
-            return TRUE;
+            return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_CONVERT_WILDCARD });
         }
     }
 
     // Candidate list could not handle key. We can try to restart the composition.
     if (IsVirtualKeyKeystrokeComposition(uCode))
     {
-        *pKeyState = { CATEGORY_COMPOSING, FUNCTION_INPUT };
         if (candidateMode == CANDIDATE_ORIGINAL)
         {
-            *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_FINALIZE_CANDIDATELIST_AND_INPUT };
+            return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_FINALIZE_CANDIDATELIST_AND_INPUT });
         }
-        return TRUE;
+        return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_INPUT });
     }
 
     // System pre-defined keystroke
@@ -1322,21 +1317,21 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL f
         {
             switch (uCode)
             {
-            case VK_LEFT:   *pKeyState = { CATEGORY_COMPOSING, FUNCTION_MOVE_LEFT }; return TRUE;
-            case VK_RIGHT:  *pKeyState = { CATEGORY_COMPOSING, FUNCTION_MOVE_RIGHT }; return TRUE;
-            case VK_RETURN: *pKeyState = { CATEGORY_COMPOSING, FUNCTION_FINALIZE_CANDIDATELIST }; return TRUE;
-            case VK_ESCAPE: *pKeyState = { CATEGORY_COMPOSING, FUNCTION_CANCEL }; return TRUE;
-            case VK_BACK:   *pKeyState = { CATEGORY_COMPOSING, FUNCTION_BACKSPACE }; return TRUE;
+            case VK_LEFT:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_MOVE_LEFT });
+            case VK_RIGHT:  return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_MOVE_RIGHT });
+            case VK_RETURN: return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_FINALIZE_CANDIDATELIST });
+            case VK_ESCAPE: return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_CANCEL });
+            case VK_BACK:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_BACKSPACE });
 
-            case VK_UP:     *pKeyState = { CATEGORY_COMPOSING, FUNCTION_MOVE_UP }; return TRUE;
-            case VK_DOWN:   *pKeyState = { CATEGORY_COMPOSING, FUNCTION_MOVE_DOWN }; return TRUE;
-            case VK_PRIOR:  *pKeyState = { CATEGORY_COMPOSING, FUNCTION_MOVE_PAGE_UP }; return TRUE;
-            case VK_NEXT:   *pKeyState = { CATEGORY_COMPOSING, FUNCTION_MOVE_PAGE_DOWN }; return TRUE;
+            case VK_UP:     return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_MOVE_UP });
+            case VK_DOWN:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_MOVE_DOWN });
+            case VK_PRIOR:  return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_MOVE_PAGE_UP });
+            case VK_NEXT:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_MOVE_PAGE_DOWN });
 
-            case VK_HOME:   *pKeyState = { CATEGORY_COMPOSING, FUNCTION_MOVE_PAGE_TOP }; return TRUE;
-            case VK_END:    *pKeyState = { CATEGORY_COMPOSING, FUNCTION_MOVE_PAGE_BOTTOM }; return TRUE;
+            case VK_HOME:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_MOVE_PAGE_TOP });
+            case VK_END:    return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_MOVE_PAGE_BOTTOM });
 
-            case VK_SPACE:  *pKeyState = { CATEGORY_COMPOSING, FUNCTION_CONVERT }; return TRUE;
+            case VK_SPACE:  return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_CONVERT });
             }
         }
         else
@@ -1347,24 +1342,23 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL f
                 // and for CUAS, invoke _HandleCompositionCancel() edit session due to ignore CUAS default key handler for send out terminate composition
             case VK_LEFT:
             case VK_RIGHT:
-                *pKeyState = { CATEGORY_INVOKE_COMPOSITION_EDIT_SESSION, FUNCTION_CANCEL };
-                return FALSE;
+                return std::make_tuple(FALSE, _KEYSTROKE_STATE { CATEGORY_INVOKE_COMPOSITION_EDIT_SESSION, FUNCTION_CANCEL });
 
-            case VK_RETURN: *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_FINALIZE_CANDIDATELIST }; return TRUE;
-            case VK_ESCAPE: *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_CANCEL }; return TRUE;
+            case VK_RETURN: return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_FINALIZE_CANDIDATELIST });
+            case VK_ESCAPE: return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_CANCEL });
 
                 // VK_BACK - remove one char from reading string.
-            case VK_BACK:   *pKeyState = { CATEGORY_COMPOSING, FUNCTION_BACKSPACE }; return TRUE;
+            case VK_BACK:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_BACKSPACE });
 
-            case VK_UP:     *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_MOVE_UP }; return TRUE;
-            case VK_DOWN:   *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_MOVE_DOWN }; return TRUE;
-            case VK_PRIOR:  *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_MOVE_PAGE_UP }; return TRUE;
-            case VK_NEXT:   *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_MOVE_PAGE_DOWN }; return TRUE;
+            case VK_UP:     return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_MOVE_UP });
+            case VK_DOWN:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_MOVE_DOWN });
+            case VK_PRIOR:  return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_MOVE_PAGE_UP });
+            case VK_NEXT:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_MOVE_PAGE_DOWN });
 
-            case VK_HOME:   *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_MOVE_PAGE_TOP }; return TRUE;
-            case VK_END:    *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_MOVE_PAGE_BOTTOM }; return TRUE;
+            case VK_HOME:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_MOVE_PAGE_TOP });
+            case VK_END:    return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_MOVE_PAGE_BOTTOM });
 
-            case VK_SPACE:  *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_CONVERT }; return TRUE;
+            case VK_SPACE:  return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_CONVERT });
             }
         }
     }
@@ -1373,27 +1367,25 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL f
     {
         switch (uCode)
         {
-        case VK_UP:     *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_MOVE_UP }; return TRUE;
-        case VK_DOWN:   *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_MOVE_DOWN }; return TRUE;
-        case VK_PRIOR:  *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_MOVE_PAGE_UP }; return TRUE;
-        case VK_NEXT:   *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_MOVE_PAGE_DOWN }; return TRUE;
-        case VK_HOME:   *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_MOVE_PAGE_TOP }; return TRUE;
-        case VK_END:    *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_MOVE_PAGE_BOTTOM }; return TRUE;
-        case VK_RETURN: *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_FINALIZE_CANDIDATELIST }; return TRUE;
-        case VK_SPACE:  *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_CONVERT }; return TRUE;
-        case VK_BACK:   *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_CANCEL }; return TRUE;
+        case VK_UP:     return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_MOVE_UP });
+        case VK_DOWN:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_MOVE_DOWN });
+        case VK_PRIOR:  return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_MOVE_PAGE_UP });
+        case VK_NEXT:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_MOVE_PAGE_DOWN });
+        case VK_HOME:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_MOVE_PAGE_TOP });
+        case VK_END:    return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_MOVE_PAGE_BOTTOM });
+        case VK_RETURN: return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_FINALIZE_CANDIDATELIST });
+        case VK_SPACE:  return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_CONVERT });
+        case VK_BACK:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_CANCEL });
 
         case VK_ESCAPE:
             {
                 if (candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION)
                 {
-                    *pKeyState = { CATEGORY_INVOKE_COMPOSITION_EDIT_SESSION, FUNCTION_FINALIZE_TEXTSTORE };
-                    return TRUE;
+                    return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_INVOKE_COMPOSITION_EDIT_SESSION, FUNCTION_FINALIZE_TEXTSTORE });
                 }
                 else
                 {
-                    *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_CANCEL };
-                    return TRUE;
+                    return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_CANCEL });
                 }
             }
         }
@@ -1401,25 +1393,19 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL f
 
     if (IsKeystrokeRange(uCode, candidateMode))
     {
-        *pKeyState = { CATEGORY_CANDIDATE, FUNCTION_SELECT_BY_NUMBER };
-        return TRUE;
-    }
-    else if (pKeyState->Category != CATEGORY_NONE)
-    {
-        return FALSE;
+        return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_SELECT_BY_NUMBER });
     }
 
     if (wch)
     {
         if (IsVirtualKeyKeystrokeComposition(uCode)) {
-            *pKeyState = { CATEGORY_COMPOSING, FUNCTION_INPUT };
+            return std::make_tuple(FALSE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_INPUT });
         } else {
-            *pKeyState = { CATEGORY_INVOKE_COMPOSITION_EDIT_SESSION, FUNCTION_FINALIZE_TEXTSTORE };
-            return FALSE;
+            return std::make_tuple(FALSE, _KEYSTROKE_STATE { CATEGORY_INVOKE_COMPOSITION_EDIT_SESSION, FUNCTION_FINALIZE_TEXTSTORE });
         }
     }
 
-    return FALSE;
+    return std::make_tuple(FALSE, _KEYSTROKE_STATE { CATEGORY_NONE, FUNCTION_NONE });
 }
 
 //+---------------------------------------------------------------------------

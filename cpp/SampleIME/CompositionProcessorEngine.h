@@ -40,7 +40,7 @@ public:
         return MAKELCID(_langid, SORT_DEFAULT);
     }
 
-    BOOL IsVirtualKeyNeed(UINT uCode, WCHAR wch, BOOL fComposing, CANDIDATE_MODE candidateMode, _Out_opt_ _KEYSTROKE_STATE *pKeyState);
+    std::tuple<bool, _KEYSTROKE_STATE> TestVirtualKey(UINT uCode, WCHAR wch, BOOL fComposing, CANDIDATE_MODE candidateMode);
 
     BOOL AddVirtualKey(WCHAR wch);
     void PopVirtualKey();

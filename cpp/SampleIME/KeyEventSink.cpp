@@ -129,7 +129,9 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_ UINT 
         //
         // eat only keys that CKeyHandlerEditSession can handles.
         //
-        if (pCompositionProcessorEngine->IsVirtualKeyNeed(*pCodeOut, *pwch, _IsComposing(), _candidateMode, pKeyState))
+        auto [needed, keyState] = pCompositionProcessorEngine->TestVirtualKey(*pCodeOut, *pwch, _IsComposing(), _candidateMode);
+        *pKeyState = keyState;
+        if (needed)
         {
             return TRUE;
         }
