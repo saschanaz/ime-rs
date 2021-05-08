@@ -142,7 +142,7 @@ BOOL   IsShiftKeyDownOnly = FALSE;
 BOOL   IsControlKeyDownOnly = FALSE;
 BOOL   IsAltKeyDownOnly = FALSE;
 
-BOOL UpdateModifiers(WPARAM wParam, LPARAM lParam)
+void UpdateModifiers(WPARAM wParam, LPARAM lParam)
 {
     // high-order bit : key down
     // low-order bit  : toggled
@@ -267,7 +267,5 @@ BOOL UpdateModifiers(WPARAM wParam, LPARAM lParam)
     {
         ModifiersValue &= ~TF_MOD_ALLSHIFT;
     }
-
-    return TRUE;
 }
 }

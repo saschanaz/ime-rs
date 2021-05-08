@@ -117,7 +117,7 @@ extern const CLSID SampleIMEGuidDoubleSingleBytePreserveKey;
 extern const CLSID SampleIMEGuidPunctuationPreserveKey;
 
 LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
-BOOL UpdateModifiers(WPARAM wParam, LPARAM lParam);
+void UpdateModifiers(WPARAM wParam, LPARAM lParam);
 
 extern USHORT ModifiersValue;
 extern BOOL IsShiftKeyDownOnly;
