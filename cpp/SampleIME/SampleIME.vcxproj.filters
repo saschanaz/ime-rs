@@ -71,12 +71,6 @@
     <ClInclude Include="EnumDisplayAttributeInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="File.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FileMapping.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GetTextExtentEditSession.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -191,12 +185,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EnumDisplayAttributeInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="File.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FileMapping.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GetTextExtentEditSession.cpp">

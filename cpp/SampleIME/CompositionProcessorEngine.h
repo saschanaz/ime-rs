@@ -15,7 +15,6 @@
 #include "TableDictionaryEngine.h"
 #include "KeyHandlerEditSession.h"
 #include "SampleIMEBaseStructure.h"
-#include "FileMapping.h"
 #include "Compartment.h"
 #include "Define.h"
 #include "RustStringRange.h"
