@@ -1289,8 +1289,7 @@ std::tuple<bool, _KEYSTROKE_STATE> CCompositionProcessorEngine::TestVirtualKey(U
 
     if (fComposing || candidateMode == CANDIDATE_INCREMENTAL || candidateMode == CANDIDATE_NONE)
     {
-        if ((IsWildcard() && IsWildcardChar(wch) && !IsDisableWildcardAtFirst()) ||
-            (IsWildcard() && IsWildcardChar(wch) &&  IsDisableWildcardAtFirst() && engine_rust.HasVirtualKey()))
+        if (IsWildcard() && IsWildcardChar(wch) && !(IsDisableWildcardAtFirst() && !engine_rust.HasVirtualKey()))
         {
             return std::make_tuple(true, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_INPUT });
         }
