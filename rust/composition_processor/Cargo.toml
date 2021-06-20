@@ -13,4 +13,4 @@ crate-type = ["staticlib"]
 [dependencies]
 dictionary_parser = { path = "../dictionary_parser" }
 ruststringrange = { path = "../ruststringrange" }
-winapi = { version = "0.3.9", features = ["libloaderapi", "minwindef"] }
+winapi = { version = "0.3.9", features = ["libloaderapi", "minwindef", "winuser"] }

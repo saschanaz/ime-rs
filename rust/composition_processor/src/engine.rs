@@ -1,11 +1,13 @@
 use dictionary_parser::TableDictionaryEngine;
 
+use crate::modifiers::Modifiers;
 use winapi::shared::minwindef::{HINSTANCE, MAX_PATH};
 use winapi::um::libloaderapi::GetModuleFileNameW;
 
 pub struct CompositionProcessorEngine {
     keystroke_buffer: Vec<u16>,
     table_dictionary_engine: Option<TableDictionaryEngine>,
+    modifiers: Modifiers,
 }
 
 impl CompositionProcessorEngine {
@@ -13,6 +15,7 @@ impl CompositionProcessorEngine {
         CompositionProcessorEngine {
             keystroke_buffer: Vec::new(),
             table_dictionary_engine: None,
+            modifiers: Modifiers::default(),
         }
     }
 
@@ -74,6 +77,10 @@ impl CompositionProcessorEngine {
 
     pub fn get_table_dictionary_engine(&self) -> &Option<TableDictionaryEngine> {
         &self.table_dictionary_engine
+    }
+
+    pub fn modifiers(&mut self) -> &mut Modifiers {
+        &mut self.modifiers
     }
 }
 

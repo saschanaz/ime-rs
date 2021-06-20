@@ -18,6 +18,16 @@ bool compositionprocessorengine_has_virtual_key(void *engine);
 
 bool compositionprocessorengine_keystroke_buffer_includes_wildcard(void *engine);
 
+uint16_t compositionprocessorengine_modifiers_get(void *engine);
+
+bool compositionprocessorengine_modifiers_is_alt_key_down_only(void *engine);
+
+bool compositionprocessorengine_modifiers_is_control_key_down_only(void *engine);
+
+bool compositionprocessorengine_modifiers_is_shift_key_down_only(void *engine);
+
+void compositionprocessorengine_modifiers_update(void *engine, WPARAM w, LPARAM l);
+
 void *compositionprocessorengine_new();
 
 void compositionprocessorengine_pop_virtual_key(void *engine);

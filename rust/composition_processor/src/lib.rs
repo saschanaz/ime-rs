@@ -8,6 +8,9 @@ use winapi::shared::minwindef::HINSTANCE;
 mod engine;
 use engine::CompositionProcessorEngine;
 
+pub mod modifiers;
+pub use modifiers::{Modifiers, LPARAM, WPARAM};
+
 #[no_mangle]
 pub extern "C" fn compositionprocessorengine_new() -> *mut c_void {
     Box::into_raw(Box::new(CompositionProcessorEngine::new())) as *mut c_void
@@ -89,4 +92,44 @@ pub unsafe extern "C" fn compositionprocessorengine_get_table_dictionary_engine(
     } else {
         dict.as_ref().unwrap() as *const TableDictionaryEngine as *const c_void
     }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn compositionprocessorengine_modifiers_update(
+    engine: *mut c_void,
+    w: WPARAM,
+    l: LPARAM,
+) {
+    let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
+    engine.modifiers().update(w, l);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn compositionprocessorengine_modifiers_get(engine: *mut c_void) -> u16 {
+    let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
+    engine.modifiers().get()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn compositionprocessorengine_modifiers_is_shift_key_down_only(
+    engine: *mut c_void,
+) -> bool {
+    let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
+    engine.modifiers().is_shift_key_down_only()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn compositionprocessorengine_modifiers_is_control_key_down_only(
+    engine: *mut c_void,
+) -> bool {
+    let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
+    engine.modifiers().is_control_key_down_only()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn compositionprocessorengine_modifiers_is_alt_key_down_only(
+    engine: *mut c_void,
+) -> bool {
+    let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
+    engine.modifiers().is_alt_key_down_only()
 }

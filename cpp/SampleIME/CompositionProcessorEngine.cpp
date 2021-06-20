@@ -602,9 +602,9 @@ BOOL CCompositionProcessorEngine::CheckShiftKeyOnly(_In_ CSampleImeArray<TF_PRES
 {
     for (const auto& tfPsvKey : *pTSFPreservedKeyTable)
     {
-        if (((tfPsvKey.uModifiers & (_TF_MOD_ON_KEYUP_SHIFT_ONLY & 0xffff0000)) && !Global::IsShiftKeyDownOnly) ||
-            ((tfPsvKey.uModifiers & (_TF_MOD_ON_KEYUP_CONTROL_ONLY & 0xffff0000)) && !Global::IsControlKeyDownOnly) ||
-            ((tfPsvKey.uModifiers & (_TF_MOD_ON_KEYUP_ALT_ONLY & 0xffff0000)) && !Global::IsAltKeyDownOnly)         )
+        if (((tfPsvKey.uModifiers & (_TF_MOD_ON_KEYUP_SHIFT_ONLY & 0xffff0000)) && !engine_rust.ModifiersIsShiftKeyDownOnly()) ||
+            ((tfPsvKey.uModifiers & (_TF_MOD_ON_KEYUP_CONTROL_ONLY & 0xffff0000)) && !engine_rust.ModifiersIsControlKeyDownOnly()) ||
+            ((tfPsvKey.uModifiers & (_TF_MOD_ON_KEYUP_ALT_ONLY & 0xffff0000)) && !engine_rust.ModifiersIsAltKeyDownOnly()))
         {
             return FALSE;
         }
@@ -1418,7 +1418,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode)
 {
     for (const auto& keystroke : _KeystrokeComposition)
     {
-        if (keystroke.VirtualKey == uCode && Global::ModifiersValue == 0)
+        if (keystroke.VirtualKey == uCode && engine_rust.ModifiersGet() == 0)
         {
             return TRUE;
         }
@@ -1440,7 +1440,7 @@ BOOL CCompositionProcessorEngine::IsKeystrokeRange(UINT uCode, CANDIDATE_MODE ca
         if (candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION)
         {
             // Candidate phrase could specify modifier
-            if (Global::ModifiersValue == 0)
+            if (engine_rust.ModifiersGet() == 0)
             {
                 return TRUE;
             }
@@ -1497,4 +1497,24 @@ std::optional<CRustTableDictionaryEngine> CCompositionProcessorEngine::CRustComp
         return CRustTableDictionaryEngine::WeakRef(const_cast<void*>(compositionprocessorengine_get_table_dictionary_engine(engine)));
     }
     return std::nullopt;
+}
+
+void CCompositionProcessorEngine::CRustCompositionProcessorEngine::ModifiersUpdate(WPARAM w, LPARAM l) {
+    compositionprocessorengine_modifiers_update(engine, w, l);
+}
+
+uint16_t CCompositionProcessorEngine::CRustCompositionProcessorEngine::ModifiersGet() const {
+    return compositionprocessorengine_modifiers_get(engine);
+}
+
+bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::ModifiersIsShiftKeyDownOnly() const {
+    return compositionprocessorengine_modifiers_is_shift_key_down_only(engine);
+}
+
+bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::ModifiersIsControlKeyDownOnly() const {
+    return compositionprocessorengine_modifiers_is_control_key_down_only(engine);
+}
+
+bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::ModifiersIsAltKeyDownOnly() const {
+    return compositionprocessorengine_modifiers_is_alt_key_down_only(engine);
 }

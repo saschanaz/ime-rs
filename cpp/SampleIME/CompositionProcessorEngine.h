@@ -82,6 +82,8 @@ public:
     inline CCandidateRange *GetCandidateListIndexRange() { return &_candidateListIndexRange; }
     inline UINT GetCandidateWindowWidth() { return _candidateWndWidth; }
 
+    void ModifiersUpdate(WPARAM w, LPARAM l) { return engine_rust.ModifiersUpdate(w, l); }
+
 private:
     void InitKeyStrokeTable();
     BOOL InitLanguageBar(_In_ CLangBarItemButton *pLanguageBar, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId, REFGUID guidCompartment);
@@ -189,6 +191,12 @@ private:
 
         void SetupDictionaryFile(HINSTANCE dllInstanceHandle, const CRustStringRange& dictionaryFileName, bool isKeystrokeSort);
         std::optional<CRustTableDictionaryEngine> GetTableDictionaryEngine() const;
+
+        void ModifiersUpdate(WPARAM w, LPARAM l);
+        uint16_t ModifiersGet() const;
+        bool ModifiersIsShiftKeyDownOnly() const;
+        bool ModifiersIsControlKeyDownOnly() const;
+        bool ModifiersIsAltKeyDownOnly() const;
     };
 
     CRustCompositionProcessorEngine engine_rust;

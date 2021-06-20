@@ -269,7 +269,7 @@ STDAPI CSampleIME::OnSetFocus(BOOL fForeground)
 
 STDAPI CSampleIME::OnTestKeyDown(ITfContext *pContext, WPARAM wParam, LPARAM lParam, BOOL *pIsEaten)
 {
-    Global::UpdateModifiers(wParam, lParam);
+    GetCompositionProcessorEngine()->ModifiersUpdate(wParam, lParam);
 
     _KEYSTROKE_STATE KeystrokeState;
     WCHAR wch = '\0';
@@ -299,7 +299,7 @@ STDAPI CSampleIME::OnTestKeyDown(ITfContext *pContext, WPARAM wParam, LPARAM lPa
 
 STDAPI CSampleIME::OnKeyDown(ITfContext *pContext, WPARAM wParam, LPARAM lParam, BOOL *pIsEaten)
 {
-    Global::UpdateModifiers(wParam, lParam);
+    GetCompositionProcessorEngine()->ModifiersUpdate(wParam, lParam);
 
     _KEYSTROKE_STATE KeystrokeState;
     WCHAR wch = '\0';
@@ -353,7 +353,7 @@ STDAPI CSampleIME::OnTestKeyUp(ITfContext *pContext, WPARAM wParam, LPARAM lPara
         return E_INVALIDARG;
     }
 
-    Global::UpdateModifiers(wParam, lParam);
+    GetCompositionProcessorEngine()->ModifiersUpdate(wParam, lParam);
 
     _KEYSTROKE_STATE keystrokeState;
     WCHAR wch = '\0';
@@ -374,7 +374,7 @@ STDAPI CSampleIME::OnTestKeyUp(ITfContext *pContext, WPARAM wParam, LPARAM lPara
 
 STDAPI CSampleIME::OnKeyUp(ITfContext *pContext, WPARAM wParam, LPARAM lParam, BOOL *pIsEaten)
 {
-    Global::UpdateModifiers(wParam, lParam);
+    GetCompositionProcessorEngine()->ModifiersUpdate(wParam, lParam);
 
     _KEYSTROKE_STATE keystrokeState;
     WCHAR wch = '\0';
