@@ -4,7 +4,6 @@ use core::ffi::c_void;
 use ruststringrange::RustStringRange;
 
 mod parser;
-use parser::find_items;
 
 mod engine;
 pub use engine::TableDictionaryEngine;
@@ -24,29 +23,6 @@ unsafe fn tuples_to_ffi(
     }
 
     len
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn dictionary_find_items(
-    content: *const c_void,
-    search_key: *const c_void,
-    is_text_search: bool,
-    is_wildcard_search: bool,
-    keys_buffer: *mut *mut c_void,
-    values_buffer: *mut *mut c_void,
-    buffer_length: usize,
-) -> usize {
-    let content = Box::leak(RustStringRange::from_void(content as *mut _));
-    let search_key = Box::leak(RustStringRange::from_void(search_key as *mut _));
-
-    let result = find_items(
-        content.as_slice(),
-        search_key.as_slice(),
-        is_text_search,
-        is_wildcard_search,
-    );
-
-    tuples_to_ffi(result, keys_buffer, values_buffer, buffer_length)
 }
 
 #[no_mangle]
