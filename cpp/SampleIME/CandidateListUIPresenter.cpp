@@ -114,7 +114,6 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
 
         pTempCandListUIPresenter = new (std::nothrow) CCandidateListUIPresenter(this, Global::AtomCandidateWindow,
             CATEGORY_CANDIDATE,
-            _pCompositionProcessorEngine->GetCandidateListIndexRange(),
             FALSE);
         if (nullptr == pTempCandListUIPresenter)
         {
@@ -203,7 +202,7 @@ HRESULT CSampleIME::_HandleCandidateArrowKey(TfEditCookie ec, _In_ ITfContext *p
 
 HRESULT CSampleIME::_HandleCandidateSelectByNumber(TfEditCookie ec, _In_ ITfContext *pContext, _In_ UINT uCode)
 {
-    int iSelectAsNumber = _pCompositionProcessorEngine->GetCandidateListIndexRange()->GetIndex(uCode);
+    int iSelectAsNumber = CCandidateRange::GetIndex(uCode);
     if (iSelectAsNumber == -1)
     {
         return S_FALSE;
@@ -269,7 +268,7 @@ HRESULT CSampleIME::_HandlePhraseArrowKey(TfEditCookie ec, _In_ ITfContext *pCon
 
 HRESULT CSampleIME::_HandlePhraseSelectByNumber(TfEditCookie ec, _In_ ITfContext *pContext, _In_ UINT uCode)
 {
-    int iSelectAsNumber = _pCompositionProcessorEngine->GetCandidateListIndexRange()->GetIndex(uCode);
+    int iSelectAsNumber = CCandidateRange::GetIndex(uCode);
     if (iSelectAsNumber == -1)
     {
         return S_FALSE;
@@ -298,11 +297,9 @@ HRESULT CSampleIME::_HandlePhraseSelectByNumber(TfEditCookie ec, _In_ ITfContext
 //
 //----------------------------------------------------------------------------
 
-CCandidateListUIPresenter::CCandidateListUIPresenter(_In_ CSampleIME *pTextService, ATOM atom, KEYSTROKE_CATEGORY Category, _In_ CCandidateRange *pIndexRange, BOOL hideWindow) : CTfTextLayoutSink(pTextService)
+CCandidateListUIPresenter::CCandidateListUIPresenter(_In_ CSampleIME *pTextService, ATOM atom, KEYSTROKE_CATEGORY Category, BOOL hideWindow) : CTfTextLayoutSink(pTextService)
 {
     _atom = atom;
-
-    _pIndexRange = pIndexRange;
 
     _parentWndHandle = nullptr;
     _pCandidateWnd = nullptr;
@@ -831,7 +828,7 @@ void CCandidateListUIPresenter::AddCandidateToCandidateListUI(_In_ CSampleImeArr
 
 void CCandidateListUIPresenter::SetPageIndexWithScrollInfo(_In_ CSampleImeArray<CCandidateListItem> *pCandidateList)
 {
-    UINT candCntInPage = _pIndexRange->Count();
+    UINT candCntInPage = CCandidateRange::Count();
     UINT bufferSize = pCandidateList->Count() / candCntInPage + 1;
     UINT* puPageIndex = new (std::nothrow) UINT[ bufferSize ];
     if (puPageIndex != nullptr)
@@ -1249,7 +1246,7 @@ HRESULT CCandidateListUIPresenter::MakeCandidateWindow(_In_ ITfContext *pContext
         return hr;
     }
 
-    _pCandidateWnd = new (std::nothrow) CCandidateWindow(_CandWndCallback, this, _pIndexRange, _pTextService->_IsStoreAppMode());
+    _pCandidateWnd = new (std::nothrow) CCandidateWindow(_CandWndCallback, this, _pTextService->_IsStoreAppMode());
     if (_pCandidateWnd == nullptr)
     {
         hr = E_OUTOFMEMORY;

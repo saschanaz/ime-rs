@@ -16,14 +16,12 @@
 //
 //----------------------------------------------------------------------------
 
-CCandidateWindow::CCandidateWindow(_In_ CANDWNDCALLBACK pfnCallback, _In_ void *pv, _In_ CCandidateRange *pIndexRange, _In_ BOOL isStoreAppMode)
+CCandidateWindow::CCandidateWindow(_In_ CANDWNDCALLBACK pfnCallback, _In_ void *pv, _In_ BOOL isStoreAppMode)
 {
     _currentSelection = 0;
 
     _SetTextColor(CANDWND_ITEM_COLOR, GetSysColor(COLOR_WINDOW));    // text color is black
     _SetFillColor((HBRUSH)(COLOR_WINDOW+1));
-
-    _pIndexRange = pIndexRange;
 
     _pfnCallback = pfnCallback;
     _pObj = pv;
@@ -161,7 +159,7 @@ void CCandidateWindow::_ResizeWindow()
 
     _cxTitle = max(_cxTitle, size.cx + 2 * GetSystemMetrics(SM_CXFRAME));
 
-    int candidateListPageCnt = _pIndexRange->Count();
+    int candidateListPageCnt = CCandidateRange::Count();
     CBaseWindow::_Resize(0, 0, _cxTitle, _cyRow * candidateListPageCnt);
 
     RECT rcCandRect = {0, 0, 0, 0};
@@ -452,7 +450,7 @@ void CCandidateWindow::_OnLButtonDown(POINT pt)
 
     int cyLine = _cyRow;
 
-    UINT candidateListPageCnt = _pIndexRange->Count();
+    UINT candidateListPageCnt = CCandidateRange::Count();
     UINT index = 0;
     int currentPage = 0;
 
@@ -607,7 +605,7 @@ void CCandidateWindow::_OnVScroll(DWORD dwSB, _In_ DWORD nPos)
 void CCandidateWindow::_DrawList(_In_ HDC dcHandle, _In_ UINT iIndex, _In_ RECT *prc)
 {
     int pageCount = 0;
-    int candidateListPageCnt = _pIndexRange->Count();
+    int candidateListPageCnt = CCandidateRange::Count();
 
     int cxLine = _TextMetric.tmAveCharWidth;
     int cyLine = max(_cyRow, _TextMetric.tmHeight);
@@ -632,7 +630,7 @@ void CCandidateWindow::_DrawList(_In_ HDC dcHandle, _In_ UINT iIndex, _In_ RECT 
         SetTextColor(dcHandle, CANDWND_NUM_COLOR);
         SetBkColor(dcHandle, GetSysColor(COLOR_3DHIGHLIGHT));
 
-        StringCchPrintf(pageCountString, ARRAYSIZE(pageCountString), L"%d", (LONG)_pIndexRange->GetAt(pageCount));
+        StringCchPrintf(pageCountString, ARRAYSIZE(pageCountString), L"%d", (LONG)CCandidateRange::GetAt(pageCount));
         ExtTextOut(dcHandle, PageCountPosition * cxLine, pageCount * cyLine + cyOffset, ETO_OPAQUE, &rc, pageCountString, lenOfPageCount, NULL);
 
         rc.left = prc->left + StringPosition * cxLine;
@@ -912,7 +910,7 @@ BOOL CCandidateWindow::_MovePage(_In_ int offSet, _In_ BOOL isNotify)
     // want adjustment to eliminate empty entries.
     //
     // We do this for keeping behavior inline with downlevel.
-    if (_currentSelection % _pIndexRange->Count() == 0 &&
+    if (_currentSelection % CCandidateRange::Count() == 0 &&
         _currentSelection == *_PageIndex.GetAt(currentPage))
     {
         _dontAdjustOnEmptyItemPage = TRUE;
@@ -1124,7 +1122,7 @@ Exit:
 
 BOOL CCandidateWindow::_AdjustPageIndexForSelection()
 {
-    UINT candidateListPageCnt = _pIndexRange->Count();
+    UINT candidateListPageCnt = CCandidateRange::Count();
     UINT* pNewPageIndex = nullptr;
     UINT newPageCnt = 0;
 
@@ -1217,7 +1215,7 @@ COLORREF _AdjustTextColor(_In_ COLORREF crColor, _In_ COLORREF crBkColor)
 
 HRESULT CCandidateWindow::_CurrentPageHasEmptyItems(_Inout_ BOOL *hasEmptyItems)
 {
-    int candidateListPageCnt = _pIndexRange->Count();
+    int candidateListPageCnt = CCandidateRange::Count();
     UINT currentPage = 0;
 
     if (FAILED(_GetCurrentPage(&currentPage)))
@@ -1279,7 +1277,7 @@ void CCandidateWindow::_FireMessageToLightDismiss(_In_ HWND wndHandle, _In_ WIND
 HRESULT CCandidateWindow::_AdjustPageIndex(_Inout_ UINT & currentPage, _Inout_ UINT & currentPageIndex)
 {
     HRESULT hr = E_FAIL;
-    UINT candidateListPageCnt = _pIndexRange->Count();
+    UINT candidateListPageCnt = CCandidateRange::Count();
 
     currentPageIndex = *_PageIndex.GetAt(currentPage);
 

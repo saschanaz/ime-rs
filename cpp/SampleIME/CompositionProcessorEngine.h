@@ -78,7 +78,6 @@ public:
     void ShowAllLanguageBarIcons();
     void HideAllLanguageBarIcons();
 
-    inline CCandidateRange *GetCandidateListIndexRange() { return &_candidateListIndexRange; }
     inline UINT GetCandidateWindowWidth() { return _candidateWndWidth; }
 
     void ModifiersUpdate(WPARAM w, LPARAM l) { return engine_rust.ModifiersUpdate(w, l); }
@@ -168,7 +167,6 @@ private:
     bool _hasMakePhraseFromText;
     bool _isKeystrokeSort;
     bool _isComLessMode;
-    CCandidateRange _candidateListIndexRange;
     UINT _candidateWndWidth;
 
     static const int OUT_OF_FILE_INDEX = -1;

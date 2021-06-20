@@ -33,7 +33,6 @@ class CCandidateListUIPresenter : public CTfTextLayoutSink,
 public:
     CCandidateListUIPresenter(_In_ CSampleIME *pTextService, ATOM atom,
         KEYSTROKE_CATEGORY Category,
-        _In_ CCandidateRange *pIndexRange,
         BOOL hideWindow);
     virtual ~CCandidateListUIPresenter();
 
@@ -130,7 +129,6 @@ private:
 
     HWND _parentWndHandle;
     ATOM _atom;
-    CCandidateRange* _pIndexRange;
     KEYSTROKE_CATEGORY _Category;
     DWORD _updatedFlags;
     DWORD _uiElementId;

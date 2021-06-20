@@ -27,7 +27,7 @@ typedef HRESULT (*CANDWNDCALLBACK)(void *pv, enum CANDWND_ACTION action);
 class CCandidateWindow : public CBaseWindow
 {
 public:
-    CCandidateWindow(_In_ CANDWNDCALLBACK pfnCallback, _In_ void *pv, _In_ CCandidateRange *pIndexRange, _In_ BOOL isStoreAppMode);
+    CCandidateWindow(_In_ CANDWNDCALLBACK pfnCallback, _In_ void *pv, _In_ BOOL isStoreAppMode);
     virtual ~CCandidateWindow();
 
     BOOL _Create(ATOM atom, _In_ UINT wndWidth, _In_opt_ HWND parentWndHandle);
@@ -107,8 +107,6 @@ private:
     int _cyRow;
     int _cxTitle;
     UINT _wndWidth;
-
-    CCandidateRange* _pIndexRange;
 
     CANDWNDCALLBACK _pfnCallback;
     void* _pObj;

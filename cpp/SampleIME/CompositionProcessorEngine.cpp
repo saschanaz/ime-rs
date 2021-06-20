@@ -1423,7 +1423,7 @@ BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode)
 
 BOOL CCompositionProcessorEngine::IsKeystrokeRange(UINT uCode, CANDIDATE_MODE candidateMode)
 {
-    if (_candidateListIndexRange.IsRange(uCode))
+    if (CCandidateRange::IsRange(uCode))
     {
         if (candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION)
         {

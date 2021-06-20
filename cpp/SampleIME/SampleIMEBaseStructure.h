@@ -183,17 +183,17 @@ private:
 class CCandidateRange
 {
 public:
-    CCandidateRange() = default;
-    ~CCandidateRange() = default;
+    CCandidateRange() = delete;
+    ~CCandidateRange() = delete;
 
-    BOOL IsRange(UINT vKey);
-    int GetIndex(UINT vKey);
+    static BOOL IsRange(UINT vKey);
+    static int GetIndex(UINT vKey);
 
-    inline int Count() const
+    static inline int Count()
     {
         return 10;
     }
-    inline DWORD GetAt(int index)
+    static inline DWORD GetAt(int index)
     {
         assert(index >= 0 && index < Count());
         if (index == 9) {
