@@ -186,23 +186,8 @@ CCandidateRange::~CCandidateRange(void)
 
 BOOL CCandidateRange::IsRange(UINT vKey)
 {
-    DWORD value = vKey - L'0';
-
-    for (const auto& item : _CandidateListIndexRange)
-    {
-        if (value == item)
-        {
-            return TRUE;
-        }
-        else if ((VK_NUMPAD0 <= vKey) && (vKey <= VK_NUMPAD9))
-        {
-            if ((vKey-VK_NUMPAD0) == item)
-            {
-                return TRUE;
-            }
-        }
-    }
-    return FALSE;
+    int index = GetIndex(vKey);
+    return index != -1;
 }
 
 int CCandidateRange::GetIndex(UINT vKey)
