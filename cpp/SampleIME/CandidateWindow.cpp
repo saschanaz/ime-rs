@@ -632,7 +632,7 @@ void CCandidateWindow::_DrawList(_In_ HDC dcHandle, _In_ UINT iIndex, _In_ RECT 
         SetTextColor(dcHandle, CANDWND_NUM_COLOR);
         SetBkColor(dcHandle, GetSysColor(COLOR_3DHIGHLIGHT));
 
-        StringCchPrintf(pageCountString, ARRAYSIZE(pageCountString), L"%d", (LONG)*_pIndexRange->GetAt(pageCount));
+        StringCchPrintf(pageCountString, ARRAYSIZE(pageCountString), L"%d", (LONG)_pIndexRange->GetAt(pageCount));
         ExtTextOut(dcHandle, PageCountPosition * cxLine, pageCount * cyLine + cyOffset, ETO_OPAQUE, &rc, pageCountString, lenOfPageCount, NULL);
 
         rc.left = prc->left + StringPosition * cxLine;

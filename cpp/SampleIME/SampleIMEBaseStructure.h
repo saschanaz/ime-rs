@@ -183,27 +183,24 @@ private:
 class CCandidateRange
 {
 public:
-    CCandidateRange(void);
-    ~CCandidateRange(void);
+    CCandidateRange() = default;
+    ~CCandidateRange() = default;
 
     BOOL IsRange(UINT vKey);
     int GetIndex(UINT vKey);
 
     inline int Count() const
     {
-        return _CandidateListIndexRange.Count();
+        return 10;
     }
-    inline DWORD *GetAt(int index)
+    inline DWORD GetAt(int index)
     {
-        return _CandidateListIndexRange.GetAt(index);
+        assert(index >= 0 && index < Count());
+        if (index == 9) {
+            return 0;
+        }
+        return index + 1;
     }
-    inline void Append(DWORD dw)
-    {
-        _CandidateListIndexRange.Append(dw);
-    }
-
-private:
-    CSampleImeArray<DWORD> _CandidateListIndexRange;
 };
 
 class CStringRangeUtf16

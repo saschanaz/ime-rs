@@ -682,8 +682,6 @@ void CCompositionProcessorEngine::SetupConfiguration()
     _isKeystrokeSort = TRUE;
     _candidateWndWidth = CAND_WIDTH;
 
-    SetInitialCandidateListRange();
-
     SetDefaultCandidateTextFont();
 
     return;
@@ -1230,15 +1228,6 @@ void CCompositionProcessorEngine::ShowAllLanguageBarIcons()
 void CCompositionProcessorEngine::HideAllLanguageBarIcons()
 {
     SetLanguageBarStatus(TF_LBI_STATUS_HIDDEN, TRUE);
-}
-
-void CCompositionProcessorEngine::SetInitialCandidateListRange()
-{
-    for (DWORD i = 1; i <= 10; i++)
-    {
-        DWORD newIndexRange = i != 10 ? i : 0;
-        _candidateListIndexRange.Append(newIndexRange);
-    }
 }
 
 void CCompositionProcessorEngine::SetDefaultCandidateTextFont()

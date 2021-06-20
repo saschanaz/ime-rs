@@ -174,16 +174,6 @@ WCHAR* CStringRangeUtf16::Clone(const WCHAR* pwch, DWORD_PTR dwLength)
     return pwchString;
 }
 
-CCandidateRange::CCandidateRange(void)
-{
-}
-
-
-CCandidateRange::~CCandidateRange(void)
-{
-}
-
-
 BOOL CCandidateRange::IsRange(UINT vKey)
 {
     int index = GetIndex(vKey);
@@ -194,12 +184,11 @@ int CCandidateRange::GetIndex(UINT vKey)
 {
     DWORD value = ((VK_NUMPAD0 <= vKey) && (vKey <= VK_NUMPAD9)) ? (vKey - VK_NUMPAD0) : (vKey - L'0');
 
-    for (UINT i = 0; i < _CandidateListIndexRange.Count(); i++)
-    {
-        if (value == *_CandidateListIndexRange.GetAt(i))
-        {
-            return i;
-        }
+    if (value == 0) {
+        return 9;
+    }
+    if (value > 0 && value < 10) {
+        return value - 1;
     }
     return -1;
 }
