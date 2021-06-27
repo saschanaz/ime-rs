@@ -1,4 +1,4 @@
-use winapi::shared::guiddef::GUID;
+use windows::Guid as GUID;
 
 //---------------------------------------------------------------------
 // SampleIME CLSID
@@ -89,11 +89,11 @@ const fn get_guid_from_u128(uuid: u128) -> GUID {
         (uuid >> (8 * index) & 0xff) as u8
     }
 
-    GUID {
-        Data1: (uuid >> (8 * 12)) as u32,
-        Data2: (uuid >> (8 * 10) & 0xffff) as u16,
-        Data3: (uuid >> (8 * 8) & 0xffff) as u16,
-        Data4: [
+    GUID::from_values(
+        (uuid >> (8 * 12)) as u32,
+        (uuid >> (8 * 10) & 0xffff) as u16,
+        (uuid >> (8 * 8) & 0xffff) as u16,
+        [
             get_byte(uuid, 7),
             get_byte(uuid, 6),
             get_byte(uuid, 5),
@@ -103,7 +103,7 @@ const fn get_guid_from_u128(uuid: u128) -> GUID {
             get_byte(uuid, 1),
             get_byte(uuid, 0),
         ],
-    }
+    )
 }
 
 #[cfg(test)]
@@ -114,9 +114,6 @@ mod tests {
         let uuid: u128 = 0xf40f76d0_fe04_47ca_aa0a_c2cd8a6680fa;
         let guid = get_guid_from_u128(uuid);
 
-        assert_eq!(guid.Data1, 0xf40f76d0);
-        assert_eq!(guid.Data2, 0xfe04);
-        assert_eq!(guid.Data3, 0x47ca);
-        assert_eq!(guid.Data4, [0xaa, 0x0a, 0xc2, 0xcd, 0x8a, 0x66, 0x80, 0xfa]);
+        assert_eq!(format!("{:?}", guid), "F40F76D0-FE04-47CA-AA0A-C2CD8A6680FA");
     }
 }
