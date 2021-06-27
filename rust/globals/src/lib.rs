@@ -114,6 +114,9 @@ mod tests {
         let uuid: u128 = 0xf40f76d0_fe04_47ca_aa0a_c2cd8a6680fa;
         let guid = get_guid_from_u128(uuid);
 
-        assert_eq!(format!("{:?}", guid), "F40F76D0-FE04-47CA-AA0A-C2CD8A6680FA");
+        assert_eq!(
+            format!("{:?}", guid),
+            "F40F76D0-FE04-47CA-AA0A-C2CD8A6680FA"
+        );
     }
 }
