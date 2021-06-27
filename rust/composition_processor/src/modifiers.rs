@@ -1,5 +1,6 @@
-pub use winapi::shared::minwindef::{LPARAM, WPARAM};
-use winapi::um::winuser::{GetKeyState, VK_CONTROL, VK_MENU, VK_SHIFT};
+use crate::bindings::Windows::Win32::Foundation::{LPARAM, WPARAM};
+use crate::bindings::Windows::Win32::UI::KeyboardAndMouseInput::GetKeyState;
+use crate::bindings::Windows::Win32::UI::WindowsAndMessaging::{VK_CONTROL, VK_MENU, VK_SHIFT};
 
 // msctf.h
 static TF_MOD_ALT: u16 = 0x0001;
@@ -28,16 +29,16 @@ impl Modifiers {
     pub fn update(&mut self, w: WPARAM, l: LPARAM) {
         // high-order bit : key down
         // low-order bit  : toggled
-        let ks_menu = unsafe { GetKeyState(VK_MENU) } as u16;
-        let ks_control = unsafe { GetKeyState(VK_CONTROL) } as u16;
-        let ks_shift = unsafe { GetKeyState(VK_SHIFT) } as u16;
+        let ks_menu = unsafe { GetKeyState(VK_MENU as i32) } as u16;
+        let ks_control = unsafe { GetKeyState(VK_CONTROL as i32) } as u16;
+        let ks_shift = unsafe { GetKeyState(VK_SHIFT as i32) } as u16;
 
-        match (w & 0xff) as i32 {
+        match w.0 as u32 & 0xff {
             VK_MENU => {
                 // is VK_MENU down?
                 if ks_menu & 0x8000 != 0 {
                     // is extended key?
-                    if l & 0x01000000 != 0 {
+                    if l.0 & 0x01000000 != 0 {
                         self.value |= TF_MOD_RALT | TF_MOD_ALT;
                     } else {
                         self.value |= TF_MOD_LALT | TF_MOD_ALT;
@@ -45,7 +46,7 @@ impl Modifiers {
                 }
 
                 // is previous key state up?
-                if (l & 0x40000000) == 0 {
+                if (l.0 & 0x40000000) == 0 {
                     // is VK_CONTROL and VK_SHIFT up?
                     if (ks_control & 0x8000 == 0) && (ks_shift & 0x8000 == 0) {
                         self.is_alt_key_down_only = true;
@@ -60,7 +61,7 @@ impl Modifiers {
                 // is VK_CONTROL down?
                 if ks_control & 0x8000 != 0 {
                     // is extended key?
-                    if l & 0x01000000 != 0 {
+                    if l.0 & 0x01000000 != 0 {
                         self.value |= TF_MOD_RCONTROL | TF_MOD_CONTROL;
                     } else {
                         self.value |= TF_MOD_LCONTROL | TF_MOD_CONTROL;
@@ -68,7 +69,7 @@ impl Modifiers {
                 }
 
                 // is previous key state up?
-                if (l & 0x40000000) == 0 {
+                if (l.0 & 0x40000000) == 0 {
                     // is VK_SHIFT and VK_MENU up?
                     if (ks_shift & 0x8000 == 0) && (ks_menu & 0x8000 == 0) {
                         self.is_control_key_down_only = true;
@@ -83,7 +84,7 @@ impl Modifiers {
                 // is VK_SHIFT down?
                 if ks_shift & 0x8000 != 0 {
                     // is scan code 0x36(right shift)?
-                    if (l >> 16) & 0x00ff == 0x36 {
+                    if (l.0 >> 16) & 0x00ff == 0x36 {
                         self.value |= TF_MOD_RSHIFT | TF_MOD_SHIFT;
                     } else {
                         self.value |= TF_MOD_LSHIFT | TF_MOD_SHIFT;
@@ -91,7 +92,7 @@ impl Modifiers {
                 }
 
                 // is previous key state up?
-                if (l & 0x40000000) == 0 {
+                if (l.0 & 0x40000000) == 0 {
                     // is VK_SHIFT and VK_MENU up?
                     if (ks_menu & 0x8000 == 0) && (ks_control & 0x8000 == 0) {
                         self.is_shift_key_down_only = true;

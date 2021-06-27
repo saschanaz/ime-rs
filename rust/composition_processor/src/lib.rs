@@ -3,13 +3,15 @@
 use core::ffi::c_void;
 use dictionary_parser::TableDictionaryEngine;
 use ruststringrange::RustStringRange;
-use winapi::shared::minwindef::HINSTANCE;
+
+mod bindings;
+use bindings::Windows::Win32::Foundation::{HINSTANCE, LPARAM, WPARAM};
 
 mod engine;
 use engine::CompositionProcessorEngine;
 
 pub mod modifiers;
-pub use modifiers::{Modifiers, LPARAM, WPARAM};
+pub use modifiers::Modifiers;
 
 #[no_mangle]
 pub extern "C" fn compositionprocessorengine_new() -> *mut c_void {

@@ -1,8 +1,8 @@
 use dictionary_parser::TableDictionaryEngine;
 
+use crate::bindings::Windows::Win32::Foundation::{HINSTANCE, MAX_PATH, PWSTR};
+use crate::bindings::Windows::Win32::System::LibraryLoader::GetModuleFileNameW;
 use crate::modifiers::Modifiers;
-use winapi::shared::minwindef::{HINSTANCE, MAX_PATH};
-use winapi::um::libloaderapi::GetModuleFileNameW;
 
 pub struct CompositionProcessorEngine {
     keystroke_buffer: Vec<u16>,
@@ -61,9 +61,9 @@ impl CompositionProcessorEngine {
         dictionary_file_name: &str,
         is_keystroke_sort: bool,
     ) {
-        let mut file_name = [0u16; MAX_PATH];
+        let mut file_name = [0u16; MAX_PATH as usize];
         unsafe {
-            GetModuleFileNameW(dll_instance_handle, file_name.as_mut_ptr(), MAX_PATH as u32);
+            GetModuleFileNameW(dll_instance_handle, PWSTR(file_name.as_mut_ptr()), MAX_PATH);
         }
 
         let file_name = String::from_utf16(&file_name).unwrap();
