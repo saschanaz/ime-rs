@@ -8,7 +8,7 @@ pub extern "C" fn is_number_key(vkey: u32) -> bool {
 #[no_mangle]
 pub extern "C" fn index_from_number_key(vkey: u32) -> i32 {
     let vkey = vkey as i32;
-    let value: i32 = if vkey >= VK_NUMPAD0 && vkey <= VK_NUMPAD9 {
+    let value: i32 = if (VK_NUMPAD0..=VK_NUMPAD9).contains(&vkey) {
         vkey - VK_NUMPAD0
     } else {
         vkey - '0' as i32
@@ -27,9 +27,10 @@ pub extern "C" fn index_from_number_key(vkey: u32) -> i32 {
 pub extern "C" fn number_key_label_at(index: u32) -> u32 {
     assert!(index < 10);
     if index == 9 {
-        return 0;
+        0
+    } else {
+        index + 1
     }
-    return index + 1;
 }
 
 #[cfg(test)]
