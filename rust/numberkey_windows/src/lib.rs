@@ -1,4 +1,5 @@
-use winapi::um::winuser::{VK_NUMPAD0, VK_NUMPAD9};
+mod bindings;
+use bindings::Windows::Win32::UI::WindowsAndMessaging::{VK_NUMPAD0, VK_NUMPAD9};
 
 #[no_mangle]
 pub extern "C" fn is_number_key(vkey: u32) -> bool {
@@ -7,17 +8,16 @@ pub extern "C" fn is_number_key(vkey: u32) -> bool {
 
 #[no_mangle]
 pub extern "C" fn index_from_number_key(vkey: u32) -> i32 {
-    let vkey = vkey as i32;
     let value: i32 = if (VK_NUMPAD0..=VK_NUMPAD9).contains(&vkey) {
-        vkey - VK_NUMPAD0
+        vkey as i32 - VK_NUMPAD0 as i32
     } else {
-        vkey - '0' as i32
+        vkey as i32 - '0' as i32
     };
 
     if value == 0 {
         9
     } else if value > 0 && value < 10 {
-        value - 1
+        value as i32 - 1
     } else {
         -1
     }
@@ -35,7 +35,10 @@ pub extern "C" fn number_key_label_at(index: u32) -> u32 {
 
 #[cfg(test)]
 mod tests {
-    use winapi::um::winuser::{VK_DIVIDE, VK_NUMPAD1, VK_NUMPAD2};
+    use super::VK_NUMPAD0;
+    const VK_NUMPAD1: u32 = VK_NUMPAD0 + 1;
+    const VK_NUMPAD2: u32 = VK_NUMPAD0 + 2;
+    const VK_DIVIDE: u32 = VK_NUMPAD0 + 14;
 
     use crate::{index_from_number_key, is_number_key, number_key_label_at};
 
