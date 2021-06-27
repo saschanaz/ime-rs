@@ -8,12 +8,11 @@ pub extern "C" fn is_number_key(vkey: u32) -> bool {
 #[no_mangle]
 pub extern "C" fn index_from_number_key(vkey: u32) -> i32 {
     let vkey = vkey as i32;
-    let value: i32 =
-        if vkey >= VK_NUMPAD0 && vkey <= VK_NUMPAD9 {
-            vkey - VK_NUMPAD0
-        } else {
-            vkey - '0' as i32
-        };
+    let value: i32 = if vkey >= VK_NUMPAD0 && vkey <= VK_NUMPAD9 {
+        vkey - VK_NUMPAD0
+    } else {
+        vkey - '0' as i32
+    };
 
     if value == 0 {
         9
@@ -37,7 +36,7 @@ pub extern "C" fn number_key_label_at(index: u32) -> u32 {
 mod tests {
     use winapi::um::winuser::{VK_DIVIDE, VK_NUMPAD1, VK_NUMPAD2};
 
-    use crate::{number_key_label_at, index_from_number_key, is_number_key};
+    use crate::{index_from_number_key, is_number_key, number_key_label_at};
 
     #[test]
     fn check_number_key() {
