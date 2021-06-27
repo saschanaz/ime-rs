@@ -30,9 +30,6 @@
     <None Include="SampleIME.def" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\rust\dictionary_parser\dictionary_parser.h" />
-    <ClInclude Include="..\..\rust\globals\globals.h" />
-    <ClInclude Include="..\..\rust\numberkey_windows\numberkey_windows.h" />
     <ClInclude Include="BaseWindow.h" />
     <ClInclude Include="ButtonWindow.h" />
     <ClInclude Include="CandidateListUIPresenter.h" />
@@ -210,6 +207,9 @@
       <AdditionalDependencies>shlwapi.lib;$(SolutionDir)../rust/target/debug/compare_with_wildcard.lib;$(SolutionDir)../rust/target/debug/composition_processor.lib;$(SolutionDir)../rust/target/debug/dictionary_parser.lib;$(SolutionDir)../rust/target/debug/globals.lib;$(SolutionDir)../rust/target/debug/numberkey_windows.lib;$(SolutionDir)../rust/target/debug/ruststringrange.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>SampleIME.def</ModuleDefinitionFile>
     </Link>
+    <PreBuildEvent>
+      <Command>pwsh.exe $(SolutionDir)prebuild.ps1</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

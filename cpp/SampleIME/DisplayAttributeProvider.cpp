@@ -10,7 +10,7 @@
 #include "SampleIME.h"
 #include "DisplayAttributeInfo.h"
 #include "EnumDisplayAttributeInfo.h"
-#include "../../rust/globals/globals.h"
+#include "cbindgen/globals.h"
 
 //+---------------------------------------------------------------------------
 //

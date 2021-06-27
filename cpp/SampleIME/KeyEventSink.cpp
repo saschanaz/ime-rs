@@ -12,7 +12,7 @@
 #include "CompositionProcessorEngine.h"
 #include "KeyHandlerEditSession.h"
 #include "Compartment.h"
-#include "../../rust/globals/globals.h"
+#include "cbindgen/globals.h"
 
 // 0xF003, 0xF004 are the keys that the touch keyboard sends for next/previous
 #define THIRDPARTY_NEXTPAGE  static_cast<WORD>(0xF003)

@@ -13,8 +13,8 @@
 #include "Compartment.h"
 #include "LanguageBar.h"
 #include "RegKey.h"
-#include "../../rust/globals/globals.h"
-#include "../../rust/composition_processor/composition_processor.h"
+#include "cbindgen/globals.h"
+#include "cbindgen/composition_processor.h"
 
 //////////////////////////////////////////////////////////////////////
 //

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\..\rust\ruststringrange\ruststringrange.h"
+#include "cbindgen/ruststringrange.h"
 
 /**
  * A C++ wrapper class for its Rust counterpart

@@ -6,7 +6,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved
 
 
-#include "../../rust/globals/globals.h"
+#include "cbindgen/globals.h"
 #pragma once
 
 //+---------------------------------------------------------------------------

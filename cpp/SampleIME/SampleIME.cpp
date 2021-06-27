@@ -11,7 +11,7 @@
 #include "CandidateListUIPresenter.h"
 #include "CompositionProcessorEngine.h"
 #include "Compartment.h"
-#include "../../rust/globals/globals.h"
+#include "cbindgen/globals.h"
 
 //+---------------------------------------------------------------------------
 //

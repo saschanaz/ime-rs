@@ -12,7 +12,7 @@
 #include "CompositionProcessorEngine.h"
 #include "SampleIMEBaseStructure.h"
 #include "RustStringRange.h"
-#include "../../rust/globals/globals.h"
+#include "cbindgen/globals.h"
 
 //////////////////////////////////////////////////////////////////////
 //

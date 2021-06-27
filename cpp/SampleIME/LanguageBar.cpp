@@ -11,7 +11,7 @@
 #include "LanguageBar.h"
 #include "Globals.h"
 #include "Compartment.h"
-#include "../../rust/globals/globals.h"
+#include "cbindgen/globals.h"
 
 //+---------------------------------------------------------------------------
 //

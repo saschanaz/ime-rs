@@ -7,7 +7,7 @@
 
 #include "Private.h"
 #include "TableDictionaryEngine.h"
-#include "../../rust/dictionary_parser/dictionary_parser.h"
+#include "cbindgen/dictionary_parser.h"
 
 static const uintptr_t MAX_BUFFER = 512;
 

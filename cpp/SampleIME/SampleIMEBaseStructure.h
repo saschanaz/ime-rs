@@ -12,7 +12,7 @@
 #include "assert.h"
 #include <iostream>
 #include "RustStringRange.h"
-#include "../../rust/numberkey_windows/numberkey_windows.h"
+#include "cbindgen/numberkey_windows.h"
 
 using std::cout;
 using std::endl;

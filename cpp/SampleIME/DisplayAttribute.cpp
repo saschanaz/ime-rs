@@ -8,7 +8,7 @@
 #include "Private.h"
 #include "Globals.h"
 #include "SampleIME.h"
-#include "../../rust/globals/globals.h"
+#include "cbindgen/globals.h"
 
 //+---------------------------------------------------------------------------
 //

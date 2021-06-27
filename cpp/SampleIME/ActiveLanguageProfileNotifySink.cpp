@@ -9,7 +9,7 @@
 #include "Globals.h"
 #include "SampleIME.h"
 #include "CompositionProcessorEngine.h"
-#include "../../rust/globals/globals.h"
+#include "cbindgen/globals.h"
 
 BOOL CSampleIME::VerifySampleIMECLSID(_In_ REFCLSID clsid)
 {
