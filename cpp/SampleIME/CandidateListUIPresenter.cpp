@@ -828,7 +828,7 @@ void CCandidateListUIPresenter::AddCandidateToCandidateListUI(_In_ CSampleImeArr
 
 void CCandidateListUIPresenter::SetPageIndexWithScrollInfo(_In_ CSampleImeArray<CCandidateListItem> *pCandidateList)
 {
-    UINT candCntInPage = CCandidateRange::Count();
+    UINT candCntInPage = CCandidateRange::Count;
     UINT bufferSize = pCandidateList->Count() / candCntInPage + 1;
     UINT* puPageIndex = new (std::nothrow) UINT[ bufferSize ];
     if (puPageIndex != nullptr)

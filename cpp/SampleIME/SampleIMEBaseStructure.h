@@ -194,10 +194,7 @@ public:
         return index_from_number_key(vKey);
     };
 
-    static inline int Count()
-    {
-        return 10;
-    }
+    static const int Count = 10;
     static inline uint16_t GetAt(int index)
     {
         return number_key_label_at(index);
