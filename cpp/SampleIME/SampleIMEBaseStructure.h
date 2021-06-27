@@ -12,6 +12,7 @@
 #include "assert.h"
 #include <iostream>
 #include "RustStringRange.h"
+#include "../../rust/numberkey_windows/numberkey_windows.h"
 
 using std::cout;
 using std::endl;
@@ -186,20 +187,20 @@ public:
     CCandidateRange() = delete;
     ~CCandidateRange() = delete;
 
-    static BOOL IsRange(UINT vKey);
-    static int GetIndex(UINT vKey);
+    static bool IsRange(UINT vKey) {
+        return is_number_key(vKey);
+    }
+    static int16_t GetIndex(UINT vKey) {
+        return index_from_number_key(vKey);
+    };
 
     static inline int Count()
     {
         return 10;
     }
-    static inline DWORD GetAt(int index)
+    static inline uint16_t GetAt(int index)
     {
-        assert(index >= 0 && index < Count());
-        if (index == 9) {
-            return 0;
-        }
-        return index + 1;
+        return number_key_label_at(index);
     }
 };
 

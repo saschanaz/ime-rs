@@ -4,5 +4,6 @@ members = [
     "composition_processor",
     "dictionary_parser",
     "globals",
+    "numberkey_windows",
     "ruststringrange"
 ]

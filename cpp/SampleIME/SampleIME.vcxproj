@@ -32,6 +32,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\rust\dictionary_parser\dictionary_parser.h" />
     <ClInclude Include="..\..\rust\globals\globals.h" />
+    <ClInclude Include="..\..\rust\numberkey_windows\numberkey_windows.h" />
     <ClInclude Include="BaseWindow.h" />
     <ClInclude Include="ButtonWindow.h" />
     <ClInclude Include="CandidateListUIPresenter.h" />
@@ -206,7 +207,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(MSBuildProgramFiles32)\Windows Kits\8.0\Lib\win8\um\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>shlwapi.lib;$(SolutionDir)../rust/target/debug/compare_with_wildcard.lib;$(SolutionDir)../rust/target/debug/composition_processor.lib;$(SolutionDir)../rust/target/debug/dictionary_parser.lib;$(SolutionDir)../rust/target/debug/globals.lib;$(SolutionDir)../rust/target/debug/ruststringrange.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>shlwapi.lib;$(SolutionDir)../rust/target/debug/compare_with_wildcard.lib;$(SolutionDir)../rust/target/debug/composition_processor.lib;$(SolutionDir)../rust/target/debug/dictionary_parser.lib;$(SolutionDir)../rust/target/debug/globals.lib;$(SolutionDir)../rust/target/debug/numberkey_windows.lib;$(SolutionDir)../rust/target/debug/ruststringrange.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>SampleIME.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>

@@ -174,25 +174,6 @@ WCHAR* CStringRangeUtf16::Clone(const WCHAR* pwch, DWORD_PTR dwLength)
     return pwchString;
 }
 
-BOOL CCandidateRange::IsRange(UINT vKey)
-{
-    int index = GetIndex(vKey);
-    return index != -1;
-}
-
-int CCandidateRange::GetIndex(UINT vKey)
-{
-    DWORD value = ((VK_NUMPAD0 <= vKey) && (vKey <= VK_NUMPAD9)) ? (vKey - VK_NUMPAD0) : (vKey - L'0');
-
-    if (value == 0) {
-        return 9;
-    }
-    if (value > 0 && value < 10) {
-        return value - 1;
-    }
-    return -1;
-}
-
 CPunctuationPair::CPunctuationPair()
 {
     _punctuation._Code = 0;

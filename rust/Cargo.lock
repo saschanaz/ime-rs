@@ -29,6 +29,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "numberkey_windows"
+version = "0.1.0"
+dependencies = [
+ "winapi",
+]
+
+[[package]]
 name = "ruststringrange"
 version = "0.1.0"
 dependencies = [
