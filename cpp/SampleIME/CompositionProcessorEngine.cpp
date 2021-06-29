@@ -118,8 +118,6 @@ CCompositionProcessorEngine::CCompositionProcessorEngine()
     _isKeystrokeSort = FALSE;
 
     _candidateWndWidth = CAND_WIDTH;
-
-    InitKeyStrokeTable();
 }
 
 //+---------------------------------------------------------------------------
@@ -214,7 +212,6 @@ BOOL CCompositionProcessorEngine::SetupLanguageProfile(LANGID langid, REFGUID gu
 	InitializeSampleIMECompartment(pThreadMgr, tfClientId);
     SetupPunctuationPair();
     SetupLanguageBar(pThreadMgr, tfClientId, isSecureMode);
-    SetupKeystroke();
     SetupConfiguration();
     engine_rust.SetupDictionaryFile(Global::dllInstanceHandle, TEXTSERVICE_DIC, IsKeystrokeSort());
 
@@ -467,32 +464,6 @@ BOOL CCompositionProcessorEngine::IsDoubleSingleByte(WCHAR wch)
         return TRUE;
     }
     return FALSE;
-}
-
-//+---------------------------------------------------------------------------
-//
-// SetupKeystroke
-//
-//----------------------------------------------------------------------------
-
-void CCompositionProcessorEngine::SetupKeystroke()
-{
-    SetKeystrokeTable(&_KeystrokeComposition);
-    return;
-}
-
-//+---------------------------------------------------------------------------
-//
-// SetKeystrokeTable
-//
-//----------------------------------------------------------------------------
-
-void CCompositionProcessorEngine::SetKeystrokeTable(_Inout_ CSampleImeArray<_KEYSTROKE> *pKeystroke)
-{
-    for (int i = 0; i < 26; i++)
-    {
-        pKeystroke->Append(_keystrokeTable[i]);
-    }
 }
 
 //+---------------------------------------------------------------------------
@@ -1212,14 +1183,6 @@ HRESULT CSampleIME::GetComModuleName(REFGUID rclsid, _Out_writes_(cchPath)WCHAR*
     return hr;
 }
 
-void CCompositionProcessorEngine::InitKeyStrokeTable()
-{
-    for (int i = 0; i < 26; i++)
-    {
-        _keystrokeTable[i].VirtualKey = 'A' + i;
-    }
-}
-
 void CCompositionProcessorEngine::ShowAllLanguageBarIcons()
 {
     SetLanguageBarStatus(TF_LBI_STATUS_HIDDEN, FALSE);
@@ -1402,17 +1365,9 @@ std::tuple<bool, _KEYSTROKE_STATE> CCompositionProcessorEngine::TestVirtualKey(U
 //
 //----------------------------------------------------------------------------
 
-BOOL CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode)
+bool CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode)
 {
-    for (const auto& keystroke : _KeystrokeComposition)
-    {
-        if (keystroke.VirtualKey == uCode && engine_rust.ModifiersGet() == 0)
-        {
-            return TRUE;
-        }
-    }
-
-    return FALSE;
+    return uCode >= u'A' && uCode <= u'Z' && engine_rust.ModifiersGet() == 0;
 }
 
 //+---------------------------------------------------------------------------

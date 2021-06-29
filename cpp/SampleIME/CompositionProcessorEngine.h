@@ -83,18 +83,14 @@ public:
     void ModifiersUpdate(WPARAM w, LPARAM l) { return engine_rust.ModifiersUpdate(w, l); }
 
 private:
-    void InitKeyStrokeTable();
     BOOL InitLanguageBar(_In_ CLangBarItemButton *pLanguageBar, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId, REFGUID guidCompartment);
 
-    struct _KEYSTROKE;
-    BOOL IsVirtualKeyKeystrokeComposition(UINT uCode);
+    bool IsVirtualKeyKeystrokeComposition(UINT uCode);
     BOOL IsKeystrokeRange(UINT uCode, CANDIDATE_MODE candidateMode);
 
-    void SetupKeystroke();
     void SetupPreserved(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
     void SetupConfiguration();
     void SetupLanguageBar(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId, BOOL isSecureMode);
-    void SetKeystrokeTable(_Inout_ CSampleImeArray<_KEYSTROKE> *pKeystroke);
     void SetupPunctuationPair();
     void CreateLanguageBarButton(DWORD dwEnable, GUID guidLangBar, _In_z_ LPCWSTR pwszDescriptionValue, _In_z_ LPCWSTR pwszTooltipValue, DWORD dwOnIconIndex, DWORD dwOffIconIndex, _Outptr_result_maybenull_ CLangBarItemButton **ppLangBarItemButton, BOOL isSecureMode);
     void SetDefaultCandidateTextFont();
@@ -110,22 +106,9 @@ private:
     void KeyboardOpenCompartmentUpdated(_In_ ITfThreadMgr *pThreadMgr);
 
 private:
-    struct _KEYSTROKE
-    {
-        UINT VirtualKey;
-
-        _KEYSTROKE()
-        {
-            VirtualKey = 0;
-        }
-    };
-    _KEYSTROKE _keystrokeTable[26];
-
     LANGID _langid;
     GUID _guidProfile;
     TfClientId  _tfClientId;
-
-    CSampleImeArray<_KEYSTROKE> _KeystrokeComposition;
 
     // Preserved key data
     class XPreservedKey
