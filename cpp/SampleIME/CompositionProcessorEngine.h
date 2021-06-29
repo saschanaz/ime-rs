@@ -152,8 +152,6 @@ private:
     bool _isComLessMode;
     UINT _candidateWndWidth;
 
-    static const int OUT_OF_FILE_INDEX = -1;
-
     // Rust port
     class CRustCompositionProcessorEngine {
         void* engine;
