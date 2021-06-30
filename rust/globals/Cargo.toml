@@ -11,4 +11,4 @@ name = "globals"
 crate-type = ["staticlib"]
 
 [dependencies]
-windows = "0.11.0"
+windows = "0.13.0"

@@ -1,6 +1,8 @@
-use crate::bindings::Windows::Win32::Foundation::{LPARAM, WPARAM};
-use crate::bindings::Windows::Win32::UI::KeyboardAndMouseInput::GetKeyState;
-use crate::bindings::Windows::Win32::UI::WindowsAndMessaging::{VK_CONTROL, VK_MENU, VK_SHIFT};
+use crate::bindings::{
+    Windows::Win32::Foundation::{LPARAM, WPARAM},
+    Windows::Win32::UI::KeyboardAndMouseInput::GetKeyState,
+    Windows::Win32::UI::WindowsAndMessaging::{VK_CONTROL, VK_MENU, VK_SHIFT},
+};
 
 // msctf.h
 static TF_MOD_ALT: u16 = 0x0001;

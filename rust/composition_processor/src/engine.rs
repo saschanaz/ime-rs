@@ -1,7 +1,9 @@
 use dictionary_parser::TableDictionaryEngine;
 
-use crate::bindings::Windows::Win32::Foundation::{HINSTANCE, MAX_PATH, PWSTR};
-use crate::bindings::Windows::Win32::System::LibraryLoader::GetModuleFileNameW;
+use crate::bindings::{
+    Windows::Win32::Foundation::{HINSTANCE, MAX_PATH, PWSTR},
+    Windows::Win32::System::LibraryLoader::GetModuleFileNameW,
+};
 use crate::modifiers::Modifiers;
 
 pub struct CompositionProcessorEngine {
