@@ -1276,9 +1276,16 @@ std::tuple<bool, _KEYSTROKE_STATE> CCompositionProcessorEngine::TestVirtualKey(U
         return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_INPUT });
     }
 
+    auto mappedFunction = MapInvariableKeystrokeFunction(uCode);
     // System pre-defined keystroke
     if (fComposing)
     {
+        if (mappedFunction.has_value()) {
+            KEYSTROKE_CATEGORY category = candidateMode == CANDIDATE_INCREMENTAL ? CATEGORY_CANDIDATE : CATEGORY_COMPOSING;
+            return std::make_tuple(TRUE, _KEYSTROKE_STATE {
+                category, mappedFunction.value()
+            });
+        }
         if (candidateMode != CANDIDATE_INCREMENTAL)
         {
             switch (uCode)
@@ -1287,15 +1294,6 @@ std::tuple<bool, _KEYSTROKE_STATE> CCompositionProcessorEngine::TestVirtualKey(U
             case VK_RIGHT:  return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_MOVE_RIGHT });
             case VK_ESCAPE: return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_CANCEL });
             case VK_BACK:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_BACKSPACE });
-
-            case VK_UP:
-            case VK_DOWN:
-            case VK_PRIOR:
-            case VK_NEXT:
-            case VK_HOME:
-            case VK_END:
-            case VK_RETURN:
-            case VK_SPACE:  return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, MapInvariableKeystrokeFunction(uCode).value() });
             }
         }
         else
@@ -1312,31 +1310,19 @@ std::tuple<bool, _KEYSTROKE_STATE> CCompositionProcessorEngine::TestVirtualKey(U
 
                 // VK_BACK - remove one char from reading string.
             case VK_BACK:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_BACKSPACE });
-
-            case VK_UP:
-            case VK_DOWN:
-            case VK_PRIOR:
-            case VK_NEXT:
-            case VK_HOME:
-            case VK_END:
-            case VK_RETURN:
-            case VK_SPACE:  return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, MapInvariableKeystrokeFunction(uCode).value() });
             }
         }
     }
 
     if ((candidateMode == CANDIDATE_ORIGINAL) || (candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION))
     {
+        if (mappedFunction.has_value()) {
+            return std::make_tuple(TRUE, _KEYSTROKE_STATE {
+                CATEGORY_CANDIDATE, mappedFunction.value()
+            });
+        }
         switch (uCode)
         {
-        case VK_UP:
-        case VK_DOWN:
-        case VK_PRIOR:
-        case VK_NEXT:
-        case VK_HOME:
-        case VK_END:
-        case VK_RETURN:
-        case VK_SPACE:  return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, MapInvariableKeystrokeFunction(uCode).value() });
         case VK_BACK:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_CANCEL });
 
         case VK_ESCAPE:
