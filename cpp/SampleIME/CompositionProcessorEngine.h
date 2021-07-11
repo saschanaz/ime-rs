@@ -59,9 +59,7 @@ public:
     WCHAR GetPunctuation(WCHAR wch);
 
     BOOL IsDoubleSingleByte(WCHAR wch);
-    BOOL IsWildcardChar(WCHAR wch) { return ((IsWildcardOneChar(wch) || IsWildcardAllChar(wch)) ? TRUE : FALSE); }
-    BOOL IsWildcardOneChar(WCHAR wch) { return (wch==L'?' ? TRUE : FALSE); }
-    BOOL IsWildcardAllChar(WCHAR wch) { return (wch==L'*' ? TRUE : FALSE); }
+    BOOL IsWildcardChar(WCHAR wch) { return (wch == u'?' || wch == u'*'); }
 
     // Dictionary engine
     BOOL IsDictionaryAvailable() { return !!engine_rust.GetTableDictionaryEngine(); }
