@@ -36,7 +36,6 @@ void compositionprocessorengine_purge_virtual_key(void *engine);
 
 void compositionprocessorengine_setup_dictionary_file(void *engine,
                                                       HINSTANCE dll_instance_handle,
-                                                      void *dictionary_file_name,
-                                                      bool is_keystroke_sort);
+                                                      void *dictionary_file_name);
 
 } // extern "C"

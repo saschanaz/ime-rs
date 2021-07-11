@@ -72,15 +72,10 @@ pub unsafe extern "C" fn compositionprocessorengine_setup_dictionary_file(
     engine: *mut c_void,
     dll_instance_handle: HINSTANCE,
     dictionary_file_name: *mut c_void,
-    is_keystroke_sort: bool,
 ) {
     let engine = Box::leak(CompositionProcessorEngine::from_void(engine));
     let dictionary_file_name = Box::leak(RustStringRange::from_void(dictionary_file_name));
-    engine.setup_dictionary_file(
-        dll_instance_handle,
-        dictionary_file_name.as_slice(),
-        is_keystroke_sort,
-    );
+    engine.setup_dictionary_file(dll_instance_handle, dictionary_file_name.as_slice());
 }
 
 #[no_mangle]

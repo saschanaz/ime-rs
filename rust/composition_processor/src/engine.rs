@@ -61,7 +61,6 @@ impl CompositionProcessorEngine {
         &mut self,
         dll_instance_handle: HINSTANCE,
         dictionary_file_name: &str,
-        is_keystroke_sort: bool,
     ) {
         let mut file_name = [0u16; MAX_PATH as usize];
         unsafe {
@@ -72,9 +71,8 @@ impl CompositionProcessorEngine {
         let dir = std::path::Path::new(&file_name[..]).parent().unwrap();
         let dict_path = dir.join(dictionary_file_name);
 
-        self.table_dictionary_engine = Some(
-            TableDictionaryEngine::load(dict_path.to_str().unwrap(), is_keystroke_sort).unwrap(),
-        )
+        self.table_dictionary_engine =
+            Some(TableDictionaryEngine::load(dict_path.to_str().unwrap()).unwrap())
     }
 
     pub fn get_table_dictionary_engine(&self) -> &Option<TableDictionaryEngine> {

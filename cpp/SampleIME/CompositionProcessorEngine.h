@@ -65,7 +65,6 @@ public:
     BOOL IsWildcardOneChar(WCHAR wch) { return (wch==L'?' ? TRUE : FALSE); }
     BOOL IsWildcardAllChar(WCHAR wch) { return (wch==L'*' ? TRUE : FALSE); }
     BOOL IsMakePhraseFromText() { return _hasMakePhraseFromText; }
-    BOOL IsKeystrokeSort() { return _isKeystrokeSort; }
 
     // Dictionary engine
     BOOL IsDictionaryAvailable() { return !!engine_rust.GetTableDictionaryEngine(); }
@@ -148,7 +147,6 @@ private:
     bool _isWildcard;
     bool _isDisableWildcardAtFirst;
     bool _hasMakePhraseFromText;
-    bool _isKeystrokeSort;
     bool _isComLessMode;
 
     // Rust port
@@ -165,7 +163,7 @@ private:
         CRustStringRange GetReadingString();
         bool KeystrokeBufferIncludesWildcard();
 
-        void SetupDictionaryFile(HINSTANCE dllInstanceHandle, const CRustStringRange& dictionaryFileName, bool isKeystrokeSort);
+        void SetupDictionaryFile(HINSTANCE dllInstanceHandle, const CRustStringRange& dictionaryFileName);
         std::optional<CRustTableDictionaryEngine> GetTableDictionaryEngine() const;
 
         void ModifiersUpdate(WPARAM w, LPARAM l);

@@ -115,7 +115,6 @@ CCompositionProcessorEngine::CCompositionProcessorEngine()
     _isWildcard = FALSE;
     _isDisableWildcardAtFirst = FALSE;
     _hasMakePhraseFromText = FALSE;
-    _isKeystrokeSort = FALSE;
 }
 
 //+---------------------------------------------------------------------------
@@ -211,7 +210,7 @@ BOOL CCompositionProcessorEngine::SetupLanguageProfile(LANGID langid, REFGUID gu
     SetupPunctuationPair();
     SetupLanguageBar(pThreadMgr, tfClientId, isSecureMode);
     SetupConfiguration();
-    engine_rust.SetupDictionaryFile(Global::dllInstanceHandle, TEXTSERVICE_DIC, IsKeystrokeSort());
+    engine_rust.SetupDictionaryFile(Global::dllInstanceHandle, TEXTSERVICE_DIC);
 
 Exit:
     return ret;
@@ -648,7 +647,6 @@ void CCompositionProcessorEngine::SetupConfiguration()
     _isWildcard = TRUE;
     _isDisableWildcardAtFirst = TRUE;
     _hasMakePhraseFromText = TRUE;
-    _isKeystrokeSort = TRUE;
 
     SetDefaultCandidateTextFont();
 
@@ -1424,8 +1422,8 @@ bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::KeystrokeBuff
     return compositionprocessorengine_keystroke_buffer_includes_wildcard(engine);
 }
 
-void CCompositionProcessorEngine::CRustCompositionProcessorEngine::SetupDictionaryFile(HINSTANCE dllInstanceHandle, const CRustStringRange& dictionaryFileName, bool isKeystrokeSort) {
-    compositionprocessorengine_setup_dictionary_file(engine, dllInstanceHandle, dictionaryFileName.GetInternal(), isKeystrokeSort);
+void CCompositionProcessorEngine::CRustCompositionProcessorEngine::SetupDictionaryFile(HINSTANCE dllInstanceHandle, const CRustStringRange& dictionaryFileName) {
+    compositionprocessorengine_setup_dictionary_file(engine, dllInstanceHandle, dictionaryFileName.GetInternal());
 }
 
 std::optional<CRustTableDictionaryEngine> CCompositionProcessorEngine::CRustCompositionProcessorEngine::GetTableDictionaryEngine() const {
