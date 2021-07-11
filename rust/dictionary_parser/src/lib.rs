@@ -26,25 +26,6 @@ unsafe fn tuples_to_ffi(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn tabledictionaryengine_load(
-    path: *const c_void,
-    sort: bool,
-) -> *mut c_void {
-    let path = Box::leak(RustStringRange::from_void(path as *mut _));
-    let result = TableDictionaryEngine::load(path.as_slice(), sort);
-    if let Ok(engine) = result {
-        Box::into_raw(Box::new(engine)) as *mut c_void
-    } else {
-        std::ptr::null_mut()
-    }
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn tabledictionaryengine_free(engine: *mut c_void) {
-    TableDictionaryEngine::from_void(engine); // implicit cleanup
-}
-
-#[no_mangle]
 pub unsafe extern "C" fn tabledictionaryengine_collect_word(
     engine: *const c_void,
     search_key: *const c_void,

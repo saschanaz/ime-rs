@@ -11,22 +11,6 @@
 
 static const uintptr_t MAX_BUFFER = 512;
 
-CRustTableDictionaryEngine::~CRustTableDictionaryEngine() {
-    if (engine && !weak) {
-        tabledictionaryengine_free(engine);
-    }
-}
-
-std::optional<CRustTableDictionaryEngine> CRustTableDictionaryEngine::Load(CRustStringRange path, bool sort) {
-    void* engine = tabledictionaryengine_load(path.GetInternal(), sort);
-
-    if (engine) {
-        return CRustTableDictionaryEngine(engine, false);
-    }
-
-    return std::nullopt;
-}
-
 inline void ArraysToArray(void** keys, void** values, uintptr_t length, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList) {
     for (uintptr_t i = 0; i < length; i++) {
         CRustStringRange key = CRustStringRange::FromVoid(keys[i]);

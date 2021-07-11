@@ -14,34 +14,27 @@
 
 class CRustTableDictionaryEngine {
     void* engine;
-    bool weak;
 
-    CRustTableDictionaryEngine(void* engine, bool weak) {
+    CRustTableDictionaryEngine(void* engine) {
         this->engine = engine;
-        this->weak = weak;
     }
 
 public:
-    ~CRustTableDictionaryEngine();
+    ~CRustTableDictionaryEngine() = default;
 
     static CRustTableDictionaryEngine WeakRef(void* engine) {
-        return CRustTableDictionaryEngine(engine, true);
+        return CRustTableDictionaryEngine(engine);
     }
 
     CRustTableDictionaryEngine(CRustTableDictionaryEngine&& that) noexcept {
         engine = that.engine;
-        weak = that.weak;
         that.engine = nullptr;
-        that.weak = false;
     }
 
     CRustTableDictionaryEngine& operator=(CRustTableDictionaryEngine en) {
         std::swap(engine, en.engine);
-        std::swap(weak, en.weak);
         return *this;
     }
-
-    static std::optional<CRustTableDictionaryEngine> Load(CRustStringRange path, bool sort);
 
     void CollectWord(const CRustStringRange& keyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList) const;
 

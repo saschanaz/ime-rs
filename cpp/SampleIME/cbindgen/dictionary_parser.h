@@ -23,8 +23,4 @@ uintptr_t tabledictionaryengine_collect_word_from_converted_string_for_wildcard(
                                                                                 void **values_buffer,
                                                                                 uintptr_t buffer_length);
 
-void tabledictionaryengine_free(void *engine);
-
-void *tabledictionaryengine_load(const void *path, bool sort);
-
 } // extern "C"
