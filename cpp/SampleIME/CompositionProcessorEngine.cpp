@@ -116,8 +116,6 @@ CCompositionProcessorEngine::CCompositionProcessorEngine()
     _isDisableWildcardAtFirst = FALSE;
     _hasMakePhraseFromText = FALSE;
     _isKeystrokeSort = FALSE;
-
-    _candidateWndWidth = CAND_WIDTH;
 }
 
 //+---------------------------------------------------------------------------
@@ -651,7 +649,6 @@ void CCompositionProcessorEngine::SetupConfiguration()
     _isDisableWildcardAtFirst = TRUE;
     _hasMakePhraseFromText = TRUE;
     _isKeystrokeSort = TRUE;
-    _candidateWndWidth = CAND_WIDTH;
 
     SetDefaultCandidateTextFont();
 

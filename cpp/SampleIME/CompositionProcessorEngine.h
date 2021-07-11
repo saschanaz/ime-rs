@@ -78,9 +78,9 @@ public:
     void ShowAllLanguageBarIcons();
     void HideAllLanguageBarIcons();
 
-    inline UINT GetCandidateWindowWidth() { return _candidateWndWidth; }
-
     void ModifiersUpdate(WPARAM w, LPARAM l) { return engine_rust.ModifiersUpdate(w, l); }
+
+    const uint32_t CandidateWindowWidth = 13;  // * tmMaxCharWidth
 
 private:
     BOOL InitLanguageBar(_In_ CLangBarItemButton *pLanguageBar, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId, REFGUID guidCompartment);
@@ -150,7 +150,6 @@ private:
     bool _hasMakePhraseFromText;
     bool _isKeystrokeSort;
     bool _isComLessMode;
-    UINT _candidateWndWidth;
 
     // Rust port
     class CRustCompositionProcessorEngine {

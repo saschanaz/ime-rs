@@ -40,8 +40,6 @@
 #define _TF_MOD_ON_KEYUP_CONTROL_ONLY  (0x00020000 | TF_MOD_ON_KEYUP)
 #define _TF_MOD_ON_KEYUP_ALT_ONLY      (0x00040000 | TF_MOD_ON_KEYUP)
 
-#define CAND_WIDTH     (13)      // * tmMaxCharWidth
-
 //---------------------------------------------------------------------
 // string length of CLSID
 //---------------------------------------------------------------------
