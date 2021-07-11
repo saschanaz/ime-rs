@@ -59,12 +59,9 @@ public:
     WCHAR GetPunctuation(WCHAR wch);
 
     BOOL IsDoubleSingleByte(WCHAR wch);
-    BOOL IsWildcard() { return _isWildcard; }
-    BOOL IsDisableWildcardAtFirst() { return _isDisableWildcardAtFirst; }
     BOOL IsWildcardChar(WCHAR wch) { return ((IsWildcardOneChar(wch) || IsWildcardAllChar(wch)) ? TRUE : FALSE); }
     BOOL IsWildcardOneChar(WCHAR wch) { return (wch==L'?' ? TRUE : FALSE); }
     BOOL IsWildcardAllChar(WCHAR wch) { return (wch==L'*' ? TRUE : FALSE); }
-    BOOL IsMakePhraseFromText() { return _hasMakePhraseFromText; }
 
     // Dictionary engine
     BOOL IsDictionaryAvailable() { return !!engine_rust.GetTableDictionaryEngine(); }
@@ -88,7 +85,6 @@ private:
     BOOL IsKeystrokeRange(UINT uCode, CANDIDATE_MODE candidateMode);
 
     void SetupPreserved(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
-    void SetupConfiguration();
     void SetupLanguageBar(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId, BOOL isSecureMode);
     void SetupPunctuationPair();
     void CreateLanguageBarButton(DWORD dwEnable, GUID guidLangBar, _In_z_ LPCWSTR pwszDescriptionValue, _In_z_ LPCWSTR pwszTooltipValue, DWORD dwOnIconIndex, DWORD dwOffIconIndex, _Outptr_result_maybenull_ CLangBarItemButton **ppLangBarItemButton, BOOL isSecureMode);
@@ -143,10 +139,6 @@ private:
     CCompartmentEventSink* _pCompartmentDoubleSingleByteEventSink;
     CCompartmentEventSink* _pCompartmentPunctuationEventSink;
 
-    // Configuration data
-    bool _isWildcard;
-    bool _isDisableWildcardAtFirst;
-    bool _hasMakePhraseFromText;
     bool _isComLessMode;
 
     // Rust port

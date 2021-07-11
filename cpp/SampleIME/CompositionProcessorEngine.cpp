@@ -111,10 +111,6 @@ CCompositionProcessorEngine::CCompositionProcessorEngine()
     _pCompartmentConversionEventSink = nullptr;
     _pCompartmentDoubleSingleByteEventSink = nullptr;
     _pCompartmentPunctuationEventSink = nullptr;
-
-    _isWildcard = FALSE;
-    _isDisableWildcardAtFirst = FALSE;
-    _hasMakePhraseFromText = FALSE;
 }
 
 //+---------------------------------------------------------------------------
@@ -209,7 +205,7 @@ BOOL CCompositionProcessorEngine::SetupLanguageProfile(LANGID langid, REFGUID gu
 	InitializeSampleIMECompartment(pThreadMgr, tfClientId);
     SetupPunctuationPair();
     SetupLanguageBar(pThreadMgr, tfClientId, isSecureMode);
-    SetupConfiguration();
+    SetDefaultCandidateTextFont();
     engine_rust.SetupDictionaryFile(Global::dllInstanceHandle, TEXTSERVICE_DIC);
 
 Exit:
@@ -299,13 +295,8 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
         CRustStringRange wildcardSearch = engine_rust.GetReadingString();
 
         // check keystroke buffer already has wildcard char which end user want wildcard serach
-        DWORD wildcardIndex = 0;
-        BOOL isFindWildcard = FALSE;
-
-        if (IsWildcard())
-        {
-            isFindWildcard = wildcardSearch.Contains(u8'*') || wildcardSearch.Contains(u8'?');
-        }
+        uint32_t wildcardIndex = 0;
+        bool isFindWildcard = wildcardSearch.Contains(u8'*') || wildcardSearch.Contains(u8'?');
 
         if (!isFindWildcard)
         {
@@ -634,23 +625,6 @@ void CCompositionProcessorEngine::OnPreservedKey(REFGUID rguid, _Out_ BOOL *pIsE
         *pIsEaten = FALSE;
     }
     *pIsEaten = TRUE;
-}
-
-//+---------------------------------------------------------------------------
-//
-// SetupConfiguration
-//
-//----------------------------------------------------------------------------
-
-void CCompositionProcessorEngine::SetupConfiguration()
-{
-    _isWildcard = TRUE;
-    _isDisableWildcardAtFirst = TRUE;
-    _hasMakePhraseFromText = TRUE;
-
-    SetDefaultCandidateTextFont();
-
-    return;
 }
 
 //+---------------------------------------------------------------------------
@@ -1251,7 +1225,7 @@ std::tuple<bool, _KEYSTROKE_STATE> CCompositionProcessorEngine::TestVirtualKey(U
 
     if (fComposing || candidateMode == CANDIDATE_INCREMENTAL || candidateMode == CANDIDATE_NONE)
     {
-        if (IsWildcard() && IsWildcardChar(wch) && !(IsDisableWildcardAtFirst() && !engine_rust.HasVirtualKey()))
+        if (IsWildcardChar(wch) && engine_rust.HasVirtualKey())
         {
             return std::make_tuple(true, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_INPUT });
         }
