@@ -1216,7 +1216,7 @@ static std::optional<KEYSTROKE_FUNCTION> MapInvariableKeystrokeFunction(uint32_t
 //     If engine need this virtual key code, returns true. Otherwise returns false.
 //----------------------------------------------------------------------------
 
-std::tuple<bool, _KEYSTROKE_STATE> CCompositionProcessorEngine::TestVirtualKey(UINT uCode, WCHAR wch, BOOL fComposing, CANDIDATE_MODE candidateMode)
+std::tuple<bool, KEYSTROKE_CATEGORY, KEYSTROKE_FUNCTION> CCompositionProcessorEngine::TestVirtualKey(UINT uCode, WCHAR wch, BOOL fComposing, CANDIDATE_MODE candidateMode)
 {
     if (candidateMode == CANDIDATE_ORIGINAL || candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION)
     {
@@ -1227,11 +1227,11 @@ std::tuple<bool, _KEYSTROKE_STATE> CCompositionProcessorEngine::TestVirtualKey(U
     {
         if (IsWildcardChar(wch) && engine_rust.HasVirtualKey())
         {
-            return std::make_tuple(true, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_INPUT });
+            return std::make_tuple(true, CATEGORY_COMPOSING, FUNCTION_INPUT);
         }
         else if (engine_rust.KeystrokeBufferIncludesWildcard() && uCode == VK_SPACE)
         {
-            return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_CONVERT_WILDCARD });
+            return std::make_tuple(TRUE, CATEGORY_COMPOSING, FUNCTION_CONVERT_WILDCARD);
         }
     }
 
@@ -1240,9 +1240,9 @@ std::tuple<bool, _KEYSTROKE_STATE> CCompositionProcessorEngine::TestVirtualKey(U
     {
         if (candidateMode == CANDIDATE_ORIGINAL)
         {
-            return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_FINALIZE_CANDIDATELIST_AND_INPUT });
+            return std::make_tuple(TRUE, CATEGORY_CANDIDATE, FUNCTION_FINALIZE_CANDIDATELIST_AND_INPUT);
         }
-        return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_INPUT });
+        return std::make_tuple(TRUE, CATEGORY_COMPOSING, FUNCTION_INPUT);
     }
 
     auto mappedFunction = MapInvariableKeystrokeFunction(uCode);
@@ -1251,18 +1251,16 @@ std::tuple<bool, _KEYSTROKE_STATE> CCompositionProcessorEngine::TestVirtualKey(U
     {
         if (mappedFunction.has_value()) {
             KEYSTROKE_CATEGORY category = candidateMode == CANDIDATE_INCREMENTAL ? CATEGORY_CANDIDATE : CATEGORY_COMPOSING;
-            return std::make_tuple(TRUE, _KEYSTROKE_STATE {
-                category, mappedFunction.value()
-            });
+            return std::make_tuple(TRUE, category, mappedFunction.value());
         }
         if (candidateMode != CANDIDATE_INCREMENTAL)
         {
             switch (uCode)
             {
-            case VK_LEFT:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_MOVE_LEFT });
-            case VK_RIGHT:  return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_MOVE_RIGHT });
-            case VK_ESCAPE: return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_CANCEL });
-            case VK_BACK:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_BACKSPACE });
+            case VK_LEFT:   return std::make_tuple(TRUE, CATEGORY_COMPOSING, FUNCTION_MOVE_LEFT);
+            case VK_RIGHT:  return std::make_tuple(TRUE, CATEGORY_COMPOSING, FUNCTION_MOVE_RIGHT);
+            case VK_ESCAPE: return std::make_tuple(TRUE, CATEGORY_COMPOSING, FUNCTION_CANCEL);
+            case VK_BACK:   return std::make_tuple(TRUE, CATEGORY_COMPOSING, FUNCTION_BACKSPACE);
             }
         }
         else
@@ -1273,12 +1271,12 @@ std::tuple<bool, _KEYSTROKE_STATE> CCompositionProcessorEngine::TestVirtualKey(U
                 // and for CUAS, invoke _HandleCompositionCancel() edit session due to ignore CUAS default key handler for send out terminate composition
             case VK_LEFT:
             case VK_RIGHT:
-                return std::make_tuple(FALSE, _KEYSTROKE_STATE { CATEGORY_INVOKE_COMPOSITION_EDIT_SESSION, FUNCTION_CANCEL });
+                return std::make_tuple(FALSE, CATEGORY_INVOKE_COMPOSITION_EDIT_SESSION, FUNCTION_CANCEL);
 
-            case VK_ESCAPE: return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_CANCEL });
+            case VK_ESCAPE: return std::make_tuple(TRUE, CATEGORY_CANDIDATE, FUNCTION_CANCEL);
 
                 // VK_BACK - remove one char from reading string.
-            case VK_BACK:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_BACKSPACE });
+            case VK_BACK:   return std::make_tuple(TRUE, CATEGORY_COMPOSING, FUNCTION_BACKSPACE);
             }
         }
     }
@@ -1286,23 +1284,21 @@ std::tuple<bool, _KEYSTROKE_STATE> CCompositionProcessorEngine::TestVirtualKey(U
     if ((candidateMode == CANDIDATE_ORIGINAL) || (candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION))
     {
         if (mappedFunction.has_value()) {
-            return std::make_tuple(TRUE, _KEYSTROKE_STATE {
-                CATEGORY_CANDIDATE, mappedFunction.value()
-            });
+            return std::make_tuple(TRUE, CATEGORY_CANDIDATE, mappedFunction.value());
         }
         switch (uCode)
         {
-        case VK_BACK:   return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_CANCEL });
+        case VK_BACK:   return std::make_tuple(TRUE, CATEGORY_CANDIDATE, FUNCTION_CANCEL);
 
         case VK_ESCAPE:
             {
                 if (candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION)
                 {
-                    return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_INVOKE_COMPOSITION_EDIT_SESSION, FUNCTION_FINALIZE_TEXTSTORE });
+                    return std::make_tuple(TRUE, CATEGORY_INVOKE_COMPOSITION_EDIT_SESSION, FUNCTION_FINALIZE_TEXTSTORE);
                 }
                 else
                 {
-                    return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_CANCEL });
+                    return std::make_tuple(TRUE, CATEGORY_CANDIDATE, FUNCTION_CANCEL);
                 }
             }
         }
@@ -1310,19 +1306,19 @@ std::tuple<bool, _KEYSTROKE_STATE> CCompositionProcessorEngine::TestVirtualKey(U
 
     if (IsKeystrokeRange(uCode, candidateMode))
     {
-        return std::make_tuple(TRUE, _KEYSTROKE_STATE { CATEGORY_CANDIDATE, FUNCTION_SELECT_BY_NUMBER });
+        return std::make_tuple(TRUE, CATEGORY_CANDIDATE, FUNCTION_SELECT_BY_NUMBER);
     }
 
     if (wch)
     {
         if (IsVirtualKeyKeystrokeComposition(uCode)) {
-            return std::make_tuple(FALSE, _KEYSTROKE_STATE { CATEGORY_COMPOSING, FUNCTION_INPUT });
+            return std::make_tuple(FALSE, CATEGORY_COMPOSING, FUNCTION_INPUT);
         } else {
-            return std::make_tuple(FALSE, _KEYSTROKE_STATE { CATEGORY_INVOKE_COMPOSITION_EDIT_SESSION, FUNCTION_FINALIZE_TEXTSTORE });
+            return std::make_tuple(FALSE, CATEGORY_INVOKE_COMPOSITION_EDIT_SESSION, FUNCTION_FINALIZE_TEXTSTORE);
         }
     }
 
-    return std::make_tuple(FALSE, _KEYSTROKE_STATE { CATEGORY_NONE, FUNCTION_NONE });
+    return std::make_tuple(FALSE, CATEGORY_NONE, FUNCTION_NONE);
 }
 
 //+---------------------------------------------------------------------------

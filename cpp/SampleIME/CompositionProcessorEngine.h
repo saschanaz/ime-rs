@@ -39,7 +39,7 @@ public:
         return MAKELCID(_langid, SORT_DEFAULT);
     }
 
-    std::tuple<bool, _KEYSTROKE_STATE> TestVirtualKey(UINT uCode, WCHAR wch, BOOL fComposing, CANDIDATE_MODE candidateMode);
+    std::tuple<bool, KEYSTROKE_CATEGORY, KEYSTROKE_FUNCTION> TestVirtualKey(UINT uCode, WCHAR wch, BOOL fComposing, CANDIDATE_MODE candidateMode);
 
     BOOL AddVirtualKey(WCHAR wch);
     void PopVirtualKey();
