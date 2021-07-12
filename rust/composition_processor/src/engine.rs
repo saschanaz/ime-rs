@@ -5,6 +5,9 @@ use crate::bindings::{
     Windows::Win32::System::LibraryLoader::GetModuleFileNameW,
 };
 use crate::modifiers::Modifiers;
+use crate::test_virtual_key::{
+    test_virtual_key, CandidateMode, KeystrokeCategory, KeystrokeFunction,
+};
 
 pub struct CompositionProcessorEngine {
     keystroke_buffer: Vec<u16>,
@@ -23,6 +26,16 @@ impl CompositionProcessorEngine {
 
     pub unsafe fn from_void(engine: *mut std::ffi::c_void) -> Box<CompositionProcessorEngine> {
         Box::from_raw(engine as *mut CompositionProcessorEngine)
+    }
+
+    pub fn test_virtual_key(
+        &self,
+        code: u32,
+        ch: char,
+        composing: bool,
+        candidate_mode: CandidateMode,
+    ) -> (bool, KeystrokeCategory, KeystrokeFunction) {
+        test_virtual_key(&self, code, ch, composing, candidate_mode)
     }
 
     pub fn add_virtual_key(&mut self, wch: u16) -> bool {
@@ -79,7 +92,11 @@ impl CompositionProcessorEngine {
         &self.table_dictionary_engine
     }
 
-    pub fn modifiers(&mut self) -> &mut Modifiers {
+    pub fn modifiers(&self) -> &Modifiers {
+        &self.modifiers
+    }
+
+    pub fn modifiers_mut(&mut self) -> &mut Modifiers {
         &mut self.modifiers
     }
 }

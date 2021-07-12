@@ -9,6 +9,7 @@ name = "composition_processor"
 version = "0.1.0"
 dependencies = [
  "dictionary_parser",
+ "numberkey_windows",
  "ruststringrange",
  "windows",
 ]

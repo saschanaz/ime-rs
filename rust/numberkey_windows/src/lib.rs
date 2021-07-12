@@ -1,8 +1,7 @@
 mod bindings;
 use bindings::Windows::Win32::UI::WindowsAndMessaging::{VK_NUMPAD0, VK_NUMPAD9};
 
-#[no_mangle]
-pub extern "C" fn is_number_key(vkey: u32) -> bool {
+pub fn is_number_key(vkey: u32) -> bool {
     index_from_number_key(vkey) != -1
 }
 

@@ -18,6 +18,7 @@
 #include "Compartment.h"
 #include "Define.h"
 #include "RustStringRange.h"
+#include "cbindgen/composition_processor.h"
 
 class CCompositionProcessorEngine
 {
@@ -39,7 +40,7 @@ public:
         return MAKELCID(_langid, SORT_DEFAULT);
     }
 
-    std::tuple<bool, KEYSTROKE_CATEGORY, KEYSTROKE_FUNCTION> TestVirtualKey(UINT uCode, WCHAR wch, BOOL fComposing, CANDIDATE_MODE candidateMode);
+    std::tuple<bool, KEYSTROKE_CATEGORY, KEYSTROKE_FUNCTION> TestVirtualKey(uint16_t uCode, char16_t wch, bool fComposing, CANDIDATE_MODE candidateMode);
 
     BOOL AddVirtualKey(WCHAR wch);
     void PopVirtualKey();
@@ -78,9 +79,6 @@ public:
 
 private:
     BOOL InitLanguageBar(_In_ CLangBarItemButton *pLanguageBar, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId, REFGUID guidCompartment);
-
-    bool IsVirtualKeyKeystrokeComposition(uint16_t uCode);
-    bool IsKeystrokeRange(uint16_t uCode, CANDIDATE_MODE candidateMode);
 
     void SetupPreserved(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
     void SetupLanguageBar(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId, BOOL isSecureMode);
@@ -146,6 +144,8 @@ private:
         CRustCompositionProcessorEngine();
         ~CRustCompositionProcessorEngine();
 
+        std::tuple<bool, KeystrokeCategory, KeystrokeFunction> TestVirtualKey(uint16_t code, char16_t ch, bool composing, CandidateMode candidateMode);
+
         bool AddVirtualKey(char16_t wch);
         void PopVirtualKey();
         void PurgeVirtualKey();
@@ -157,7 +157,6 @@ private:
         std::optional<CRustTableDictionaryEngine> GetTableDictionaryEngine() const;
 
         void ModifiersUpdate(WPARAM w, LPARAM l);
-        uint16_t ModifiersGet() const;
         bool ModifiersIsShiftKeyDownOnly() const;
         bool ModifiersIsControlKeyDownOnly() const;
         bool ModifiersIsAltKeyDownOnly() const;

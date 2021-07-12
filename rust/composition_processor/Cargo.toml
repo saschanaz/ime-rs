@@ -13,6 +13,7 @@ crate-type = ["staticlib"]
 [dependencies]
 dictionary_parser = { path = "../dictionary_parser" }
 ruststringrange = { path = "../ruststringrange" }
+numberkey_windows = { path = "../numberkey_windows" }
 windows = "0.13.0"
 
 [build-dependencies]

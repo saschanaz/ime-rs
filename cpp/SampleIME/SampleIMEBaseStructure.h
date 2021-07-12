@@ -187,9 +187,6 @@ public:
     CCandidateRange() = delete;
     ~CCandidateRange() = delete;
 
-    static bool IsRange(UINT vKey) {
-        return is_number_key(vKey);
-    }
     static int16_t GetIndex(UINT vKey) {
         return index_from_number_key(vKey);
     };
