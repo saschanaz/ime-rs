@@ -1200,10 +1200,9 @@ void CCompositionProcessorEngine::SetDefaultCandidateTextFont()
 //     If engine need this virtual key code, returns true. Otherwise returns false.
 //----------------------------------------------------------------------------
 
-std::tuple<bool, KEYSTROKE_CATEGORY, KEYSTROKE_FUNCTION> CCompositionProcessorEngine::TestVirtualKey(uint16_t uCode, char16_t wch, bool fComposing, CANDIDATE_MODE candidateMode)
+std::tuple<bool, KeystrokeCategory, KeystrokeFunction> CCompositionProcessorEngine::TestVirtualKey(uint16_t uCode, char16_t wch, bool fComposing, CandidateMode candidateMode)
 {
-    auto [eaten, category, function] = engine_rust.TestVirtualKey(uCode, wch, fComposing, static_cast<CandidateMode>(candidateMode));
-    return { eaten, static_cast<KEYSTROKE_CATEGORY>(category), static_cast<KEYSTROKE_FUNCTION>(function) };
+    return engine_rust.TestVirtualKey(uCode, wch, fComposing, candidateMode);
 }
 
 CCompositionProcessorEngine::CRustCompositionProcessorEngine::CRustCompositionProcessorEngine() {

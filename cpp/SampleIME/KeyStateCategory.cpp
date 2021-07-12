@@ -24,21 +24,21 @@ CKeyStateCategoryFactory* CKeyStateCategoryFactory::Instance()
     return _instance;
 }
 
-CKeyStateCategory* CKeyStateCategoryFactory::MakeKeyStateCategory(KEYSTROKE_CATEGORY keyCategory, _In_ CSampleIME *pTextService)
+CKeyStateCategory* CKeyStateCategoryFactory::MakeKeyStateCategory(KeystrokeCategory keyCategory, _In_ CSampleIME *pTextService)
 {
     CKeyStateCategory* pKeyState = nullptr;
 
     switch (keyCategory)
     {
-    case CATEGORY_NONE:
+    case KeystrokeCategory::None:
         pKeyState = new (std::nothrow) CKeyStateNull(pTextService);
         break;
 
-    case CATEGORY_COMPOSING:
+    case KeystrokeCategory::Composing:
         pKeyState = new (std::nothrow) CKeyStateComposing(pTextService);
         break;
 
-    case CATEGORY_CANDIDATE:
+    case KeystrokeCategory::Candidate:
         pKeyState = new (std::nothrow) CKeyStateCandidate(pTextService);
         break;
 
@@ -70,56 +70,56 @@ CKeyStateCategory::~CKeyStateCategory(void)
 {
 }
 
-HRESULT CKeyStateCategory::KeyStateHandler(KEYSTROKE_FUNCTION function, KeyHandlerEditSessionDTO dto)
+HRESULT CKeyStateCategory::KeyStateHandler(KeystrokeFunction function, KeyHandlerEditSessionDTO dto)
 {
     switch(function)
     {
-    case FUNCTION_INPUT:
+    case KeystrokeFunction::Input:
         return HandleKeyInput(dto);
 
-    case FUNCTION_FINALIZE_TEXTSTORE_AND_INPUT:
+    case KeystrokeFunction::FinalizeTextstoreAndInput:
         return HandleKeyFinalizeTextStoreAndInput(dto);
 
-    case FUNCTION_FINALIZE_TEXTSTORE:
+    case KeystrokeFunction::FinalizeTextstore:
         return HandleKeyFinalizeTextStore(dto);
 
-    case FUNCTION_FINALIZE_CANDIDATELIST_AND_INPUT:
+    case KeystrokeFunction::FinalizeCandidatelistAndInput:
         return HandleKeyFinalizeCandidatelistAndInput(dto);
 
-    case FUNCTION_FINALIZE_CANDIDATELIST:
+    case KeystrokeFunction::FinalizeCandidatelist:
         return HandleKeyFinalizeCandidatelist(dto);
 
-    case FUNCTION_CONVERT:
+    case KeystrokeFunction::Convert:
         return HandleKeyConvert(dto);
 
-    case FUNCTION_CONVERT_WILDCARD:
+    case KeystrokeFunction::ConvertWildcard:
         return HandleKeyConvertWildCard(dto);
 
-    case FUNCTION_CANCEL:
+    case KeystrokeFunction::Cancel:
         return HandleKeyCancel(dto);
 
-    case FUNCTION_BACKSPACE:
+    case KeystrokeFunction::Backspace:
         return HandleKeyBackspace(dto);
 
-    case FUNCTION_MOVE_LEFT:
-    case FUNCTION_MOVE_RIGHT:
+    case KeystrokeFunction::MoveLeft:
+    case KeystrokeFunction::MoveRight:
         return HandleKeyArrow(dto);
 
-    case FUNCTION_MOVE_UP:
-    case FUNCTION_MOVE_DOWN:
-    case FUNCTION_MOVE_PAGE_UP:
-    case FUNCTION_MOVE_PAGE_DOWN:
-    case FUNCTION_MOVE_PAGE_TOP:
-    case FUNCTION_MOVE_PAGE_BOTTOM:
+    case KeystrokeFunction::MoveUp:
+    case KeystrokeFunction::MoveDown:
+    case KeystrokeFunction::MovePageUp:
+    case KeystrokeFunction::MovePageDown:
+    case KeystrokeFunction::MovePageTop:
+    case KeystrokeFunction::MovePageBottom:
         return HandleKeyArrow(dto);
 
-    case FUNCTION_DOUBLE_SINGLE_BYTE:
+    case KeystrokeFunction::DoubleSingleByte:
         return HandleKeyDoubleSingleByte(dto);
 
-    case FUNCTION_PUNCTUATION:
+    case KeystrokeFunction::Punctuation:
         return HandleKeyPunctuation(dto);
 
-    case FUNCTION_SELECT_BY_NUMBER:
+    case KeystrokeFunction::SelectByNumber:
         return HandleKeySelectByNumber(dto);
 
     }

@@ -102,14 +102,14 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
 
     // We have a candidate list if candidatePhraseList.Cnt is not 0
     // If we are showing reverse conversion, use CCandidateListUIPresenter
-    CANDIDATE_MODE tempCandMode = CANDIDATE_NONE;
+    CandidateMode tempCandMode = CandidateMode::None;
     CCandidateListUIPresenter* pTempCandListUIPresenter = nullptr;
     if (candidatePhraseList.Count())
     {
-        tempCandMode = CANDIDATE_WITH_NEXT_COMPOSITION;
+        tempCandMode = CandidateMode::WithNextComposition;
 
         pTempCandListUIPresenter = new (std::nothrow) CCandidateListUIPresenter(this, Global::AtomCandidateWindow,
-            CATEGORY_CANDIDATE,
+            KeystrokeCategory::Candidate,
             FALSE);
         if (nullptr == pTempCandListUIPresenter)
         {
@@ -154,7 +154,7 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
             delete _pCandidateListUIPresenter;
             _pCandidateListUIPresenter = nullptr;
 
-            _candidateMode = CANDIDATE_NONE;
+            _candidateMode = CandidateMode::None;
         }
 
         if (hrReturn == S_OK)
@@ -180,7 +180,7 @@ Exit:
 //
 //----------------------------------------------------------------------------
 
-HRESULT CSampleIME::_HandleCandidateArrowKey(TfEditCookie ec, _In_ ITfContext *pContext, _In_ KEYSTROKE_FUNCTION keyFunction)
+HRESULT CSampleIME::_HandleCandidateArrowKey(TfEditCookie ec, _In_ ITfContext *pContext, _In_ KeystrokeFunction keyFunction)
 {
     ec;
     pContext;
@@ -246,7 +246,7 @@ HRESULT CSampleIME::_HandlePhraseFinalize(TfEditCookie ec, _In_ ITfContext *pCon
 //
 //----------------------------------------------------------------------------
 
-HRESULT CSampleIME::_HandlePhraseArrowKey(TfEditCookie ec, _In_ ITfContext *pContext, _In_ KEYSTROKE_FUNCTION keyFunction)
+HRESULT CSampleIME::_HandlePhraseArrowKey(TfEditCookie ec, _In_ ITfContext *pContext, _In_ KeystrokeFunction keyFunction)
 {
     ec;
     pContext;
@@ -293,7 +293,7 @@ HRESULT CSampleIME::_HandlePhraseSelectByNumber(TfEditCookie ec, _In_ ITfContext
 //
 //----------------------------------------------------------------------------
 
-CCandidateListUIPresenter::CCandidateListUIPresenter(_In_ CSampleIME *pTextService, ATOM atom, KEYSTROKE_CATEGORY Category, BOOL hideWindow) : CTfTextLayoutSink(pTextService)
+CCandidateListUIPresenter::CCandidateListUIPresenter(_In_ CSampleIME *pTextService, ATOM atom, KeystrokeCategory Category, BOOL hideWindow) : CTfTextLayoutSink(pTextService)
 {
     _atom = atom;
 
@@ -1015,7 +1015,7 @@ HRESULT CCandidateListUIPresenter::_CandidateChangeNotification(_In_ enum CANDWN
 
     _KEYSTROKE_STATE KeyState;
     KeyState.Category = _Category;
-    KeyState.Function = FUNCTION_FINALIZE_CANDIDATELIST;
+    KeyState.Function = KeystrokeFunction::FinalizeCandidatelist;
 
     if (CAND_ITEM_SELECT != action)
     {
@@ -1148,36 +1148,36 @@ void CCandidateListUIPresenter::RemoveSpecificCandidateFromList(_In_ LCID Locale
     }
 }
 
-void CCandidateListUIPresenter::AdviseUIChangedByArrowKey(_In_ KEYSTROKE_FUNCTION arrowKey)
+void CCandidateListUIPresenter::AdviseUIChangedByArrowKey(_In_ KeystrokeFunction arrowKey)
 {
     switch (arrowKey)
     {
-    case FUNCTION_MOVE_UP:
+    case KeystrokeFunction::MoveUp:
         {
             _MoveSelection(MOVEUP_ONE);
             break;
         }
-    case FUNCTION_MOVE_DOWN:
+    case KeystrokeFunction::MoveDown:
         {
             _MoveSelection(MOVEDOWN_ONE);
             break;
         }
-    case FUNCTION_MOVE_PAGE_UP:
+    case KeystrokeFunction::MovePageUp:
         {
             _MovePage(MOVEUP_ONE);
             break;
         }
-    case FUNCTION_MOVE_PAGE_DOWN:
+    case KeystrokeFunction::MovePageDown:
         {
             _MovePage(MOVEDOWN_ONE);
             break;
         }
-    case FUNCTION_MOVE_PAGE_TOP:
+    case KeystrokeFunction::MovePageTop:
         {
             _SetSelection(MOVETO_TOP);
             break;
         }
-    case FUNCTION_MOVE_PAGE_BOTTOM:
+    case KeystrokeFunction::MovePageBottom:
         {
             _SetSelection(MOVETO_BOTTOM);
             break;

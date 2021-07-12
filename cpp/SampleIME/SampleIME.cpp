@@ -75,7 +75,7 @@ CSampleIME::CSampleIME()
 
     _pCompositionProcessorEngine = nullptr;
 
-    _candidateMode = CANDIDATE_NONE;
+    _candidateMode = CandidateMode::None;
     _pCandidateListUIPresenter = nullptr;
 
     _pDocMgrLastFocused = nullptr;
@@ -305,7 +305,7 @@ STDAPI CSampleIME::Deactivate()
             pContext->Release();
         }
 
-        _candidateMode = CANDIDATE_NONE;
+        _candidateMode = CandidateMode::None;
     }
 
     _UninitFunctionProviderSink();

@@ -32,7 +32,7 @@ class CCandidateListUIPresenter : public CTfTextLayoutSink,
 {
 public:
     CCandidateListUIPresenter(_In_ CSampleIME *pTextService, ATOM atom,
-        KEYSTROKE_CATEGORY Category,
+        KeystrokeCategory Category,
         BOOL hideWindow);
     virtual ~CCandidateListUIPresenter();
 
@@ -95,7 +95,7 @@ public:
     virtual HRESULT OnKillThreadFocus();
 
     void RemoveSpecificCandidateFromList(_In_ LCID Locale, _Inout_ CSampleImeArray<CCandidateListItem> &candidateList, const CRustStringRange& srgCandidateString);
-    void AdviseUIChangedByArrowKey(_In_ KEYSTROKE_FUNCTION arrowKey);
+    void AdviseUIChangedByArrowKey(_In_ KeystrokeFunction arrowKey);
 
 private:
     virtual HRESULT CALLBACK _CandidateChangeNotification(_In_ enum CANDWND_ACTION action);
@@ -129,7 +129,7 @@ private:
 
     HWND _parentWndHandle;
     ATOM _atom;
-    KEYSTROKE_CATEGORY _Category;
+    KeystrokeCategory _Category;
     DWORD _updatedFlags;
     DWORD _uiElementId;
     CSampleIME* _pTextService;

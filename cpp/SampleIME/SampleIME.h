@@ -109,19 +109,19 @@ public:
     HRESULT _HandleCompositionFinalize(TfEditCookie ec, _In_ ITfContext *pContext, BOOL fCandidateList);
     HRESULT _HandleCompositionConvert(TfEditCookie ec, _In_ ITfContext *pContext, BOOL isWildcardSearch);
     HRESULT _HandleCompositionBackspace(TfEditCookie ec, _In_ ITfContext *pContext);
-    HRESULT _HandleCompositionArrowKey(TfEditCookie ec, _In_ ITfContext *pContext, KEYSTROKE_FUNCTION keyFunction);
+    HRESULT _HandleCompositionArrowKey(TfEditCookie ec, _In_ ITfContext *pContext, KeystrokeFunction keyFunction);
     HRESULT _HandleCompositionPunctuation(TfEditCookie ec, _In_ ITfContext *pContext, WCHAR wch);
     HRESULT _HandleCompositionDoubleSingleByte(TfEditCookie ec, _In_ ITfContext *pContext, WCHAR wch);
 
     // key event handlers for candidate object.
     HRESULT _HandleCandidateFinalize(TfEditCookie ec, _In_ ITfContext *pContext);
     HRESULT _HandleCandidateConvert(TfEditCookie ec, _In_ ITfContext *pContext);
-    HRESULT _HandleCandidateArrowKey(TfEditCookie ec, _In_ ITfContext *pContext, _In_ KEYSTROKE_FUNCTION keyFunction);
+    HRESULT _HandleCandidateArrowKey(TfEditCookie ec, _In_ ITfContext *pContext, _In_ KeystrokeFunction keyFunction);
     HRESULT _HandleCandidateSelectByNumber(TfEditCookie ec, _In_ ITfContext *pContext, _In_ UINT uCode);
 
     // key event handlers for phrase object.
     HRESULT _HandlePhraseFinalize(TfEditCookie ec, _In_ ITfContext *pContext);
-    HRESULT _HandlePhraseArrowKey(TfEditCookie ec, _In_ ITfContext *pContext, _In_ KEYSTROKE_FUNCTION keyFunction);
+    HRESULT _HandlePhraseArrowKey(TfEditCookie ec, _In_ ITfContext *pContext, _In_ KeystrokeFunction keyFunction);
     HRESULT _HandlePhraseSelectByNumber(TfEditCookie ec, _In_ ITfContext *pContext, _In_ UINT uCode);
 
     BOOL _IsSecureMode(void) { return (_dwActivateFlags & TF_TMAE_SECUREMODE) ? TRUE : FALSE; }
@@ -228,7 +228,7 @@ private:
     TfGuidAtom _gaDisplayAttributeInput;
     TfGuidAtom _gaDisplayAttributeConverted;
 
-    CANDIDATE_MODE _candidateMode;
+    CandidateMode _candidateMode;
     CCandidateListUIPresenter *_pCandidateListUIPresenter;
 
     ITfDocumentMgr* _pDocMgrLastFocused;

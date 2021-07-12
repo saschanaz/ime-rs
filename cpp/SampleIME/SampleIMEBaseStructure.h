@@ -12,6 +12,7 @@
 #include "assert.h"
 #include <iostream>
 #include "RustStringRange.h"
+#include "cbindgen/composition_processor.h"
 #include "cbindgen/numberkey_windows.h"
 
 using std::cout;
@@ -28,64 +29,12 @@ struct _DEFINED_KEYWORD
 };
 
 //---------------------------------------------------------------------
-// enum
-//---------------------------------------------------------------------
-enum KEYSTROKE_CATEGORY
-{
-    CATEGORY_NONE = 0,
-    CATEGORY_COMPOSING,
-    CATEGORY_CANDIDATE,
-    CATEGORY_INVOKE_COMPOSITION_EDIT_SESSION
-};
-
-enum KEYSTROKE_FUNCTION
-{
-    FUNCTION_NONE = 0,
-    FUNCTION_INPUT,
-
-    FUNCTION_CANCEL,
-    FUNCTION_FINALIZE_TEXTSTORE,
-    FUNCTION_FINALIZE_TEXTSTORE_AND_INPUT,
-    FUNCTION_FINALIZE_CANDIDATELIST,
-    FUNCTION_FINALIZE_CANDIDATELIST_AND_INPUT,
-    FUNCTION_CONVERT,
-    FUNCTION_CONVERT_WILDCARD,
-    FUNCTION_SELECT_BY_NUMBER,
-    FUNCTION_BACKSPACE,
-    FUNCTION_MOVE_LEFT,
-    FUNCTION_MOVE_RIGHT,
-    FUNCTION_MOVE_UP,
-    FUNCTION_MOVE_DOWN,
-    FUNCTION_MOVE_PAGE_UP,
-    FUNCTION_MOVE_PAGE_DOWN,
-    FUNCTION_MOVE_PAGE_TOP,
-    FUNCTION_MOVE_PAGE_BOTTOM,
-
-    // Function Double/Single byte
-    FUNCTION_DOUBLE_SINGLE_BYTE,
-
-    // Function Punctuation
-    FUNCTION_PUNCTUATION
-};
-
-//---------------------------------------------------------------------
-// candidate list
-//---------------------------------------------------------------------
-enum CANDIDATE_MODE
-{
-    CANDIDATE_NONE = 0,
-    CANDIDATE_ORIGINAL,
-    CANDIDATE_INCREMENTAL,
-    CANDIDATE_WITH_NEXT_COMPOSITION
-};
-
-//---------------------------------------------------------------------
 // structure
 //---------------------------------------------------------------------
 struct _KEYSTROKE_STATE
 {
-    KEYSTROKE_CATEGORY Category;
-    KEYSTROKE_FUNCTION Function;
+    KeystrokeCategory Category;
+    KeystrokeFunction Function;
 };
 
 struct _PUNCTUATION

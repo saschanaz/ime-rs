@@ -18,7 +18,6 @@
 #include "Compartment.h"
 #include "Define.h"
 #include "RustStringRange.h"
-#include "cbindgen/composition_processor.h"
 
 class CCompositionProcessorEngine
 {
@@ -40,7 +39,7 @@ public:
         return MAKELCID(_langid, SORT_DEFAULT);
     }
 
-    std::tuple<bool, KEYSTROKE_CATEGORY, KEYSTROKE_FUNCTION> TestVirtualKey(uint16_t uCode, char16_t wch, bool fComposing, CANDIDATE_MODE candidateMode);
+    std::tuple<bool, KeystrokeCategory, KeystrokeFunction> TestVirtualKey(uint16_t uCode, char16_t wch, bool fComposing, CandidateMode candidateMode);
 
     BOOL AddVirtualKey(WCHAR wch);
     void PopVirtualKey();

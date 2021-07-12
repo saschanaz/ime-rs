@@ -16,7 +16,7 @@ class CKeyStateCategoryFactory
 {
 public:
     static CKeyStateCategoryFactory* Instance();
-    CKeyStateCategory* MakeKeyStateCategory(KEYSTROKE_CATEGORY keyCategory, _In_ CSampleIME *pTextService);
+    CKeyStateCategory* MakeKeyStateCategory(KeystrokeCategory keyCategory, _In_ CSampleIME *pTextService);
     void Release();
 
 protected:
@@ -29,7 +29,7 @@ private:
 
 typedef struct KeyHandlerEditSessionDTO
 {
-    KeyHandlerEditSessionDTO::KeyHandlerEditSessionDTO(TfEditCookie tFEC, _In_ ITfContext *pTfContext, UINT virualCode, WCHAR inputChar, KEYSTROKE_FUNCTION arrowKeyFunction)
+    KeyHandlerEditSessionDTO::KeyHandlerEditSessionDTO(TfEditCookie tFEC, _In_ ITfContext *pTfContext, UINT virualCode, WCHAR inputChar, KeystrokeFunction arrowKeyFunction)
     {
         ec = tFEC;
         pContext = pTfContext;
@@ -42,7 +42,7 @@ typedef struct KeyHandlerEditSessionDTO
     ITfContext* pContext;
     UINT code;
     WCHAR wch;
-    KEYSTROKE_FUNCTION arrowKey;
+    KeystrokeFunction arrowKey;
 }KeyHandlerEditSessionDTO;
 
 class CKeyStateCategory
@@ -54,7 +54,7 @@ protected:
     ~CKeyStateCategory(void);
 
 public:
-    HRESULT KeyStateHandler(KEYSTROKE_FUNCTION function, KeyHandlerEditSessionDTO dto);
+    HRESULT KeyStateHandler(KeystrokeFunction function, KeyHandlerEditSessionDTO dto);
     void Release(void);
 
 protected:

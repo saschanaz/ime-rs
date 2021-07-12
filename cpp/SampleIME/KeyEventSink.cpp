@@ -77,7 +77,7 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_ UINT 
     CCompartment CompartmentPunctuation(_pThreadMgr, _tfClientId, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION);
     CompartmentPunctuation._GetCompartmentBOOL(isPunctuation);
 
-    *pKeyState = { CATEGORY_NONE, FUNCTION_NONE };
+    *pKeyState = { KeystrokeCategory::None, KeystrokeFunction::None };
     if (pwch)
     {
         *pwch = L'\0';
@@ -142,9 +142,9 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_ UINT 
     //
     if (pCompositionProcessorEngine->IsPunctuation(wch))
     {
-        if ((_candidateMode == CANDIDATE_NONE) && isPunctuation)
+        if ((_candidateMode == CandidateMode::None) && isPunctuation)
         {
-            *pKeyState = { CATEGORY_COMPOSING, FUNCTION_PUNCTUATION };
+            *pKeyState = { KeystrokeCategory::Composing, KeystrokeFunction::Punctuation };
             return TRUE;
         }
     }
@@ -154,9 +154,9 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_ UINT 
     //
     if (isDoubleSingleByte && pCompositionProcessorEngine->IsDoubleSingleByte(wch))
     {
-        if (_candidateMode == CANDIDATE_NONE)
+        if (_candidateMode == CandidateMode::None)
         {
-            *pKeyState = { CATEGORY_COMPOSING, FUNCTION_DOUBLE_SINGLE_BYTE };
+            *pKeyState = { KeystrokeCategory::Composing, KeystrokeFunction::DoubleSingleByte };
             return TRUE;
         }
     }
@@ -276,12 +276,12 @@ STDAPI CSampleIME::OnTestKeyDown(ITfContext *pContext, WPARAM wParam, LPARAM lPa
     UINT code = 0;
     *pIsEaten = _IsKeyEaten(pContext, (UINT)wParam, &code, &wch, &KeystrokeState);
 
-    if (KeystrokeState.Category == CATEGORY_INVOKE_COMPOSITION_EDIT_SESSION)
+    if (KeystrokeState.Category == KeystrokeCategory::InvokeCompositionEditSession)
     {
         //
         // Invoke key handler edit session
         //
-        KeystrokeState.Category = CATEGORY_COMPOSING;
+        KeystrokeState.Category = KeystrokeCategory::Composing;
 
         _InvokeKeyHandler(pContext, code, wch, (DWORD)lParam, KeystrokeState);
     }
@@ -315,13 +315,13 @@ STDAPI CSampleIME::OnKeyDown(ITfContext *pContext, WPARAM wParam, LPARAM lParam,
         //
         if (code == VK_ESCAPE)
         {
-            KeystrokeState.Category = CATEGORY_COMPOSING;
+            KeystrokeState.Category = KeystrokeCategory::Composing;
         }
 
         // Always eat THIRDPARTY_NEXTPAGE and THIRDPARTY_PREVPAGE keys, but don't always process them.
         if ((wch == THIRDPARTY_NEXTPAGE) || (wch == THIRDPARTY_PREVPAGE))
         {
-            needInvokeKeyHandler = !((KeystrokeState.Category == CATEGORY_NONE) && (KeystrokeState.Function == FUNCTION_NONE));
+            needInvokeKeyHandler = !((KeystrokeState.Category == KeystrokeCategory::None) && (KeystrokeState.Function == KeystrokeFunction::None));
         }
 
         if (needInvokeKeyHandler)
@@ -329,10 +329,10 @@ STDAPI CSampleIME::OnKeyDown(ITfContext *pContext, WPARAM wParam, LPARAM lParam,
             _InvokeKeyHandler(pContext, code, wch, (DWORD)lParam, KeystrokeState);
         }
     }
-    else if (KeystrokeState.Category == CATEGORY_INVOKE_COMPOSITION_EDIT_SESSION)
+    else if (KeystrokeState.Category == KeystrokeCategory::InvokeCompositionEditSession)
     {
         // Invoke key handler edit session
-        KeystrokeState.Category = CATEGORY_COMPOSING;
+        KeystrokeState.Category = KeystrokeCategory::Composing;
         _InvokeKeyHandler(pContext, code, wch, (DWORD)lParam, KeystrokeState);
     }
 

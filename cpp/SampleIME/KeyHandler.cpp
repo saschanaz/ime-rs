@@ -63,7 +63,7 @@ VOID CSampleIME::_DeleteCandidateList(BOOL isForce, _In_opt_ ITfContext *pContex
     {
         _pCandidateListUIPresenter->_EndCandidateList();
 
-        _candidateMode = CANDIDATE_NONE;
+        _candidateMode = CandidateMode::None;
     }
 }
 
@@ -118,7 +118,7 @@ HRESULT CSampleIME::_HandleCompositionInput(TfEditCookie ec, _In_ ITfContext *pC
     CCompositionProcessorEngine* pCompositionProcessorEngine = nullptr;
     pCompositionProcessorEngine = _pCompositionProcessorEngine;
 
-    if ((_pCandidateListUIPresenter != nullptr) && (_candidateMode != CANDIDATE_INCREMENTAL))
+    if ((_pCandidateListUIPresenter != nullptr) && (_candidateMode != CandidateMode::Incremental))
     {
         _HandleCompositionFinalize(ec, pContext, FALSE);
     }
@@ -228,27 +228,27 @@ HRESULT CSampleIME::_CreateAndStartCandidate(_In_ CCompositionProcessorEngine *p
 {
     HRESULT hr = S_OK;
 
-    if ((_candidateMode == CANDIDATE_NONE) && (_pCandidateListUIPresenter))
+    if ((_candidateMode == CandidateMode::None) && (_pCandidateListUIPresenter))
     {
         // Recreate candidate list
         _pCandidateListUIPresenter->_EndCandidateList();
         delete _pCandidateListUIPresenter;
         _pCandidateListUIPresenter = nullptr;
 
-        _candidateMode = CANDIDATE_NONE;
+        _candidateMode = CandidateMode::None;
     }
 
     if (_pCandidateListUIPresenter == nullptr)
     {
         _pCandidateListUIPresenter = new (std::nothrow) CCandidateListUIPresenter(this, Global::AtomCandidateWindow,
-            CATEGORY_CANDIDATE,
+            KeystrokeCategory::Candidate,
             FALSE);
         if (!_pCandidateListUIPresenter)
         {
             return E_OUTOFMEMORY;
         }
 
-        _candidateMode = CANDIDATE_INCREMENTAL;
+        _candidateMode = CandidateMode::Incremental;
 
         // we don't cache the document manager object. So get it from pContext.
         ITfDocumentMgr* pDocumentMgr = nullptr;
@@ -356,21 +356,21 @@ HRESULT CSampleIME::_HandleCompositionConvert(TfEditCookie ec, _In_ ITfContext *
             delete _pCandidateListUIPresenter;
             _pCandidateListUIPresenter = nullptr;
 
-            _candidateMode = CANDIDATE_NONE;
+            _candidateMode = CandidateMode::None;
         }
 
         //
         // create an instance of the candidate list class.
         //
         _pCandidateListUIPresenter = new (std::nothrow) CCandidateListUIPresenter(this, Global::AtomCandidateWindow,
-            CATEGORY_CANDIDATE,
+            KeystrokeCategory::Candidate,
             FALSE);
         if (!_pCandidateListUIPresenter)
         {
             return E_OUTOFMEMORY;
         }
 
-        _candidateMode = CANDIDATE_ORIGINAL;
+        _candidateMode = CandidateMode::Original;
 
         // we don't cache the document manager object. So get it from pContext.
         ITfDocumentMgr* pDocumentMgr = nullptr;
@@ -465,7 +465,7 @@ Exit:
 //
 //----------------------------------------------------------------------------
 
-HRESULT CSampleIME::_HandleCompositionArrowKey(TfEditCookie ec, _In_ ITfContext *pContext, KEYSTROKE_FUNCTION keyFunction)
+HRESULT CSampleIME::_HandleCompositionArrowKey(TfEditCookie ec, _In_ ITfContext *pContext, KeystrokeFunction keyFunction)
 {
     ITfRange* pRangeComposition = nullptr;
     TF_SELECTION tfSelection;
@@ -510,7 +510,7 @@ HRESULT CSampleIME::_HandleCompositionPunctuation(TfEditCookie ec, _In_ ITfConte
 {
     HRESULT hr = S_OK;
 
-    if (_candidateMode != CANDIDATE_NONE && _pCandidateListUIPresenter)
+    if (_candidateMode != CandidateMode::None && _pCandidateListUIPresenter)
     {
         std::optional<CRustStringRange> candidateString = _pCandidateListUIPresenter->_GetSelectedCandidateString();
 
