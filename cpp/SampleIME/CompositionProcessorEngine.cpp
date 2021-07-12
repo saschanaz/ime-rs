@@ -1327,8 +1327,7 @@ std::tuple<bool, KEYSTROKE_CATEGORY, KEYSTROKE_FUNCTION> CCompositionProcessorEn
 //
 //----------------------------------------------------------------------------
 
-bool CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode)
-{
+bool CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(uint16_t uCode) {
     return uCode >= u'A' && uCode <= u'Z' && engine_rust.ModifiersGet() == 0;
 }
 
@@ -1338,25 +1337,16 @@ bool CCompositionProcessorEngine::IsVirtualKeyKeystrokeComposition(UINT uCode)
 //
 //----------------------------------------------------------------------------
 
-BOOL CCompositionProcessorEngine::IsKeystrokeRange(UINT uCode, CANDIDATE_MODE candidateMode)
-{
-    if (CCandidateRange::IsRange(uCode))
-    {
-        if (candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION)
-        {
-            // Candidate phrase could specify modifier
-            if (engine_rust.ModifiersGet() == 0)
-            {
-                return TRUE;
-            }
-            // else next composition
-        }
-        else if (candidateMode != CANDIDATE_NONE)
-        {
-            return TRUE;
-        }
+bool CCompositionProcessorEngine::IsKeystrokeRange(uint16_t uCode, CANDIDATE_MODE candidateMode) {
+    if (!CCandidateRange::IsRange(uCode)) {
+        return false;
     }
-    return FALSE;
+    if (candidateMode == CANDIDATE_WITH_NEXT_COMPOSITION) {
+        // Candidate phrase could specify modifier
+        return engine_rust.ModifiersGet() == 0;
+        // else next composition
+    }
+    return candidateMode != CANDIDATE_NONE;
 }
 
 CCompositionProcessorEngine::CRustCompositionProcessorEngine::CRustCompositionProcessorEngine() {

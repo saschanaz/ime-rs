@@ -79,8 +79,8 @@ public:
 private:
     BOOL InitLanguageBar(_In_ CLangBarItemButton *pLanguageBar, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId, REFGUID guidCompartment);
 
-    bool IsVirtualKeyKeystrokeComposition(UINT uCode);
-    BOOL IsKeystrokeRange(UINT uCode, CANDIDATE_MODE candidateMode);
+    bool IsVirtualKeyKeystrokeComposition(uint16_t uCode);
+    bool IsKeystrokeRange(uint16_t uCode, CANDIDATE_MODE candidateMode);
 
     void SetupPreserved(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
     void SetupLanguageBar(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId, BOOL isSecureMode);
