@@ -717,19 +717,11 @@ BOOL CCompositionProcessorEngine::InitLanguageBar(_In_ CLangBarItemButton *pLang
 void CCompositionProcessorEngine::SetupPunctuationPair()
 {
     // Punctuation pair
-    const int pair_count = 2;
     CPunctuationPair punc_quotation_mark(L'"', 0x201C, 0x201D);
     CPunctuationPair punc_apostrophe(L'\'', 0x2018, 0x2019);
 
-    CPunctuationPair puncPairs[pair_count] = {
-        punc_quotation_mark,
-        punc_apostrophe,
-    };
-
-    for (int i = 0; i < pair_count; ++i)
-    {
-        _PunctuationPair.Append(puncPairs[i]);
-    }
+    _PunctuationPair.Append(punc_quotation_mark);
+    _PunctuationPair.Append(punc_apostrophe);
 
     // Punctuation nest pair
     CPunctuationNestPair punc_angle_bracket(L'<', 0x300A, 0x3008, L'>', 0x300B, 0x3009);
