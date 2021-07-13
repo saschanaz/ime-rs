@@ -167,43 +167,6 @@ void UnregisterCategories()
 
 //+---------------------------------------------------------------------------
 //
-// RecurseDeleteKey
-//
-// RecurseDeleteKey is necessary because on NT RegDeleteKey doesn't work if the
-// specified key has subkeys
-//----------------------------------------------------------------------------
-
-LONG RecurseDeleteKey(_In_ HKEY hParentKey, _In_ LPCTSTR lpszKey)
-{
-    HKEY regKeyHandle = nullptr;
-    LONG res = 0;
-    FILETIME time;
-    WCHAR stringBuffer[256] = {'\0'};
-    DWORD size = ARRAYSIZE(stringBuffer);
-
-    if (RegOpenKey(hParentKey, lpszKey, &regKeyHandle) != ERROR_SUCCESS)
-    {
-        return ERROR_SUCCESS;
-    }
-
-    res = ERROR_SUCCESS;
-    while (RegEnumKeyEx(regKeyHandle, 0, stringBuffer, &size, NULL, NULL, NULL, &time) == ERROR_SUCCESS)
-    {
-        stringBuffer[ARRAYSIZE(stringBuffer)-1] = '\0';
-        res = RecurseDeleteKey(regKeyHandle, stringBuffer);
-        if (res != ERROR_SUCCESS)
-        {
-            break;
-        }
-        size = ARRAYSIZE(stringBuffer);
-    }
-    RegCloseKey(regKeyHandle);
-
-    return res == ERROR_SUCCESS ? RegDeleteKey(hParentKey, lpszKey) : res;
-}
-
-//+---------------------------------------------------------------------------
-//
 //  RegisterServer
 //
 //----------------------------------------------------------------------------
@@ -274,5 +237,5 @@ void UnregisterServer()
 
     memcpy(achIMEKey, RegInfo_Prefix_CLSID, sizeof(RegInfo_Prefix_CLSID) - sizeof(WCHAR));
 
-    RecurseDeleteKey(HKEY_CLASSES_ROOT, achIMEKey);
+    RegDeleteTreeW(HKEY_CLASSES_ROOT, achIMEKey);
 }
