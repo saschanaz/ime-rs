@@ -128,7 +128,7 @@ BOOL RegisterCategories()
         return FALSE;
     }
 
-    for each(GUID guid in SupportCategories)
+    for (const GUID& guid : SupportCategories)
     {
         hr = pCategoryMgr->RegisterCategory(SAMPLEIME_CLSID, guid, SAMPLEIME_CLSID);
     }
@@ -155,7 +155,7 @@ void UnregisterCategories()
         return;
     }
 
-    for each(GUID guid in SupportCategories)
+    for (const GUID& guid : SupportCategories)
     {
         pCategoryMgr->UnregisterCategory(SAMPLEIME_CLSID, guid, SAMPLEIME_CLSID);
     }
