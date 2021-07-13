@@ -1,23 +1,16 @@
 use crate::bindings::{
     Windows::Win32::Foundation::{LPARAM, WPARAM},
     Windows::Win32::UI::KeyboardAndMouseInput::GetKeyState,
+    Windows::Win32::UI::TextServices::{
+        TF_MOD_ALT, TF_MOD_CONTROL, TF_MOD_LALT, TF_MOD_LCONTROL, TF_MOD_LSHIFT, TF_MOD_RALT,
+        TF_MOD_RCONTROL, TF_MOD_RSHIFT, TF_MOD_SHIFT,
+    },
     Windows::Win32::UI::WindowsAndMessaging::{VK_CONTROL, VK_MENU, VK_SHIFT},
 };
 
-// msctf.h
-static TF_MOD_ALT: u16 = 0x0001;
-static TF_MOD_CONTROL: u16 = 0x0002;
-static TF_MOD_SHIFT: u16 = 0x0004;
-static TF_MOD_RALT: u16 = 0x0008;
-static TF_MOD_RCONTROL: u16 = 0x0010;
-static TF_MOD_RSHIFT: u16 = 0x0020;
-static TF_MOD_LALT: u16 = 0x0040;
-static TF_MOD_LCONTROL: u16 = 0x0080;
-static TF_MOD_LSHIFT: u16 = 0x0100;
-
 #[derive(Default)]
 pub struct Modifiers {
-    value: u16,
+    value: u32,
     is_shift_key_down_only: bool,
     is_control_key_down_only: bool,
     is_alt_key_down_only: bool,
@@ -123,7 +116,7 @@ impl Modifiers {
         }
     }
 
-    pub fn get(&self) -> u16 {
+    pub fn get(&self) -> u32 {
         self.value
     }
 

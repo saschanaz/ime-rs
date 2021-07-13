@@ -72,11 +72,11 @@ fn map_invariable_keystroke_function(keystroke: u32) -> Option<KeystrokeFunction
     }
 }
 
-fn is_virtual_key_keystroke_composition(code: u32, modifiers: u16) -> bool {
+fn is_virtual_key_keystroke_composition(code: u32, modifiers: u32) -> bool {
     code >= 'A' as u32 && code <= 'Z' as u32 && modifiers == 0
 }
 
-fn is_keystroke_range(code: u32, modifiers: u16, candidate_mode: CandidateMode) -> bool {
+fn is_keystroke_range(code: u32, modifiers: u32, candidate_mode: CandidateMode) -> bool {
     if !is_number_key(code) {
         false
     } else if candidate_mode == CandidateMode::WithNextComposition {
