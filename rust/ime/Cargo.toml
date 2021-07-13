@@ -1,14 +1,16 @@
 [package]
-name = "globals"
+name = "ime"
 version = "0.1.0"
-authors = ["Kagami Sascha Rosylight <saschanaz@outlook.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-name = "globals"
-crate-type = ["rlib", "staticlib"]
+name = "ime"
+crate-type = ["staticlib"]
 
 [dependencies]
+globals = { path = "../globals" }
+ruststringrange = { path = "../ruststringrange" }
 windows = "0.13.0"
+winreg = "0.9.0"

@@ -8,10 +8,7 @@
 #include "Private.h"
 #include "Globals.h"
 #include "cbindgen/globals.h"
-
-static const WCHAR RegInfo_Prefix_CLSID[] = L"CLSID\\";
-static const WCHAR RegInfo_Key_InProSvr32[] = L"InProcServer32";
-static const WCHAR RegInfo_Key_ThreadModel[] = L"ThreadingModel";
+#include "cbindgen/ime.h"
 
 static const WCHAR TEXTSERVICE_DESC[] = L"Sample Rust IME";
 
@@ -173,54 +170,13 @@ void UnregisterCategories()
 
 BOOL RegisterServer()
 {
-    DWORD copiedStringLen = 0;
-    HKEY regKeyHandle = nullptr;
-    HKEY regSubkeyHandle = nullptr;
-    BOOL ret = FALSE;
-    WCHAR achIMEKey[ARRAYSIZE(RegInfo_Prefix_CLSID) + CLSID_STRLEN] = {'\0'};
-    WCHAR achFileName[MAX_PATH] = {'\0'};
+    uint32_t copiedStringLen = 0;
+    wchar_t achFileName[MAX_PATH] = {'\0'};
 
-    CLSIDToString(SAMPLEIME_CLSID, achIMEKey + ARRAYSIZE(RegInfo_Prefix_CLSID) - 1);
+    copiedStringLen = GetModuleFileNameW(Global::dllInstanceHandle, achFileName, ARRAYSIZE(achFileName));
+    copiedStringLen = (copiedStringLen >= (MAX_PATH - 1)) ? MAX_PATH : (++copiedStringLen);
 
-    memcpy(achIMEKey, RegInfo_Prefix_CLSID, sizeof(RegInfo_Prefix_CLSID) - sizeof(WCHAR));
-
-    if (RegCreateKeyEx(HKEY_CLASSES_ROOT, achIMEKey, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &regKeyHandle, &copiedStringLen) == ERROR_SUCCESS)
-    {
-        if (RegSetValueEx(regKeyHandle, NULL, 0, REG_SZ, (const BYTE *)TEXTSERVICE_DESC, (_countof(TEXTSERVICE_DESC))*sizeof(WCHAR)) != ERROR_SUCCESS)
-        {
-            goto Exit;
-        }
-
-        if (RegCreateKeyEx(regKeyHandle, RegInfo_Key_InProSvr32, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &regSubkeyHandle, &copiedStringLen) == ERROR_SUCCESS)
-        {
-            copiedStringLen = GetModuleFileNameW(Global::dllInstanceHandle, achFileName, ARRAYSIZE(achFileName));
-            copiedStringLen = (copiedStringLen >= (MAX_PATH - 1)) ? MAX_PATH : (++copiedStringLen);
-            if (RegSetValueEx(regSubkeyHandle, NULL, 0, REG_SZ, (const BYTE *)achFileName, (copiedStringLen)*sizeof(WCHAR)) != ERROR_SUCCESS)
-            {
-                goto Exit;
-            }
-            if (RegSetValueEx(regSubkeyHandle, RegInfo_Key_ThreadModel, 0, REG_SZ, (const BYTE *)TEXTSERVICE_MODEL, (_countof(TEXTSERVICE_MODEL)) * sizeof(WCHAR)) != ERROR_SUCCESS)
-            {
-                goto Exit;
-            }
-
-            ret = TRUE;
-        }
-    }
-
-Exit:
-    if (regSubkeyHandle)
-    {
-        RegCloseKey(regSubkeyHandle);
-        regSubkeyHandle = nullptr;
-    }
-    if (regKeyHandle)
-    {
-        RegCloseKey(regKeyHandle);
-        regKeyHandle = nullptr;
-    }
-
-    return ret;
+    return register_server(CRustStringRange(achFileName, copiedStringLen).GetInternal());
 }
 
 //+---------------------------------------------------------------------------
@@ -231,11 +187,5 @@ Exit:
 
 void UnregisterServer()
 {
-    WCHAR achIMEKey[ARRAYSIZE(RegInfo_Prefix_CLSID) + CLSID_STRLEN] = {'\0'};
-
-    CLSIDToString(SAMPLEIME_CLSID, achIMEKey + ARRAYSIZE(RegInfo_Prefix_CLSID) - 1);
-
-    memcpy(achIMEKey, RegInfo_Prefix_CLSID, sizeof(RegInfo_Prefix_CLSID) - sizeof(WCHAR));
-
-    RegDeleteTreeW(HKEY_CLASSES_ROOT, achIMEKey);
+    unregister_server();
 }
