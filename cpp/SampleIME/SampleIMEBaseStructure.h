@@ -43,7 +43,7 @@ struct _PUNCTUATION
     WCHAR _Punctuation;
 };
 
-BOOL CLSIDToString(REFGUID refGUID, _Out_writes_ (39) WCHAR *pCLSIDString);
+void CLSIDToString(REFGUID refGUID, _Out_writes_ (39) WCHAR *pCLSIDString);
 
 HRESULT SkipWhiteSpace(LCID locale, _In_ LPCWSTR pwszBuffer, DWORD_PTR dwBufLen, _Out_ DWORD_PTR *pdwIndex);
 HRESULT FindChar(char wch, _In_ LPCSTR pwszBuffer, DWORD_PTR dwBufLen, _Out_ DWORD_PTR *pdwIndex);

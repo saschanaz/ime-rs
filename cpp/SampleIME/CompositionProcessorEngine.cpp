@@ -1108,33 +1108,31 @@ HRESULT CSampleIME::GetComModuleName(REFGUID rclsid, _Out_writes_(cchPath)WCHAR*
 
     CRegKey key;
     WCHAR wchClsid[CLSID_STRLEN + 1];
-    hr = CLSIDToString(rclsid, wchClsid) ? S_OK : E_FAIL;
+    CLSIDToString(rclsid, wchClsid);
+
+    WCHAR wchKey[MAX_PATH];
+    hr = StringCchPrintfW(wchKey, ARRAYSIZE(wchKey), L"CLSID\\%s\\InProcServer32", wchClsid);
     if (SUCCEEDED(hr))
     {
-        WCHAR wchKey[MAX_PATH];
-        hr = StringCchPrintfW(wchKey, ARRAYSIZE(wchKey), L"CLSID\\%s\\InProcServer32", wchClsid);
+        hr = (key.Open(HKEY_CLASSES_ROOT, wchKey, KEY_READ) == ERROR_SUCCESS) ? S_OK : E_FAIL;
         if (SUCCEEDED(hr))
         {
-            hr = (key.Open(HKEY_CLASSES_ROOT, wchKey, KEY_READ) == ERROR_SUCCESS) ? S_OK : E_FAIL;
+            WCHAR wszModel[MAX_PATH];
+            ULONG cch = ARRAYSIZE(wszModel);
+            hr = (key.QueryStringValue(L"ThreadingModel", wszModel, &cch) == ERROR_SUCCESS) ? S_OK : E_FAIL;
             if (SUCCEEDED(hr))
             {
-                WCHAR wszModel[MAX_PATH];
-                ULONG cch = ARRAYSIZE(wszModel);
-                hr = (key.QueryStringValue(L"ThreadingModel", wszModel, &cch) == ERROR_SUCCESS) ? S_OK : E_FAIL;
-                if (SUCCEEDED(hr))
+                if (CompareStringOrdinal(wszModel,
+                    -1,
+                    L"Apartment",
+                    -1,
+                    TRUE) == CSTR_EQUAL)
                 {
-                    if (CompareStringOrdinal(wszModel,
-                        -1,
-                        L"Apartment",
-                        -1,
-                        TRUE) == CSTR_EQUAL)
-                    {
-                        hr = (key.QueryStringValue(NULL, wchPath, &cchPath) == ERROR_SUCCESS) ? S_OK : E_FAIL;
-                    }
-                    else
-                    {
-                        hr = E_FAIL;
-                    }
+                    hr = (key.QueryStringValue(NULL, wchPath, &cchPath) == ERROR_SUCCESS) ? S_OK : E_FAIL;
+                }
+                else
+                {
+                    hr = E_FAIL;
                 }
             }
         }

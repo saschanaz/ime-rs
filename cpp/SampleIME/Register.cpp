@@ -217,10 +217,7 @@ BOOL RegisterServer()
     WCHAR achIMEKey[ARRAYSIZE(RegInfo_Prefix_CLSID) + CLSID_STRLEN] = {'\0'};
     WCHAR achFileName[MAX_PATH] = {'\0'};
 
-    if (!CLSIDToString(SAMPLEIME_CLSID, achIMEKey + ARRAYSIZE(RegInfo_Prefix_CLSID) - 1))
-    {
-        return FALSE;
-    }
+    CLSIDToString(SAMPLEIME_CLSID, achIMEKey + ARRAYSIZE(RegInfo_Prefix_CLSID) - 1);
 
     memcpy(achIMEKey, RegInfo_Prefix_CLSID, sizeof(RegInfo_Prefix_CLSID) - sizeof(WCHAR));
 
@@ -273,10 +270,7 @@ void UnregisterServer()
 {
     WCHAR achIMEKey[ARRAYSIZE(RegInfo_Prefix_CLSID) + CLSID_STRLEN] = {'\0'};
 
-    if (!CLSIDToString(SAMPLEIME_CLSID, achIMEKey + ARRAYSIZE(RegInfo_Prefix_CLSID) - 1))
-    {
-        return;
-    }
+    CLSIDToString(SAMPLEIME_CLSID, achIMEKey + ARRAYSIZE(RegInfo_Prefix_CLSID) - 1);
 
     memcpy(achIMEKey, RegInfo_Prefix_CLSID, sizeof(RegInfo_Prefix_CLSID) - sizeof(WCHAR));
 

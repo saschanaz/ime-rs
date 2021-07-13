@@ -26,7 +26,7 @@ const BYTE GuidSymbols[] = {
 
 const WCHAR HexDigits[] = L"0123456789ABCDEF";
 
-BOOL CLSIDToString(REFGUID refGUID, _Out_writes_(39) WCHAR *pCLSIDString)
+void CLSIDToString(REFGUID refGUID, _Out_writes_(39) WCHAR *pCLSIDString)
 {
     WCHAR* pTemp = pCLSIDString;
     const BYTE* pBytes = (const BYTE *) &refGUID;
@@ -48,8 +48,6 @@ BOOL CLSIDToString(REFGUID refGUID, _Out_writes_(39) WCHAR *pCLSIDString)
 
     pTemp[j++] = L'}';
     pTemp[j] = L'\0';
-
-    return TRUE;
 }
 
 //---------------------------------------------------------------------
