@@ -8,7 +8,6 @@
 #include "Private.h"
 #include "Globals.h"
 #include "cbindgen/globals.h"
-#include "cbindgen/ime.h"
 
 static const WCHAR TEXTSERVICE_DESC[] = L"Sample Rust IME";
 
@@ -160,32 +159,4 @@ void UnregisterCategories()
     pCategoryMgr->Release();
 
     return;
-}
-
-//+---------------------------------------------------------------------------
-//
-//  RegisterServer
-//
-//----------------------------------------------------------------------------
-
-BOOL RegisterServer()
-{
-    uint32_t copiedStringLen = 0;
-    wchar_t achFileName[MAX_PATH] = {'\0'};
-
-    copiedStringLen = GetModuleFileNameW(Global::dllInstanceHandle, achFileName, ARRAYSIZE(achFileName));
-    copiedStringLen = (copiedStringLen >= (MAX_PATH - 1)) ? MAX_PATH : (++copiedStringLen);
-
-    return register_server(CRustStringRange(achFileName, copiedStringLen).GetInternal());
-}
-
-//+---------------------------------------------------------------------------
-//
-//  UnregisterServer
-//
-//----------------------------------------------------------------------------
-
-void UnregisterServer()
-{
-    unregister_server();
 }

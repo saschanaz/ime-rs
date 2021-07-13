@@ -42,7 +42,6 @@ name = "ime"
 version = "0.1.0"
 dependencies = [
  "globals",
- "ruststringrange",
  "windows",
  "winreg",
 ]

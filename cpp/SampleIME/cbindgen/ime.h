@@ -5,7 +5,7 @@
 
 extern "C" {
 
-bool register_server(void *module_file_name);
+bool register_server(HINSTANCE dll_instance_handle);
 
 void unregister_server();
 

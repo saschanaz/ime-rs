@@ -9,14 +9,13 @@
 #include "Globals.h"
 #include "SampleIME.h"
 #include "cbindgen/globals.h"
+#include "cbindgen/ime.h"
 
 // from Register.cpp
 BOOL RegisterProfiles();
 void UnregisterProfiles();
 BOOL RegisterCategories();
 void UnregisterCategories();
-BOOL RegisterServer();
-void UnregisterServer();
 
 void FreeGlobalObjects(void);
 
@@ -263,7 +262,7 @@ STDAPI DllUnregisterServer(void)
 {
     UnregisterProfiles();
     UnregisterCategories();
-    UnregisterServer();
+    unregister_server();
 
     return S_OK;
 }
@@ -276,7 +275,7 @@ STDAPI DllUnregisterServer(void)
 
 STDAPI DllRegisterServer(void)
 {
-    if ((!RegisterServer()) || (!RegisterProfiles()) || (!RegisterCategories()))
+    if (!register_server(Global::dllInstanceHandle) || !RegisterProfiles() || !RegisterCategories())
     {
         DllUnregisterServer();
         return E_FAIL;

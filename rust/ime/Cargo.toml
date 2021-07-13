@@ -11,6 +11,8 @@ crate-type = ["staticlib"]
 
 [dependencies]
 globals = { path = "../globals" }
-ruststringrange = { path = "../ruststringrange" }
 windows = "0.13.0"
 winreg = "0.9.0"
+
+[build-dependencies]
+windows = "0.13.0"

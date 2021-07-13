@@ -75,12 +75,12 @@ impl CompositionProcessorEngine {
         dll_instance_handle: HINSTANCE,
         dictionary_file_name: &str,
     ) {
-        let mut file_name = [0u16; MAX_PATH as usize];
-        unsafe {
+        let file_name = unsafe {
+            let mut file_name = [0u16; MAX_PATH as usize];
             GetModuleFileNameW(dll_instance_handle, PWSTR(file_name.as_mut_ptr()), MAX_PATH);
-        }
+            String::from_utf16(&file_name).unwrap()
+        };
 
-        let file_name = String::from_utf16(&file_name).unwrap();
         let dir = std::path::Path::new(&file_name[..]).parent().unwrap();
         let dict_path = dir.join(dictionary_file_name);
 
