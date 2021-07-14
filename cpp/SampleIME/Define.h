@@ -8,9 +8,6 @@
 #pragma once
 #include "resource.h"
 
-#define TEXTSERVICE_MODEL        L"Apartment"
-#define TEXTSERVICE_LANGID       MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED)
-#define TEXTSERVICE_ICON_INDEX   -IDIS_SAMPLEIME
 #define TEXTSERVICE_DIC u8"SampleIMESimplifiedQuanPinUtf8.txt"_rs
 
 #define IME_MODE_ON_ICON_INDEX      IDI_IME_MODE_ON

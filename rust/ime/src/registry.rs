@@ -1,4 +1,4 @@
-use globals::SAMPLEIME_CLSID;
+use globals::{SAMPLEIME_CLSID, SAMPLEIME_GUID_PROFILE};
 use windows::create_instance;
 use windows::{self, Guid};
 use winreg::{enums::HKEY_CLASSES_ROOT, RegKey};
@@ -6,9 +6,12 @@ use winreg::{enums::HKEY_CLASSES_ROOT, RegKey};
 use crate::bindings::{
     Windows::Win32::Foundation::{HINSTANCE, MAX_PATH, PWSTR},
     Windows::Win32::System::LibraryLoader::GetModuleFileNameW,
+    Windows::Win32::System::SystemServices::{LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED},
     Windows::Win32::UI::TextServices::{
         CLSID_TF_CategoryMgr,
+        CLSID_TF_InputProcessorProfiles,
         ITfCategoryMgr,
+        ITfInputProcessorProfileMgr,
         GUID_TFCAT_DISPLAYATTRIBUTEPROVIDER,
         GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT,
         GUID_TFCAT_TIPCAP_INPUTMODECOMPARTMENT,
@@ -18,10 +21,69 @@ use crate::bindings::{
         GUID_TFCAT_TIP_KEYBOARD,
         // GUID_TFCAT_TIPCAP_COMLESS doesn't exist
         // https://github.com/microsoft/win32metadata/issues/575
+        HKL,
     },
 };
 
 const TEXTSERVICE_DESC: &str = "Sample Rust IME";
+// MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED)
+const TEXTSERVICE_LANGID: u16 = (SUBLANG_CHINESE_SIMPLIFIED << 10 | LANG_CHINESE) as u16;
+// #define TEXTSERVICE_ICON_INDEX   -IDIS_SAMPLEIME
+const TEXTSERVICE_ICON_INDEX: u32 = -12i32 as u32;
+
+fn get_module_file_name(dll_instance_handle: HINSTANCE) -> String {
+    unsafe {
+        let mut file_name = [0u16; MAX_PATH as usize];
+        GetModuleFileNameW(dll_instance_handle, PWSTR(file_name.as_mut_ptr()), MAX_PATH);
+        String::from_utf16(&file_name).unwrap()
+    }
+}
+
+pub fn register_profile(dll_instance_handle: HINSTANCE) -> Result<(), windows::Error> {
+    let profile_manager: ITfInputProcessorProfileMgr =
+        create_instance(&CLSID_TF_InputProcessorProfiles)?;
+
+    let mut icon_file_name: Vec<u16> = get_module_file_name(dll_instance_handle)
+        .encode_utf16()
+        .collect();
+
+    let mut description: Vec<u16> = TEXTSERVICE_DESC.encode_utf16().collect();
+
+    unsafe {
+        profile_manager.RegisterProfile(
+            &SAMPLEIME_CLSID,
+            TEXTSERVICE_LANGID,
+            &SAMPLEIME_GUID_PROFILE,
+            PWSTR(description.as_mut_ptr()),
+            TEXTSERVICE_DESC.len() as u32,
+            PWSTR(icon_file_name.as_mut_ptr()),
+            icon_file_name.len() as u32,
+            TEXTSERVICE_ICON_INDEX as u32,
+            HKL::NULL,
+            0,
+            true,
+            0,
+        )?;
+    }
+
+    Ok(())
+}
+
+pub fn unregister_profile() -> Result<(), windows::Error> {
+    let profile_manager: ITfInputProcessorProfileMgr =
+        create_instance(&CLSID_TF_InputProcessorProfiles)?;
+
+    unsafe {
+        profile_manager.UnregisterProfile(
+            &SAMPLEIME_CLSID,
+            TEXTSERVICE_LANGID,
+            &SAMPLEIME_GUID_PROFILE,
+            0,
+        )?;
+    }
+
+    Ok(())
+}
 
 static SUPPORT_CATEGORIES: [Guid; 8] = [
     GUID_TFCAT_TIP_KEYBOARD,
@@ -70,11 +132,7 @@ fn get_ime_key() -> String {
 }
 
 pub fn register_server(dll_instance_handle: HINSTANCE) -> Result<(), std::io::Error> {
-    let module_file_name = unsafe {
-        let mut file_name = [0u16; MAX_PATH as usize];
-        GetModuleFileNameW(dll_instance_handle, PWSTR(file_name.as_mut_ptr()), MAX_PATH);
-        String::from_utf16(&file_name).unwrap()
-    };
+    let module_file_name = get_module_file_name(dll_instance_handle);
 
     let ime_key = get_ime_key();
     let (key, _) = RegKey::predef(HKEY_CLASSES_ROOT).create_subkey(ime_key)?;

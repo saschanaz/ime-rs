@@ -11,10 +11,6 @@
 #include "cbindgen/globals.h"
 #include "cbindgen/ime.h"
 
-// from Register.cpp
-BOOL RegisterProfiles();
-void UnregisterProfiles();
-
 void FreeGlobalObjects(void);
 
 class CClassFactory;
@@ -258,7 +254,7 @@ STDAPI DllCanUnloadNow(void)
 
 STDAPI DllUnregisterServer(void)
 {
-    UnregisterProfiles();
+    unregister_profile();
     unregister_categories();
     unregister_server();
 
@@ -273,7 +269,7 @@ STDAPI DllUnregisterServer(void)
 
 STDAPI DllRegisterServer(void)
 {
-    if (!register_server(Global::dllInstanceHandle) || !RegisterProfiles() || !register_categories())
+    if (!register_server(Global::dllInstanceHandle) || !register_profile(Global::dllInstanceHandle) || !register_categories())
     {
         DllUnregisterServer();
         return E_FAIL;

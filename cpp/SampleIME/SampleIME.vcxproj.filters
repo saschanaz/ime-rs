@@ -199,9 +199,6 @@
     <ClCompile Include="LanguageBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Register.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="RegKey.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

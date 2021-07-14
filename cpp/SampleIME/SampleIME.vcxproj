@@ -89,7 +89,6 @@
     <ClCompile Include="KeyHandler.cpp" />
     <ClCompile Include="KeyHandlerEditSession.cpp" />
     <ClCompile Include="LanguageBar.cpp" />
-    <ClCompile Include="Register.cpp" />
     <ClCompile Include="RegKey.cpp" />
     <ClCompile Include="ScrollBarWindow.cpp" />
     <ClCompile Include="Server.cpp" />

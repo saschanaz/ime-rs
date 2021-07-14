@@ -2,9 +2,12 @@ fn main() {
     windows::build! {
         Windows::Win32::Foundation::{HINSTANCE, MAX_PATH, PWSTR},
         Windows::Win32::System::LibraryLoader::GetModuleFileNameW,
+        Windows::Win32::System::SystemServices::{LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED},
         Windows::Win32::UI::TextServices::{
             CLSID_TF_CategoryMgr,
+            CLSID_TF_InputProcessorProfiles,
             ITfCategoryMgr,
+            ITfInputProcessorProfileMgr,
             GUID_TFCAT_DISPLAYATTRIBUTEPROVIDER,
             GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT,
             GUID_TFCAT_TIPCAP_INPUTMODECOMPARTMENT,
@@ -14,6 +17,7 @@ fn main() {
             GUID_TFCAT_TIP_KEYBOARD,
             // GUID_TFCAT_TIPCAP_COMLESS doesn't exist
             // https://github.com/microsoft/win32metadata/issues/575
+            HKL,
         },
     };
 }
