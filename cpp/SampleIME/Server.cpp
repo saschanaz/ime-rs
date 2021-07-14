@@ -14,8 +14,6 @@
 // from Register.cpp
 BOOL RegisterProfiles();
 void UnregisterProfiles();
-BOOL RegisterCategories();
-void UnregisterCategories();
 
 void FreeGlobalObjects(void);
 
@@ -261,7 +259,7 @@ STDAPI DllCanUnloadNow(void)
 STDAPI DllUnregisterServer(void)
 {
     UnregisterProfiles();
-    UnregisterCategories();
+    unregister_categories();
     unregister_server();
 
     return S_OK;
@@ -275,7 +273,7 @@ STDAPI DllUnregisterServer(void)
 
 STDAPI DllRegisterServer(void)
 {
-    if (!register_server(Global::dllInstanceHandle) || !RegisterProfiles() || !RegisterCategories())
+    if (!register_server(Global::dllInstanceHandle) || !RegisterProfiles() || !register_categories())
     {
         DllUnregisterServer();
         return E_FAIL;
