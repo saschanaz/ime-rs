@@ -89,7 +89,6 @@ private:
     class XPreservedKey;
     void SetPreservedKey(const CLSID clsid, TF_PRESERVEDKEY & tfPreservedKey, _In_z_ LPCWSTR pwszDescription, _Out_ XPreservedKey *pXPreservedKey);
     BOOL InitPreservedKey(_In_ XPreservedKey *pXPreservedKey, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
-    BOOL CheckShiftKeyOnly(_In_ CSampleImeArray<TF_PRESERVEDKEY> *pTSFPreservedKeyTable);
 
     static HRESULT CompartmentCallback(_In_ void *pv, REFGUID guidCompartment);
     void PrivateCompartmentsUpdated(_In_ ITfThreadMgr *pThreadMgr);

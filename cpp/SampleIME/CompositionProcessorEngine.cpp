@@ -463,7 +463,7 @@ void CCompositionProcessorEngine::SetupPreserved(_In_ ITfThreadMgr *pThreadMgr, 
 {
     TF_PRESERVEDKEY preservedKeyImeMode;
     preservedKeyImeMode.uVKey = VK_SHIFT;
-    preservedKeyImeMode.uModifiers = _TF_MOD_ON_KEYUP_SHIFT_ONLY;
+    preservedKeyImeMode.uModifiers = TF_MOD_ON_KEYUP;
     SetPreservedKey(SAMPLEIME_GUID_IME_MODE_PRESERVE_KEY, preservedKeyImeMode, Global::ImeModeDescription, &_PreservedKey_IMEMode);
 
     TF_PRESERVEDKEY preservedKeyDoubleSingleByte;
@@ -532,11 +532,8 @@ BOOL CCompositionProcessorEngine::InitPreservedKey(_In_ XPreservedKey *pXPreserv
         return FALSE;
     }
 
-    for (const auto& item : pXPreservedKey->TSFPreservedKeyTable)
+    for (const auto& preservedKey : pXPreservedKey->TSFPreservedKeyTable)
     {
-        TF_PRESERVEDKEY preservedKey = item;
-        preservedKey.uModifiers &= 0xffff;
-
 		size_t lenOfDesc = 0;
 		if (StringCchLength(pXPreservedKey->Description, STRSAFE_MAX_CCH, &lenOfDesc) != S_OK)
         {
@@ -552,25 +549,6 @@ BOOL CCompositionProcessorEngine::InitPreservedKey(_In_ XPreservedKey *pXPreserv
 
 //+---------------------------------------------------------------------------
 //
-// CheckShiftKeyOnly
-//
-//----------------------------------------------------------------------------
-
-BOOL CCompositionProcessorEngine::CheckShiftKeyOnly(_In_ CSampleImeArray<TF_PRESERVEDKEY> *pTSFPreservedKeyTable)
-{
-    for (const auto& tfPsvKey : *pTSFPreservedKeyTable)
-    {
-        if (((tfPsvKey.uModifiers & (_TF_MOD_ON_KEYUP_SHIFT_ONLY & 0xffff0000)) && !engine_rust.ModifiersIsShiftKeyDownOnly()))
-        {
-            return FALSE;
-        }
-    }
-
-    return TRUE;
-}
-
-//+---------------------------------------------------------------------------
-//
 // OnPreservedKey
 //
 //----------------------------------------------------------------------------
@@ -579,7 +557,7 @@ void CCompositionProcessorEngine::OnPreservedKey(REFGUID rguid, _Out_ BOOL *pIsE
 {
     if (IsEqualGUID(rguid, _PreservedKey_IMEMode.Guid))
     {
-        if (!CheckShiftKeyOnly(&_PreservedKey_IMEMode.TSFPreservedKeyTable))
+        if (!engine_rust.ModifiersIsShiftKeyDownOnly())
         {
             *pIsEaten = FALSE;
             return;
@@ -593,11 +571,6 @@ void CCompositionProcessorEngine::OnPreservedKey(REFGUID rguid, _Out_ BOOL *pIsE
     }
     else if (IsEqualGUID(rguid, _PreservedKey_DoubleSingleByte.Guid))
     {
-        if (!CheckShiftKeyOnly(&_PreservedKey_DoubleSingleByte.TSFPreservedKeyTable))
-        {
-            *pIsEaten = FALSE;
-            return;
-        }
         BOOL isDouble = FALSE;
         CCompartment CompartmentDoubleSingleByte(pThreadMgr, tfClientId, SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE);
         CompartmentDoubleSingleByte._GetCompartmentBOOL(isDouble);
@@ -606,11 +579,6 @@ void CCompositionProcessorEngine::OnPreservedKey(REFGUID rguid, _Out_ BOOL *pIsE
     }
     else if (IsEqualGUID(rguid, _PreservedKey_Punctuation.Guid))
     {
-        if (!CheckShiftKeyOnly(&_PreservedKey_Punctuation.TSFPreservedKeyTable))
-        {
-            *pIsEaten = FALSE;
-            return;
-        }
         BOOL isPunctuation = FALSE;
         CCompartment CompartmentPunctuation(pThreadMgr, tfClientId, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION);
         CompartmentPunctuation._GetCompartmentBOOL(isPunctuation);
@@ -970,11 +938,8 @@ BOOL CCompositionProcessorEngine::XPreservedKey::UninitPreservedKey(_In_ ITfThre
         return FALSE;
     }
 
-    for (const auto& item : TSFPreservedKeyTable)
+    for (const auto& preservedKey : TSFPreservedKeyTable)
     {
-        TF_PRESERVEDKEY preservedKey = item;
-        preservedKey.uModifiers &= 0xffff;
-
         pKeystrokeMgr->UnpreserveKey(Guid, &preservedKey);
     }
 
