@@ -560,9 +560,7 @@ BOOL CCompositionProcessorEngine::CheckShiftKeyOnly(_In_ CSampleImeArray<TF_PRES
 {
     for (const auto& tfPsvKey : *pTSFPreservedKeyTable)
     {
-        if (((tfPsvKey.uModifiers & (_TF_MOD_ON_KEYUP_SHIFT_ONLY & 0xffff0000)) && !engine_rust.ModifiersIsShiftKeyDownOnly()) ||
-            ((tfPsvKey.uModifiers & (_TF_MOD_ON_KEYUP_CONTROL_ONLY & 0xffff0000)) && !engine_rust.ModifiersIsControlKeyDownOnly()) ||
-            ((tfPsvKey.uModifiers & (_TF_MOD_ON_KEYUP_ALT_ONLY & 0xffff0000)) && !engine_rust.ModifiersIsAltKeyDownOnly()))
+        if (((tfPsvKey.uModifiers & (_TF_MOD_ON_KEYUP_SHIFT_ONLY & 0xffff0000)) && !engine_rust.ModifiersIsShiftKeyDownOnly()))
         {
             return FALSE;
         }
