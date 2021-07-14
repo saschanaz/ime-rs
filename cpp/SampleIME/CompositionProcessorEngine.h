@@ -108,7 +108,7 @@ private:
         BOOL UninitPreservedKey(_In_ ITfThreadMgr *pThreadMgr);
 
     public:
-        CSampleImeArray<TF_PRESERVEDKEY> TSFPreservedKeyTable;
+        TF_PRESERVEDKEY TSFPreservedKey;
         GUID Guid;
         LPCWSTR Description;
     };

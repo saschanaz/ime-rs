@@ -493,7 +493,7 @@ void CCompositionProcessorEngine::SetPreservedKey(const CLSID clsid, TF_PRESERVE
 {
     pXPreservedKey->Guid = clsid;
 
-    pXPreservedKey->TSFPreservedKeyTable.Append(tfPreservedKey);
+    pXPreservedKey->TSFPreservedKey = tfPreservedKey;
 
 	size_t srgKeystrokeBufLen = 0;
 	if (StringCchLength(pwszDescription, STRSAFE_MAX_CCH, &srgKeystrokeBufLen) != S_OK)
@@ -532,15 +532,12 @@ BOOL CCompositionProcessorEngine::InitPreservedKey(_In_ XPreservedKey *pXPreserv
         return FALSE;
     }
 
-    for (const auto& preservedKey : pXPreservedKey->TSFPreservedKeyTable)
+    size_t lenOfDesc = 0;
+    if (StringCchLength(pXPreservedKey->Description, STRSAFE_MAX_CCH, &lenOfDesc) != S_OK)
     {
-		size_t lenOfDesc = 0;
-		if (StringCchLength(pXPreservedKey->Description, STRSAFE_MAX_CCH, &lenOfDesc) != S_OK)
-        {
-            return FALSE;
-        }
-        pKeystrokeMgr->PreserveKey(tfClientId, pXPreservedKey->Guid, &preservedKey, pXPreservedKey->Description, static_cast<ULONG>(lenOfDesc));
+        return FALSE;
     }
+    pKeystrokeMgr->PreserveKey(tfClientId, pXPreservedKey->Guid, &pXPreservedKey->TSFPreservedKey, pXPreservedKey->Description, static_cast<ULONG>(lenOfDesc));
 
     pKeystrokeMgr->Release();
 
@@ -938,10 +935,7 @@ BOOL CCompositionProcessorEngine::XPreservedKey::UninitPreservedKey(_In_ ITfThre
         return FALSE;
     }
 
-    for (const auto& preservedKey : TSFPreservedKeyTable)
-    {
-        pKeystrokeMgr->UnpreserveKey(Guid, &preservedKey);
-    }
+    pKeystrokeMgr->UnpreserveKey(Guid, &TSFPreservedKey);
 
     pKeystrokeMgr->Release();
 
