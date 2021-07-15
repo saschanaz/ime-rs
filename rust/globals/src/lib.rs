@@ -50,11 +50,6 @@ pub static SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION: GUID =
 // LanguageBars
 //---------------------------------------------------------------------
 
-// {c22f61f3-98ac-495f-860b-7e56feec9de2}
-#[no_mangle]
-pub static SAMPLEIME_GUID_LANG_BAR_IMEMODE: GUID =
-    get_guid_from_u128(0xc22f61f3_98ac_495f_860b_7e56feec9de2);
-
 // {bdb8d292-5ce4-4836-a467-b58a816d482c}
 #[no_mangle]
 pub static SAMPLEIME_GUID_LANG_BAR_DOUBLE_SINGLE_BYTE: GUID =
