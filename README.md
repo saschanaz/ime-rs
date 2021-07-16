@@ -14,6 +14,7 @@ These features are all from the original sample and being ported.
 * Alternative punctuation support: enabled by <kbd>Control+.</kbd>.
   * Produces different characters from punctuation keys, e.g. `$` for `￥`.
   * Some keys just map to their wide versions, e.g. `()` for `（）`.
+  * When enabled together with wide character mode, this one wins.
 
 ### Removed features
 
