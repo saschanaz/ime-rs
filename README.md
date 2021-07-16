@@ -1,3 +1,28 @@
+# ime-rs
+
+This is a porting project for Microsoft Chinese (Simplified, China) IME sample from C++ to Rust.
+
+## Features
+
+These features are all from the original sample and being ported.
+
+* Pinyin input with conversion candidate dictionary: Enabled by <kbd>Shift</kbd> or the language bar button (英/中).
+  * Supports wildcard (`*` and `?`), for example, `n*o` shows 你好 and 您好.
+* Wide character support: enabled by <kbd>Shift+Spacebar</kbd>. Note that spacebar keyup should happen first or it instead toggles pinyin mode.
+  * Converts alphabets to ａｌｐｈａｂｅｔｓ.
+  * Converts certain punctuations to their wide versions, e.g. `<>` to `＜＞`.
+* Alternative punctuation support: enabled by <kbd>Control+.</kbd>.
+  * Produces different characters from punctuation keys, e.g. `$` for `￥`.
+  * Some keys just map to their wide versions, e.g. `()` for `（）`.
+
+### Removed features
+
+Not all features are alive, because Windows API support has changed since the initial release of the sample.
+
+* Multiple language bar buttons. Originally the sample wanted to add wide character mode and alternative punctuation mode buttons in addition to the pinyin button, but [Windows 8+ allows only a single button](https://docs.microsoft.com/en-us/windows/win32/api/ctfutb/nf-ctfutb-itflangbaritem-getinfo#parameters).
+
+Below is the original README of this sample.
+
 # Input Method Editor (IME) sample
 
 This sample shows how to create an Input Method Editor (IME) that works in Windows Store apps and Windows 8.1 desktop apps.
