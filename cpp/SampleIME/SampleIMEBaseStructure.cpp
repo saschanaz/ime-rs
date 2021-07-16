@@ -132,14 +132,13 @@ CPunctuationNestPair::CPunctuationNestPair()
 CPunctuationNestPair::CPunctuationNestPair(WCHAR codeBegin, WCHAR punctuationBegin, WCHAR pairBegin,
     WCHAR codeEnd,   WCHAR punctuationEnd,   WCHAR pairEnd)
 {
-	pairEnd;punctuationEnd;
     _punctuation_begin._Code = codeBegin;
     _punctuation_begin._Punctuation = punctuationBegin;
     _pairPunctuation_begin = pairBegin;
 
     _punctuation_end._Code = codeEnd;
-    _punctuation_end._Punctuation = punctuationBegin;
-    _pairPunctuation_end = pairBegin;
+    _punctuation_end._Punctuation = punctuationEnd;
+    _pairPunctuation_end = pairEnd;
 
     _nestCount  = 0;
 }
