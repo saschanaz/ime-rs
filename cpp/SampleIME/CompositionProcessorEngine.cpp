@@ -102,8 +102,6 @@ CCompositionProcessorEngine::CCompositionProcessorEngine()
     _tfClientId = TF_CLIENTID_NULL;
 
     _pLanguageBar_IMEMode = nullptr;
-    _pLanguageBar_DoubleSingleByte = nullptr;
-    _pLanguageBar_Punctuation = nullptr;
 
     _pCompartmentConversion = nullptr;
     _pCompartmentKeyboardOpenEventSink = nullptr;
@@ -125,18 +123,6 @@ CCompositionProcessorEngine::~CCompositionProcessorEngine()
         _pLanguageBar_IMEMode->CleanUp();
         _pLanguageBar_IMEMode->Release();
         _pLanguageBar_IMEMode = nullptr;
-    }
-    if (_pLanguageBar_DoubleSingleByte)
-    {
-        _pLanguageBar_DoubleSingleByte->CleanUp();
-        _pLanguageBar_DoubleSingleByte->Release();
-        _pLanguageBar_DoubleSingleByte = nullptr;
-    }
-    if (_pLanguageBar_Punctuation)
-    {
-        _pLanguageBar_Punctuation->CleanUp();
-        _pLanguageBar_Punctuation->Release();
-        _pLanguageBar_Punctuation = nullptr;
     }
 
     if (_pCompartmentConversion)
@@ -599,12 +585,8 @@ void CCompositionProcessorEngine::SetupLanguageBar(_In_ ITfThreadMgr *pThreadMgr
 {
     DWORD dwEnable = 1;
     CreateLanguageBarButton(dwEnable, GUID_LBI_INPUTMODE, Global::LangbarImeModeDescription, Global::ImeModeDescription, Global::ImeModeOnIcoIndex, Global::ImeModeOffIcoIndex, &_pLanguageBar_IMEMode, isSecureMode);
-    CreateLanguageBarButton(dwEnable, SAMPLEIME_GUID_LANG_BAR_DOUBLE_SINGLE_BYTE, Global::LangbarDoubleSingleByteDescription, Global::DoubleSingleByteDescription, Global::DoubleSingleByteOnIcoIndex, Global::DoubleSingleByteOffIcoIndex, &_pLanguageBar_DoubleSingleByte, isSecureMode);
-    CreateLanguageBarButton(dwEnable, SAMPLEIME_GUID_LANG_BAR_PUNCTUATION, Global::LangbarPunctuationDescription, Global::PunctuationDescription, Global::PunctuationOnIcoIndex, Global::PunctuationOffIcoIndex, &_pLanguageBar_Punctuation, isSecureMode);
 
     InitLanguageBar(_pLanguageBar_IMEMode, pThreadMgr, tfClientId, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
-    InitLanguageBar(_pLanguageBar_DoubleSingleByte, pThreadMgr, tfClientId, SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE);
-    InitLanguageBar(_pLanguageBar_Punctuation, pThreadMgr, tfClientId, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION);
 
     _pCompartmentConversion = new (std::nothrow) CCompartment(pThreadMgr, tfClientId, GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION);
     _pCompartmentKeyboardOpenEventSink = new (std::nothrow) CCompartmentEventSink(CompartmentCallback, this);

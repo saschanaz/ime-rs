@@ -50,16 +50,6 @@ pub static SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION: GUID =
 // LanguageBars
 //---------------------------------------------------------------------
 
-// {bdb8d292-5ce4-4836-a467-b58a816d482c}
-#[no_mangle]
-pub static SAMPLEIME_GUID_LANG_BAR_DOUBLE_SINGLE_BYTE: GUID =
-    get_guid_from_u128(0xbdb8d292_5ce4_4836_a467_b58a816d482c);
-
-// {929558e4-e574-46d5-82bf-64f2caab099e}
-#[no_mangle]
-pub static SAMPLEIME_GUID_LANG_BAR_PUNCTUATION: GUID =
-    get_guid_from_u128(0x929558e4_e574_46d5_82bf_64f2caab099e);
-
 // {9826a3f7-a822-43f7-a51b-fbe7b55995d3}
 #[no_mangle]
 pub static SAMPLEIME_GUID_DISPLAY_ATTRIBUTE_INPUT: GUID =

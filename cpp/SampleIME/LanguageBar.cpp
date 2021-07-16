@@ -79,12 +79,6 @@ VOID CCompositionProcessorEngine::SetLanguageBarStatus(DWORD status, BOOL isSet)
     if (_pLanguageBar_IMEMode) {
         _pLanguageBar_IMEMode->SetStatus(status, isSet);
     }
-    if (_pLanguageBar_DoubleSingleByte) {
-        _pLanguageBar_DoubleSingleByte->SetStatus(status, isSet);
-    }
-    if (_pLanguageBar_Punctuation) {
-        _pLanguageBar_Punctuation->SetStatus(status, isSet);
-    }
 }
 
 //+---------------------------------------------------------------------------
