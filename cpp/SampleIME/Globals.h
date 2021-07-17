@@ -121,7 +121,6 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
 extern const GUID SampleIMEGuidCompartmentDoubleSingleByte;
 extern const GUID SampleIMEGuidCompartmentPunctuation;
 
-extern const WCHAR FullWidthCharTable[];
 extern const struct _PUNCTUATION PunctuationTable[14];
 
 extern const GUID SampleIMEGuidLangBarIMEMode;

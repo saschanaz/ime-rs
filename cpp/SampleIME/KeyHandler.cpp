@@ -549,7 +549,9 @@ HRESULT CSampleIME::_HandleCompositionDoubleSingleByte(TfEditCookie ec, _In_ ITf
 {
     HRESULT hr = S_OK;
 
-    WCHAR fullWidth = Global::FullWidthCharTable[wch - 0x20];
+    // \u3000 or Unicode "Fullwidth ASCII variants" (U+FF01 to U+FF5E)
+    // https://www.unicode.org/charts/PDF/UFF00.pdf
+    WCHAR fullWidth = wch == 0x20 ? u'\u3000' : (wch - 0x20 + 0xff00);
 
     // Finalize character
     hr = _AddCharAndFinalize(ec, pContext, CRustStringRange(CStringRangeUtf16(fullWidth)));
