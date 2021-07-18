@@ -17,10 +17,6 @@ pub struct Modifiers {
 }
 
 impl Modifiers {
-    pub unsafe fn from_void(modifiers: *mut std::ffi::c_void) -> Box<Modifiers> {
-        Box::from_raw(modifiers as *mut Modifiers)
-    }
-
     pub fn update(&mut self, w: WPARAM, l: LPARAM) {
         // high-order bit : key down
         // low-order bit  : toggled

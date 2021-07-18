@@ -4,10 +4,12 @@ use crate::bindings::{
     Windows::Win32::Foundation::{HINSTANCE, MAX_PATH, PWSTR},
     Windows::Win32::System::LibraryLoader::GetModuleFileNameW,
 };
-use crate::modifiers::Modifiers;
 use crate::test_virtual_key::{
     test_virtual_key, CandidateMode, KeystrokeCategory, KeystrokeFunction,
 };
+
+mod modifiers;
+use modifiers::Modifiers;
 
 pub struct CompositionProcessorEngine {
     keystroke_buffer: Vec<u16>,

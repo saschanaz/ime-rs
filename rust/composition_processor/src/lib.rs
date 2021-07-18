@@ -10,9 +10,6 @@ use bindings::Windows::Win32::Foundation::{HINSTANCE, LPARAM, WPARAM};
 mod engine;
 use engine::CompositionProcessorEngine;
 
-pub mod modifiers;
-pub use modifiers::Modifiers;
-
 mod test_virtual_key;
 use test_virtual_key::{CandidateMode, KeystrokeCategory, KeystrokeFunction};
 
