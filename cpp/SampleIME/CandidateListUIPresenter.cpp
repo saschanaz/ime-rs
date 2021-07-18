@@ -571,7 +571,7 @@ STDAPI CCandidateListUIPresenter::GetString(UINT uIndex, BSTR *pbstr)
 
     if (candidateString.has_value()) {
         CStringRangeUtf16 str(candidateString.value());
-        *pbstr = SysAllocStringLen(str.GetRaw(), str.GetLength());
+        *pbstr = SysAllocStringLen(str.GetRaw(), (DWORD)str.GetLength());
     } else {
         *pbstr = nullptr;
     }
