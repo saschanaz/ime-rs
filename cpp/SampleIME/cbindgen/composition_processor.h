@@ -68,6 +68,12 @@ void *compositionprocessorengine_new();
 
 void compositionprocessorengine_pop_virtual_key(void *engine);
 
+uint16_t compositionprocessorengine_punctuations_get_alternative_punctuation_counted(void *engine,
+                                                                                     uint16_t wch);
+
+bool compositionprocessorengine_punctuations_has_alternative_punctuation(void *engine,
+                                                                         uint16_t wch);
+
 void compositionprocessorengine_purge_virtual_key(void *engine);
 
 void compositionprocessorengine_setup_dictionary_file(void *engine,

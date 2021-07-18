@@ -147,3 +147,30 @@ pub unsafe extern "C" fn compositionprocessorengine_modifiers_is_alt_key_down_on
     let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
     engine.modifiers().is_alt_key_down_only()
 }
+
+#[no_mangle]
+pub unsafe extern "C" fn compositionprocessorengine_punctuations_has_alternative_punctuation(
+    engine: *mut c_void,
+    wch: u16,
+) -> bool {
+    let c = char::from_u32(wch as u32).unwrap();
+    let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
+    engine
+        .punctuation_mapper_mut()
+        .has_alternative_punctuation(c)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn compositionprocessorengine_punctuations_get_alternative_punctuation_counted(
+    engine: *mut c_void,
+    wch: u16,
+) -> u16 {
+    let c = char::from_u32(wch as u32).unwrap();
+    let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
+    let result = engine
+        .punctuation_mapper_mut()
+        .get_alternative_punctuation_counted(c);
+    let mut b = [0; 1];
+    result.encode_utf16(&mut b);
+    b[0]
+}

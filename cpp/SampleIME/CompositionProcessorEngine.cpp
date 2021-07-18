@@ -188,7 +188,6 @@ BOOL CCompositionProcessorEngine::SetupLanguageProfile(LANGID langid, REFGUID gu
 
     SetupPreserved(pThreadMgr, tfClientId);
 	InitializeSampleIMECompartment(pThreadMgr, tfClientId);
-    SetupPunctuationPair();
     SetupLanguageBar(pThreadMgr, tfClientId, isSecureMode);
     SetDefaultCandidateTextFont();
     engine_rust.SetupDictionaryFile(Global::dllInstanceHandle, TEXTSERVICE_DIC);
@@ -331,36 +330,9 @@ void CCompositionProcessorEngine::GetCandidateStringInConverted(const CRustStrin
 //
 //----------------------------------------------------------------------------
 
-BOOL CCompositionProcessorEngine::IsPunctuation(WCHAR wch)
+bool CCompositionProcessorEngine::IsPunctuation(wchar_t wch)
 {
-    for (int i = 0; i < ARRAYSIZE(Global::PunctuationTable); i++)
-    {
-        if (Global::PunctuationTable[i]._Code == wch)
-        {
-            return TRUE;
-        }
-    }
-
-    for (const auto& puncPair : _PunctuationPair)
-    {
-        if (puncPair._punctuation._Code == wch)
-        {
-            return TRUE;
-        }
-    }
-
-    for (const auto& puncNestPair : _PunctuationNestPair)
-    {
-        if (puncNestPair._punctuation_begin._Code == wch)
-        {
-            return TRUE;
-        }
-        if (puncNestPair._punctuation_end._Code == wch)
-        {
-            return TRUE;
-        }
-    }
-    return FALSE;
+    return engine_rust.PunctuationsHasAlternativePunctuation(wch);
 }
 
 //+---------------------------------------------------------------------------
@@ -369,59 +341,9 @@ BOOL CCompositionProcessorEngine::IsPunctuation(WCHAR wch)
 //
 //----------------------------------------------------------------------------
 
-WCHAR CCompositionProcessorEngine::GetPunctuation(WCHAR wch)
+wchar_t CCompositionProcessorEngine::GetPunctuation(wchar_t wch)
 {
-    for (int i = 0; i < ARRAYSIZE(Global::PunctuationTable); i++)
-    {
-        if (Global::PunctuationTable[i]._Code == wch)
-        {
-            return Global::PunctuationTable[i]._Punctuation;
-        }
-    }
-
-    for (auto& puncPair : _PunctuationPair)
-    {
-        if (puncPair._punctuation._Code == wch)
-        {
-            if (!puncPair._isPairToggle)
-            {
-                puncPair._isPairToggle = TRUE;
-                return puncPair._punctuation._Punctuation;
-            }
-            else
-            {
-                puncPair._isPairToggle = FALSE;
-                return puncPair._pairPunctuation;
-            }
-        }
-    }
-
-    for (auto& puncNestPair : _PunctuationNestPair)
-    {
-        if (puncNestPair._punctuation_begin._Code == wch)
-        {
-            if (puncNestPair._nestCount++ == 0)
-            {
-                return puncNestPair._punctuation_begin._Punctuation;
-            }
-            else
-            {
-                return puncNestPair._pairPunctuation_begin;
-            }
-        }
-        if (puncNestPair._punctuation_end._Code == wch)
-        {
-            if (--puncNestPair._nestCount == 0)
-            {
-                return puncNestPair._punctuation_end._Punctuation;
-            }
-            else
-            {
-                return puncNestPair._pairPunctuation_end;
-            }
-        }
-    }
-    return 0;
+    return engine_rust.PunctuationsGetAlternativePunctuationCounted(wch);
 }
 
 //+---------------------------------------------------------------------------
@@ -651,27 +573,6 @@ BOOL CCompositionProcessorEngine::InitLanguageBar(_In_ CLangBarItemButton *pLang
         }
     }
     return FALSE;
-}
-
-//+---------------------------------------------------------------------------
-//
-// SetupPunctuationPair
-//
-//----------------------------------------------------------------------------
-
-void CCompositionProcessorEngine::SetupPunctuationPair()
-{
-    // Punctuation pair
-    CPunctuationPair punc_quotation_mark(L'"', 0x201C, 0x201D);
-    CPunctuationPair punc_apostrophe(L'\'', 0x2018, 0x2019);
-
-    _PunctuationPair.Append(punc_quotation_mark);
-    _PunctuationPair.Append(punc_apostrophe);
-
-    // Punctuation nest pair
-    CPunctuationNestPair punc_angle_bracket(L'<', 0x300A, 0x3008, L'>', 0x300B, 0x3009);
-
-    _PunctuationNestPair.Append(punc_angle_bracket);
 }
 
 void CCompositionProcessorEngine::InitializeSampleIMECompartment(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId)
@@ -1202,4 +1103,12 @@ bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::ModifiersIsCo
 
 bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::ModifiersIsAltKeyDownOnly() const {
     return compositionprocessorengine_modifiers_is_alt_key_down_only(engine);
+}
+
+bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::PunctuationsHasAlternativePunctuation(WCHAR wch) const {
+    return compositionprocessorengine_punctuations_has_alternative_punctuation(engine, wch);
+}
+
+wchar_t CCompositionProcessorEngine::CRustCompositionProcessorEngine::PunctuationsGetAlternativePunctuationCounted(wchar_t wch) {
+    return compositionprocessorengine_punctuations_get_alternative_punctuation_counted(engine, wch);
 }

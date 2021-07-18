@@ -11,10 +11,14 @@ use crate::test_virtual_key::{
 mod modifiers;
 use modifiers::Modifiers;
 
+mod punctuations;
+use punctuations::PunctuationMapper;
+
 pub struct CompositionProcessorEngine {
     keystroke_buffer: Vec<u16>,
     table_dictionary_engine: Option<TableDictionaryEngine>,
     modifiers: Modifiers,
+    punctuation_mapper: PunctuationMapper,
 }
 
 impl CompositionProcessorEngine {
@@ -23,6 +27,7 @@ impl CompositionProcessorEngine {
             keystroke_buffer: Vec::new(),
             table_dictionary_engine: None,
             modifiers: Modifiers::default(),
+            punctuation_mapper: PunctuationMapper::new(),
         }
     }
 
@@ -100,6 +105,10 @@ impl CompositionProcessorEngine {
 
     pub fn modifiers_mut(&mut self) -> &mut Modifiers {
         &mut self.modifiers
+    }
+
+    pub fn punctuation_mapper_mut(&mut self) -> &mut PunctuationMapper {
+        &mut self.punctuation_mapper
     }
 }
 

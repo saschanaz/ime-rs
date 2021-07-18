@@ -55,8 +55,8 @@ public:
     void OnPreservedKey(REFGUID rguid, _Out_ BOOL *pIsEaten, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
 
     // Punctuation
-    BOOL IsPunctuation(WCHAR wch);
-    WCHAR GetPunctuation(WCHAR wch);
+    bool IsPunctuation(wchar_t wch);
+    wchar_t GetPunctuation(wchar_t wch);
 
     BOOL IsDoubleSingleByte(WCHAR wch);
     BOOL IsWildcardChar(WCHAR wch) { return (wch == u'?' || wch == u'*'); }
@@ -156,6 +156,9 @@ private:
         bool ModifiersIsShiftKeyDownOnly() const;
         bool ModifiersIsControlKeyDownOnly() const;
         bool ModifiersIsAltKeyDownOnly() const;
+
+        bool PunctuationsHasAlternativePunctuation(WCHAR wch) const;
+        WCHAR PunctuationsGetAlternativePunctuationCounted(WCHAR wch);
     };
 
     CRustCompositionProcessorEngine engine_rust;
