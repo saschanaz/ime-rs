@@ -1,5 +1,4 @@
 use globals::{SAMPLEIME_CLSID, SAMPLEIME_GUID_PROFILE};
-use windows::create_instance;
 use windows::{self, Guid};
 use winreg::{enums::HKEY_CLASSES_ROOT, RegKey};
 
@@ -24,6 +23,7 @@ use crate::bindings::{
         HKL,
     },
 };
+use crate::com::create_instance_inproc;
 
 const TEXTSERVICE_DESC: &str = "Sample Rust IME";
 // MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED)
@@ -41,7 +41,7 @@ fn get_module_file_name(dll_instance_handle: HINSTANCE) -> String {
 
 pub fn register_profile(dll_instance_handle: HINSTANCE) -> Result<(), windows::Error> {
     let profile_manager: ITfInputProcessorProfileMgr =
-        create_instance(&CLSID_TF_InputProcessorProfiles)?;
+        create_instance_inproc(&CLSID_TF_InputProcessorProfiles)?;
 
     let mut icon_file_name: Vec<u16> = get_module_file_name(dll_instance_handle)
         .encode_utf16()
@@ -71,7 +71,7 @@ pub fn register_profile(dll_instance_handle: HINSTANCE) -> Result<(), windows::E
 
 pub fn unregister_profile() -> Result<(), windows::Error> {
     let profile_manager: ITfInputProcessorProfileMgr =
-        create_instance(&CLSID_TF_InputProcessorProfiles)?;
+        create_instance_inproc(&CLSID_TF_InputProcessorProfiles)?;
 
     unsafe {
         profile_manager.UnregisterProfile(
@@ -104,7 +104,7 @@ static SUPPORT_CATEGORIES: [Guid; 8] = [
 ];
 
 pub fn register_categories() -> Result<(), windows::Error> {
-    let category_manager: ITfCategoryMgr = create_instance(&CLSID_TF_CategoryMgr)?;
+    let category_manager: ITfCategoryMgr = create_instance_inproc(&CLSID_TF_CategoryMgr)?;
 
     for guid in SUPPORT_CATEGORIES {
         unsafe {
@@ -116,7 +116,7 @@ pub fn register_categories() -> Result<(), windows::Error> {
 }
 
 pub fn unregister_categories() -> Result<(), windows::Error> {
-    let category_manager: ITfCategoryMgr = create_instance(&CLSID_TF_CategoryMgr)?;
+    let category_manager: ITfCategoryMgr = create_instance_inproc(&CLSID_TF_CategoryMgr)?;
 
     for guid in SUPPORT_CATEGORIES {
         unsafe {

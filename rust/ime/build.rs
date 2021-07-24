@@ -1,6 +1,7 @@
 fn main() {
     windows::build! {
         Windows::Win32::Foundation::{HINSTANCE, MAX_PATH, PWSTR},
+        Windows::Win32::System::Com::CoCreateInstance,
         Windows::Win32::System::LibraryLoader::GetModuleFileNameW,
         Windows::Win32::System::SystemServices::{LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED},
         Windows::Win32::UI::TextServices::{

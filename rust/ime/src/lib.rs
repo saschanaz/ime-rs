@@ -4,6 +4,8 @@ use crate::bindings::Windows::Win32::Foundation::HINSTANCE;
 mod registry;
 pub use registry::unregister_server;
 
+mod com;
+
 #[no_mangle]
 pub extern "C" fn register_profile(dll_instance_handle: HINSTANCE) -> bool {
     registry::register_profile(dll_instance_handle).is_ok()
