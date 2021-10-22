@@ -42,7 +42,7 @@ impl CompositionProcessorEngine {
         composing: bool,
         candidate_mode: CandidateMode,
     ) -> (bool, KeystrokeCategory, KeystrokeFunction) {
-        test_virtual_key(&self, code, ch, composing, candidate_mode)
+        test_virtual_key(self, code, ch, composing, candidate_mode)
     }
 
     pub fn add_virtual_key(&mut self, wch: u16) -> bool {

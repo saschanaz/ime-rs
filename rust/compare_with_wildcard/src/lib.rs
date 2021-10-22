@@ -76,74 +76,74 @@ mod tests {
     #[test]
     fn compare_empty() {
         unsafe {
-            assert_eq!(wrapped_compare("", ""), true);
+            assert!(wrapped_compare("", ""));
         }
     }
 
     #[test]
     fn compare_empty_filled() {
         unsafe {
-            assert_eq!(wrapped_compare("", "s"), false);
+            assert!(!wrapped_compare("", "s"));
         }
     }
 
     #[test]
     fn compare_filled_empty() {
         unsafe {
-            assert_eq!(wrapped_compare("s", ""), false);
+            assert!(!wrapped_compare("s", ""));
         }
     }
 
     #[test]
     fn compare_filled_same() {
         unsafe {
-            assert_eq!(wrapped_compare("wow", "wow"), true);
-            assert_eq!(wrapped_compare("wow", "wOw"), true);
-            assert_eq!(wrapped_compare("사과", "사과"), true);
+            assert!(wrapped_compare("wow", "wow"));
+            assert!(wrapped_compare("wow", "wOw"));
+            assert!(wrapped_compare("사과", "사과"));
         }
     }
 
     #[test]
     fn compare_filled_different() {
         unsafe {
-            assert_eq!(wrapped_compare("wow", "cow"), false);
-            assert_eq!(wrapped_compare("wow", "wot"), false);
-            assert_eq!(wrapped_compare("사과", "수박"), false);
+            assert!(!wrapped_compare("wow", "cow"));
+            assert!(!wrapped_compare("wow", "wot"));
+            assert!(!wrapped_compare("사과", "수박"));
         }
     }
 
     #[test]
     fn compare_different_length() {
         unsafe {
-            assert_eq!(wrapped_compare("wowwow", "wow"), false);
-            assert_eq!(wrapped_compare("what", "what?"), false);
-            assert_eq!(wrapped_compare("사과", "귤"), false);
-            assert_eq!(wrapped_compare("사과", "바나나"), false);
+            assert!(!wrapped_compare("wowwow", "wow"));
+            assert!(!wrapped_compare("what", "what?"));
+            assert!(!wrapped_compare("사과", "귤"));
+            assert!(!wrapped_compare("사과", "바나나"));
         }
     }
 
     #[test]
     fn compare_wildcard() {
         unsafe {
-            assert_eq!(wrapped_compare("w*", "w"), true);
-            assert_eq!(wrapped_compare("w*", "wo"), true);
-            assert_eq!(wrapped_compare("w*", "wow"), true);
-            assert_eq!(wrapped_compare("w*t", "wat"), true);
-            assert_eq!(wrapped_compare("w*t", "what"), true);
-            assert_eq!(wrapped_compare("w*t", "wha"), false);
-            assert_eq!(wrapped_compare("사*", "사과"), true);
+            assert!(wrapped_compare("w*", "w"));
+            assert!(wrapped_compare("w*", "wo"));
+            assert!(wrapped_compare("w*", "wow"));
+            assert!(wrapped_compare("w*t", "wat"));
+            assert!(wrapped_compare("w*t", "what"));
+            assert!(!wrapped_compare("w*t", "wha"));
+            assert!(wrapped_compare("사*", "사과"));
         }
     }
 
     #[test]
     fn compare_exclamation() {
         unsafe {
-            assert_eq!(wrapped_compare("w?", "wo"), true);
-            assert_eq!(wrapped_compare("w?", "wow"), false);
-            assert_eq!(wrapped_compare("w?t", "wat"), true);
-            assert_eq!(wrapped_compare("w?t", "what"), false);
-            assert_eq!(wrapped_compare("w?t", "wha"), false);
-            assert_eq!(wrapped_compare("사?", "사과"), true);
+            assert!(wrapped_compare("w?", "wo"));
+            assert!(!wrapped_compare("w?", "wow"));
+            assert!(wrapped_compare("w?t", "wat"));
+            assert!(!wrapped_compare("w?t", "what"));
+            assert!(!wrapped_compare("w?t", "wha"));
+            assert!(wrapped_compare("사?", "사과"));
         }
     }
 }

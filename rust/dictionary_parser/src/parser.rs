@@ -119,8 +119,8 @@ mod tests {
 
             let result = get_equalsign(s).unwrap();
             assert_eq!(result, 3);
-            let char_code = s.bytes().nth(result).unwrap();
-            assert_eq!(char_code, b'=');
+            let char_code = s.as_bytes().get(result).unwrap();
+            assert_eq!(char_code, &b'=');
         }
 
         #[test]
@@ -129,8 +129,8 @@ mod tests {
 
             let result = get_equalsign(s).unwrap();
             assert_eq!(result, 6);
-            let char_code = s.bytes().nth(result).unwrap();
-            assert_eq!(char_code, b'=');
+            let char_code = s.as_bytes().get(result).unwrap();
+            assert_eq!(char_code, &b'=');
         }
 
         #[test]

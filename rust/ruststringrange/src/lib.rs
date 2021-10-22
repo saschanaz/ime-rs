@@ -147,7 +147,7 @@ pub unsafe extern "C" fn ruststringrange_compare_with_wildcard(
 ) -> bool {
     let x = Box::leak(RustStringRange::from_void(x_raw));
     let y = Box::leak(RustStringRange::from_void(y_raw));
-    compare_with_wildcard(&x.as_slice(), &y.as_slice())
+    compare_with_wildcard(x.as_slice(), y.as_slice())
 }
 
 #[no_mangle]
