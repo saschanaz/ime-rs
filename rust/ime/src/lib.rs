@@ -1,5 +1,4 @@
-mod bindings;
-use crate::bindings::Windows::Win32::Foundation::HINSTANCE;
+use windows::Win32::Foundation::HINSTANCE;
 
 mod registry;
 pub use registry::unregister_server;

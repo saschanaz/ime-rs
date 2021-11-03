@@ -81,7 +81,7 @@ void compositionprocessorengine_setup_dictionary_file(void *engine,
                                                       void *dictionary_file_name);
 
 void compositionprocessorengine_test_virtual_key(void *engine,
-                                                 uint32_t code,
+                                                 uint16_t code,
                                                  uint16_t ch,
                                                  bool composing,
                                                  CandidateMode candidate_mode,

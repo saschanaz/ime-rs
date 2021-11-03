@@ -1,12 +1,13 @@
 use globals::{SAMPLEIME_CLSID, SAMPLEIME_GUID_PROFILE};
-use windows::{self, Guid};
+use windows::runtime::GUID;
 use winreg::{enums::HKEY_CLASSES_ROOT, RegKey};
 
-use crate::bindings::{
-    Windows::Win32::Foundation::{HINSTANCE, MAX_PATH, PWSTR},
-    Windows::Win32::System::LibraryLoader::GetModuleFileNameW,
-    Windows::Win32::System::SystemServices::{LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED},
-    Windows::Win32::UI::TextServices::{
+use crate::com::create_instance_inproc;
+use windows::Win32::{
+    Foundation::{HINSTANCE, MAX_PATH, PWSTR},
+    System::LibraryLoader::GetModuleFileNameW,
+    System::SystemServices::{LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED},
+    UI::TextServices::{
         CLSID_TF_CategoryMgr,
         CLSID_TF_InputProcessorProfiles,
         ITfCategoryMgr,
@@ -23,7 +24,6 @@ use crate::bindings::{
         HKL,
     },
 };
-use crate::com::create_instance_inproc;
 
 const TEXTSERVICE_DESC: &str = "Sample Rust IME";
 // MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED)
@@ -39,7 +39,7 @@ fn get_module_file_name(dll_instance_handle: HINSTANCE) -> String {
     }
 }
 
-pub fn register_profile(dll_instance_handle: HINSTANCE) -> Result<(), windows::Error> {
+pub fn register_profile(dll_instance_handle: HINSTANCE) -> windows::runtime::Result<()> {
     let profile_manager: ITfInputProcessorProfileMgr =
         create_instance_inproc(&CLSID_TF_InputProcessorProfiles)?;
 
@@ -59,7 +59,7 @@ pub fn register_profile(dll_instance_handle: HINSTANCE) -> Result<(), windows::E
             PWSTR(icon_file_name.as_mut_ptr()),
             icon_file_name.len() as u32,
             TEXTSERVICE_ICON_INDEX as u32,
-            HKL::NULL,
+            HKL::default(),
             0,
             true,
             0,
@@ -69,7 +69,7 @@ pub fn register_profile(dll_instance_handle: HINSTANCE) -> Result<(), windows::E
     Ok(())
 }
 
-pub fn unregister_profile() -> Result<(), windows::Error> {
+pub fn unregister_profile() -> Result<(), windows::runtime::Error> {
     let profile_manager: ITfInputProcessorProfileMgr =
         create_instance_inproc(&CLSID_TF_InputProcessorProfiles)?;
 
@@ -85,14 +85,14 @@ pub fn unregister_profile() -> Result<(), windows::Error> {
     Ok(())
 }
 
-static SUPPORT_CATEGORIES: [Guid; 8] = [
+static SUPPORT_CATEGORIES: [GUID; 8] = [
     GUID_TFCAT_TIP_KEYBOARD,
     GUID_TFCAT_DISPLAYATTRIBUTEPROVIDER,
     GUID_TFCAT_TIPCAP_UIELEMENTENABLED,
     GUID_TFCAT_TIPCAP_SECUREMODE,
     // GUID_TFCAT_TIPCAP_COMLESS doesn't exist
     // https://github.com/microsoft/win32metadata/issues/575
-    Guid::from_values(
+    GUID::from_values(
         0x64215d9,
         0x75bc,
         0x11d7,
@@ -103,7 +103,7 @@ static SUPPORT_CATEGORIES: [Guid; 8] = [
     GUID_TFCAT_TIPCAP_SYSTRAYSUPPORT,
 ];
 
-pub fn register_categories() -> Result<(), windows::Error> {
+pub fn register_categories() -> windows::runtime::Result<()> {
     let category_manager: ITfCategoryMgr = create_instance_inproc(&CLSID_TF_CategoryMgr)?;
 
     for guid in SUPPORT_CATEGORIES {
@@ -115,7 +115,7 @@ pub fn register_categories() -> Result<(), windows::Error> {
     Ok(())
 }
 
-pub fn unregister_categories() -> Result<(), windows::Error> {
+pub fn unregister_categories() -> windows::runtime::Result<()> {
     let category_manager: ITfCategoryMgr = create_instance_inproc(&CLSID_TF_CategoryMgr)?;
 
     for guid in SUPPORT_CATEGORIES {

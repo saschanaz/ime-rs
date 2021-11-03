@@ -1,4 +1,4 @@
-use windows::Guid as GUID;
+use windows::runtime::GUID;
 
 //---------------------------------------------------------------------
 // SampleIME CLSID

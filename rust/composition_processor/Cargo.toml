@@ -14,7 +14,12 @@ crate-type = ["staticlib"]
 dictionary_parser = { path = "../dictionary_parser" }
 ruststringrange = { path = "../ruststringrange" }
 numberkey_windows = { path = "../numberkey_windows" }
-windows = "0.17.2"
 
-[build-dependencies]
-windows = "0.17.2"
+[dependencies.windows]
+version = "0.24.0"
+features = [
+  "Win32_Foundation",
+  "Win32_System_LibraryLoader",
+  "Win32_UI_Input_KeyboardAndMouse",
+  "Win32_UI_TextServices",
+]

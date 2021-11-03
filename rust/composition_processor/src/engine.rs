@@ -1,11 +1,11 @@
 use dictionary_parser::TableDictionaryEngine;
 
-use crate::bindings::{
-    Windows::Win32::Foundation::{HINSTANCE, MAX_PATH, PWSTR},
-    Windows::Win32::System::LibraryLoader::GetModuleFileNameW,
-};
 use crate::test_virtual_key::{
     test_virtual_key, CandidateMode, KeystrokeCategory, KeystrokeFunction,
+};
+use windows::Win32::{
+    Foundation::{HINSTANCE, MAX_PATH, PWSTR},
+    System::LibraryLoader::GetModuleFileNameW,
 };
 
 mod modifiers;
@@ -37,7 +37,7 @@ impl CompositionProcessorEngine {
 
     pub fn test_virtual_key(
         &self,
-        code: u32,
+        code: u16,
         ch: char,
         composing: bool,
         candidate_mode: CandidateMode,

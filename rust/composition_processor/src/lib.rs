@@ -4,8 +4,7 @@ use core::ffi::c_void;
 use dictionary_parser::TableDictionaryEngine;
 use ruststringrange::RustStringRange;
 
-mod bindings;
-use bindings::Windows::Win32::Foundation::{HINSTANCE, LPARAM, WPARAM};
+use windows::Win32::Foundation::{HINSTANCE, LPARAM, WPARAM};
 
 mod engine;
 use engine::CompositionProcessorEngine;
@@ -26,7 +25,7 @@ pub unsafe extern "C" fn compositionprocessorengine_free(engine: *mut c_void) {
 #[no_mangle]
 pub unsafe extern "C" fn compositionprocessorengine_test_virtual_key(
     engine: *mut c_void,
-    code: u32,
+    code: u16,
     ch: u16,
     composing: bool,
     candidate_mode: CandidateMode,

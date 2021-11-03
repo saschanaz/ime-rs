@@ -1,11 +1,10 @@
-use crate::bindings::{
-    Windows::Win32::Foundation::{LPARAM, WPARAM},
-    Windows::Win32::UI::KeyboardAndMouseInput::GetKeyState,
-    Windows::Win32::UI::TextServices::{
+use windows::Win32::{
+    Foundation::{LPARAM, WPARAM},
+    UI::Input::KeyboardAndMouse::{GetKeyState, VK_CONTROL, VK_MENU, VK_SHIFT},
+    UI::TextServices::{
         TF_MOD_ALT, TF_MOD_CONTROL, TF_MOD_LALT, TF_MOD_LCONTROL, TF_MOD_LSHIFT, TF_MOD_RALT,
         TF_MOD_RCONTROL, TF_MOD_RSHIFT, TF_MOD_SHIFT,
     },
-    Windows::Win32::UI::WindowsAndMessaging::{VK_CONTROL, VK_MENU, VK_SHIFT},
 };
 
 #[derive(Default)]
@@ -20,12 +19,12 @@ impl Modifiers {
     pub fn update(&mut self, w: WPARAM, l: LPARAM) {
         // high-order bit : key down
         // low-order bit  : toggled
-        let ks_menu = unsafe { GetKeyState(VK_MENU as i32) } as u16;
-        let ks_control = unsafe { GetKeyState(VK_CONTROL as i32) } as u16;
-        let ks_shift = unsafe { GetKeyState(VK_SHIFT as i32) } as u16;
+        let ks_menu = unsafe { GetKeyState(VK_MENU.0 as i32) } as u16;
+        let ks_control = unsafe { GetKeyState(VK_CONTROL.0 as i32) } as u16;
+        let ks_shift = unsafe { GetKeyState(VK_SHIFT.0 as i32) } as u16;
 
-        match w.0 as u32 & 0xff {
-            VK_MENU => {
+        match w.0 as u16 & 0xff {
+            k if k == VK_MENU.0 => {
                 // is VK_MENU down?
                 if ks_menu & 0x8000 != 0 {
                     // is extended key?
@@ -48,7 +47,7 @@ impl Modifiers {
                     }
                 }
             }
-            VK_CONTROL => {
+            k if k == VK_CONTROL.0 => {
                 // is VK_CONTROL down?
                 if ks_control & 0x8000 != 0 {
                     // is extended key?
@@ -71,7 +70,7 @@ impl Modifiers {
                     }
                 }
             }
-            VK_SHIFT => {
+            k if k == VK_SHIFT.0 => {
                 // is VK_SHIFT down?
                 if ks_shift & 0x8000 != 0 {
                     // is scan code 0x36(right shift)?

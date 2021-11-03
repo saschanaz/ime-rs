@@ -1,11 +1,9 @@
 use numberkey_windows::is_number_key;
 
-use crate::{
-    bindings::Windows::Win32::UI::WindowsAndMessaging::{
-        VK_BACK, VK_DOWN, VK_END, VK_ESCAPE, VK_HOME, VK_LEFT, VK_NEXT, VK_PRIOR, VK_RETURN,
-        VK_RIGHT, VK_SPACE, VK_UP,
-    },
-    engine::CompositionProcessorEngine,
+use crate::engine::CompositionProcessorEngine;
+use windows::Win32::UI::Input::KeyboardAndMouse::{
+    VK_BACK, VK_DOWN, VK_END, VK_ESCAPE, VK_HOME, VK_LEFT, VK_NEXT, VK_PRIOR, VK_RETURN, VK_RIGHT,
+    VK_SPACE, VK_UP,
 };
 
 #[repr(C)]
@@ -57,26 +55,26 @@ pub enum CandidateMode {
     WithNextComposition,
 }
 
-fn map_invariable_keystroke_function(keystroke: u32) -> Option<KeystrokeFunction> {
+fn map_invariable_keystroke_function(keystroke: u16) -> Option<KeystrokeFunction> {
     match keystroke {
-        VK_SPACE => Some(KeystrokeFunction::Convert),
-        VK_RETURN => Some(KeystrokeFunction::FinalizeCandidatelist),
+        k if k == VK_SPACE.0 => Some(KeystrokeFunction::Convert),
+        k if k == VK_RETURN.0 => Some(KeystrokeFunction::FinalizeCandidatelist),
 
-        VK_UP => Some(KeystrokeFunction::MoveUp),
-        VK_DOWN => Some(KeystrokeFunction::MoveDown),
-        VK_PRIOR => Some(KeystrokeFunction::MovePageUp),
-        VK_NEXT => Some(KeystrokeFunction::MovePageDown),
-        VK_HOME => Some(KeystrokeFunction::MovePageTop),
-        VK_END => Some(KeystrokeFunction::MovePageBottom),
+        k if k == VK_UP.0 => Some(KeystrokeFunction::MoveUp),
+        k if k == VK_DOWN.0 => Some(KeystrokeFunction::MoveDown),
+        k if k == VK_PRIOR.0 => Some(KeystrokeFunction::MovePageUp),
+        k if k == VK_NEXT.0 => Some(KeystrokeFunction::MovePageDown),
+        k if k == VK_HOME.0 => Some(KeystrokeFunction::MovePageTop),
+        k if k == VK_END.0 => Some(KeystrokeFunction::MovePageBottom),
         _ => None,
     }
 }
 
-fn is_virtual_key_keystroke_composition(code: u32, modifiers: u32) -> bool {
-    code >= 'A' as u32 && code <= 'Z' as u32 && modifiers == 0
+fn is_virtual_key_keystroke_composition(code: u16, modifiers: u32) -> bool {
+    code >= 'A' as u16 && code <= 'Z' as u16 && modifiers == 0
 }
 
-fn is_keystroke_range(code: u32, modifiers: u32, candidate_mode: CandidateMode) -> bool {
+fn is_keystroke_range(code: u16, modifiers: u32, candidate_mode: CandidateMode) -> bool {
     if !is_number_key(code) {
         false
     } else if candidate_mode == CandidateMode::WithNextComposition {
@@ -90,7 +88,7 @@ fn is_keystroke_range(code: u32, modifiers: u32, candidate_mode: CandidateMode) 
 
 pub fn test_virtual_key(
     engine: &CompositionProcessorEngine,
-    code: u32,
+    code: u16,
     ch: char,
     mut composing: bool,
     candidate_mode: CandidateMode,
@@ -107,7 +105,7 @@ pub fn test_virtual_key(
     {
         if (ch == '*' || ch == '?') && engine.has_virtual_key() {
             return (true, KeystrokeCategory::Composing, KeystrokeFunction::Input);
-        } else if engine.keystroke_buffer_includes_wildcard() && code == VK_SPACE {
+        } else if engine.keystroke_buffer_includes_wildcard() && code == VK_SPACE.0 {
             return (
                 true,
                 KeystrokeCategory::Composing,
@@ -144,28 +142,28 @@ pub fn test_virtual_key(
         }
         if candidate_mode != CandidateMode::Incremental {
             match code {
-                VK_LEFT => {
+                c if c == VK_LEFT.0 => {
                     return (
                         true,
                         KeystrokeCategory::Composing,
                         KeystrokeFunction::MoveLeft,
                     )
                 }
-                VK_RIGHT => {
+                c if c == VK_RIGHT.0 => {
                     return (
                         true,
                         KeystrokeCategory::Composing,
                         KeystrokeFunction::MoveRight,
                     )
                 }
-                VK_ESCAPE => {
+                c if c == VK_ESCAPE.0 => {
                     return (
                         true,
                         KeystrokeCategory::Composing,
                         KeystrokeFunction::Cancel,
                     )
                 }
-                VK_BACK => {
+                c if c == VK_BACK.0 => {
                     return (
                         true,
                         KeystrokeCategory::Composing,
@@ -178,14 +176,14 @@ pub fn test_virtual_key(
             match code {
                 // VK_LEFT, VK_RIGHT - set *pIsEaten = false for application could move caret left or right.
                 // and for CUAS, invoke _HandleCompositionCancel() edit session due to ignore CUAS default key handler for send out terminate composition
-                VK_LEFT | VK_RIGHT => {
+                c if c == VK_LEFT.0 || c == VK_RIGHT.0 => {
                     return (
                         false,
                         KeystrokeCategory::InvokeCompositionEditSession,
                         KeystrokeFunction::Cancel,
                     )
                 }
-                VK_ESCAPE => {
+                c if c == VK_ESCAPE.0 => {
                     return (
                         true,
                         KeystrokeCategory::Candidate,
@@ -193,7 +191,7 @@ pub fn test_virtual_key(
                     )
                 }
                 // VK_BACK - remove one char from reading string.
-                VK_BACK => {
+                c if c == VK_BACK.0 => {
                     return (
                         true,
                         KeystrokeCategory::Composing,
@@ -212,14 +210,14 @@ pub fn test_virtual_key(
             return (true, KeystrokeCategory::Candidate, mapped_function);
         }
         match code {
-            VK_BACK => {
+            c if c == VK_BACK.0 => {
                 return (
                     true,
                     KeystrokeCategory::Candidate,
                     KeystrokeFunction::Cancel,
                 )
             }
-            VK_ESCAPE => {
+            c if c == VK_ESCAPE.0 => {
                 return if candidate_mode == CandidateMode::WithNextComposition {
                     (
                         true,
