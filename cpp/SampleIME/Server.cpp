@@ -254,7 +254,7 @@ STDAPI DllCanUnloadNow(void)
 
 STDAPI DllRegisterServer(void)
 {
-    if (!register_server(Global::dllInstanceHandle) || !register_profile(Global::dllInstanceHandle) || !register_categories())
+    if (!register_server(DLL_INSTANCE) || !register_profile(DLL_INSTANCE) || !register_categories())
     {
         DllUnregisterServer();
         return E_FAIL;

@@ -12,8 +12,6 @@
 #include "SampleIMEBaseStructure.h"
 
 namespace Global {
-HINSTANCE dllInstanceHandle;
-
 LONG dllRefCount = -1;
 
 CRITICAL_SECTION CS;

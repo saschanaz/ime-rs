@@ -7,6 +7,7 @@
 
 #include "Private.h"
 #include "Globals.h"
+#include "cbindgen/ime.h"
 
 //+---------------------------------------------------------------------------
 //
@@ -22,7 +23,7 @@ BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID pvReserved)
     {
     case DLL_PROCESS_ATTACH:
 
-        Global::dllInstanceHandle = hInstance;
+        DLL_INSTANCE = hInstance;
 
         if (!InitializeCriticalSectionAndSpinCount(&Global::CS, 0))
         {

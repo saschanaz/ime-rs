@@ -13,6 +13,7 @@
 #include "Compartment.h"
 #include "LanguageBar.h"
 #include "cbindgen/globals.h"
+#include "cbindgen/ime.h"
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -189,7 +190,7 @@ BOOL CCompositionProcessorEngine::SetupLanguageProfile(LANGID langid, REFGUID gu
 	InitializeSampleIMECompartment(pThreadMgr, tfClientId);
     SetupLanguageBar(pThreadMgr, tfClientId, isSecureMode);
     SetDefaultCandidateTextFont();
-    engine_rust.SetupDictionaryFile(Global::dllInstanceHandle, TEXTSERVICE_DIC);
+    engine_rust.SetupDictionaryFile(DLL_INSTANCE, TEXTSERVICE_DIC);
 
 Exit:
     return ret;
@@ -864,7 +865,7 @@ void CCompositionProcessorEngine::SetDefaultCandidateTextFont()
     if (Global::defaultlFontHandle == nullptr)
     {
 		WCHAR fontName[50] = {'\0'};
-		LoadString(Global::dllInstanceHandle, IDS_DEFAULT_FONT, fontName, 50);
+		LoadString(DLL_INSTANCE, IDS_DEFAULT_FONT, fontName, 50);
         Global::defaultlFontHandle = CreateFont(-MulDiv(10, GetDeviceCaps(GetDC(NULL), LOGPIXELSY), 72), 0, 0, 0, FW_MEDIUM, 0, 0, 0, 0, 0, 0, 0, 0, fontName);
         if (!Global::defaultlFontHandle)
         {

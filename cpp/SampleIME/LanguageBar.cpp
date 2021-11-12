@@ -12,6 +12,7 @@
 #include "Globals.h"
 #include "Compartment.h"
 #include "cbindgen/globals.h"
+#include "cbindgen/ime.h"
 
 //+---------------------------------------------------------------------------
 //
@@ -429,16 +430,16 @@ STDAPI CLangBarItemButton::GetIcon(_Out_ HICON *phIcon)
 
     if (isOn && !(status & TF_LBI_STATUS_DISABLED))
     {
-        if (Global::dllInstanceHandle)
+        if (DLL_INSTANCE)
         {
-            *phIcon = reinterpret_cast<HICON>(LoadImage(Global::dllInstanceHandle, MAKEINTRESOURCE(_onIconIndex), IMAGE_ICON, desiredSize, desiredSize, 0));
+            *phIcon = reinterpret_cast<HICON>(LoadImage(DLL_INSTANCE, MAKEINTRESOURCE(_onIconIndex), IMAGE_ICON, desiredSize, desiredSize, 0));
         }
     }
     else
     {
-        if (Global::dllInstanceHandle)
+        if (DLL_INSTANCE)
         {
-            *phIcon = reinterpret_cast<HICON>(LoadImage(Global::dllInstanceHandle, MAKEINTRESOURCE(_offIconIndex), IMAGE_ICON, desiredSize, desiredSize, 0));
+            *phIcon = reinterpret_cast<HICON>(LoadImage(DLL_INSTANCE, MAKEINTRESOURCE(_offIconIndex), IMAGE_ICON, desiredSize, desiredSize, 0));
         }
     }
 

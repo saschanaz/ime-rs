@@ -8,6 +8,7 @@
 #include "Private.h"
 #include "Globals.h"
 #include "BaseWindow.h"
+#include "cbindgen/ime.h"
 
 #define idTimer_UIObject 39772
 
@@ -60,7 +61,7 @@ BOOL CBaseWindow::_InitWindowClass(_In_ LPCWSTR lpwszClassName, _Out_ ATOM *pato
     wc.lpfnWndProc   = CBaseWindow::_WindowProc;
     wc.cbClsExtra    = 0;
     wc.cbWndExtra    = 0;
-    wc.hInstance     = Global::dllInstanceHandle;
+    wc.hInstance     = DLL_INSTANCE;
     wc.hIcon         = nullptr;
     wc.hCursor       = LoadCursor(nullptr, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
@@ -83,7 +84,7 @@ void CBaseWindow::_UninitWindowClass(ATOM atom)
 {
     if (atom != 0)
     {
-        UnregisterClass((LPCTSTR)atom, Global::dllInstanceHandle);
+        UnregisterClass((LPCTSTR)atom, DLL_INSTANCE);
     }
 }
 
@@ -109,7 +110,7 @@ BOOL CBaseWindow::_Create(ATOM atom, DWORD dwExStyle, DWORD dwStyle, _In_opt_ CB
             wndWidth, wndHeight,
             _pParentWnd ? _pParentWnd->_GetWnd() : parentWndHandle,    // parentWndHandle
             NULL,
-            Global::dllInstanceHandle,
+            DLL_INSTANCE,
             this);   // lpParam
 
         if (!_wndHandle)
