@@ -132,6 +132,5 @@ pub fn register_server(dll_instance_handle: HINSTANCE) -> Result<(), std::io::Er
 
 pub fn unregister_server() -> std::io::Result<()> {
     let ime_key = get_ime_key();
-    RegKey::predef(HKEY_CLASSES_ROOT)
-        .delete_subkey_all(ime_key)
+    RegKey::predef(HKEY_CLASSES_ROOT).delete_subkey_all(ime_key)
 }
