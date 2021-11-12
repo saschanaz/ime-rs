@@ -49,7 +49,6 @@
     <ClInclude Include="KeyHandlerEditSession.h" />
     <ClInclude Include="LanguageBar.h" />
     <ClInclude Include="Private.h" />
-    <ClInclude Include="RegKey.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SampleIME.h" />
     <ClInclude Include="ScrollBarWindow.h" />
@@ -89,7 +88,6 @@
     <ClCompile Include="KeyHandler.cpp" />
     <ClCompile Include="KeyHandlerEditSession.cpp" />
     <ClCompile Include="LanguageBar.cpp" />
-    <ClCompile Include="RegKey.cpp" />
     <ClCompile Include="ScrollBarWindow.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="ShadowWindow.cpp" />
