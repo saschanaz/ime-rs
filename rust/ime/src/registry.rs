@@ -116,7 +116,7 @@ fn get_ime_key() -> String {
     format!("CLSID\\{{{:?}}}", SAMPLEIME_CLSID)
 }
 
-pub fn register_server(dll_instance_handle: HINSTANCE) -> Result<(), std::io::Error> {
+pub fn register_server(dll_instance_handle: HINSTANCE) -> std::io::Result<()> {
     let module_file_name = get_module_file_name(dll_instance_handle);
 
     let ime_key = get_ime_key();

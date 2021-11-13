@@ -245,20 +245,3 @@ STDAPI DllCanUnloadNow(void)
 
     return S_OK;
 }
-
-//+---------------------------------------------------------------------------
-//
-//  DllRegisterServer
-//
-//----------------------------------------------------------------------------
-
-STDAPI DllRegisterServer(void)
-{
-    if (!register_server(DLL_INSTANCE) || !register_profile(DLL_INSTANCE) || !register_categories())
-    {
-        DllUnregisterServer();
-        return E_FAIL;
-    }
-    return S_OK;
-}
-
