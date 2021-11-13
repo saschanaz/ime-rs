@@ -116,10 +116,6 @@ private:
     XPreservedKey _PreservedKey_DoubleSingleByte;
     XPreservedKey _PreservedKey_Punctuation;
 
-    // Punctuation data
-    CSampleImeArray<CPunctuationPair> _PunctuationPair;
-    CSampleImeArray<CPunctuationNestPair> _PunctuationNestPair;
-
     // Language bar data
     CLangBarItemButton* _pLanguageBar_IMEMode;
 
