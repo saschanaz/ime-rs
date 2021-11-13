@@ -25,7 +25,7 @@ public:
     CCompositionProcessorEngine(void);
     ~CCompositionProcessorEngine(void);
 
-    BOOL SetupLanguageProfile(LANGID langid, REFGUID guidLanguageProfile, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId, BOOL isSecureMode, BOOL isComLessMode);
+    BOOL SetupLanguageProfile(LANGID langid, REFGUID guidLanguageProfile, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId, BOOL isSecureMode);
 
     // Get language profile.
     GUID GetLanguageProfile(LANGID *plangid)
@@ -129,8 +129,6 @@ private:
     CCompartmentEventSink* _pCompartmentKeyboardOpenEventSink;
     CCompartmentEventSink* _pCompartmentDoubleSingleByteEventSink;
     CCompartmentEventSink* _pCompartmentPunctuationEventSink;
-
-    bool _isComLessMode;
 
     // Rust port
     class CRustCompositionProcessorEngine {
