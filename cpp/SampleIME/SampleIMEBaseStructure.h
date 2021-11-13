@@ -43,8 +43,6 @@ struct _PUNCTUATION
     WCHAR _Punctuation;
 };
 
-void CLSIDToString(REFGUID refGUID, _Out_writes_ (39) WCHAR *pCLSIDString);
-
 template<class T>
 class CSampleImeArray
 {
