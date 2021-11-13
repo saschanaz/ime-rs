@@ -14,6 +14,10 @@ These features are all from the original sample and being ported.
 * Alternative punctuation support: enabled by <kbd>Control+.</kbd>.
   * Produces different characters from punctuation keys, e.g. `$` for `￥`.
   * Some keys just map to their wide versions, e.g. `()` for `（）`.
+  * Quotes (`''` and `""`) and brackets (`<>`) automatically change based on the previous input:
+    1. `‘` appears first and then `’`. Toggled whenever the key input happens.
+    1. `“` appears first and then `”`. Toggled whenever the key input happens.
+    1. Opening brackets increments a nested count and closing brackets decrements it. `《》` appears while the count is 0, otherwise `〈〉`.
   * When enabled together with wide character mode, this one wins.
 
 ### Removed features
