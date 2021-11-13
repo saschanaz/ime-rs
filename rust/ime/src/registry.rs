@@ -47,7 +47,7 @@ pub fn register_profile(dll_instance_handle: HINSTANCE) -> windows::runtime::Res
             TEXTSERVICE_LANGID,
             &SAMPLEIME_GUID_PROFILE,
             PWSTR(description.as_mut_ptr()),
-            TEXTSERVICE_DESC.len() as u32,
+            description.len() as u32,
             PWSTR(icon_file_name.as_mut_ptr()),
             icon_file_name.len() as u32,
             TEXTSERVICE_ICON_INDEX as u32,
