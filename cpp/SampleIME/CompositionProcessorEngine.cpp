@@ -644,8 +644,8 @@ void CCompositionProcessorEngine::ConversionModeCompartmentUpdated(_In_ ITfThrea
         return;
     }
 
-    DWORD conversionMode = 0;
-    if (FAILED(_pCompartmentConversion->_GetCompartmentDWORD(conversionMode)))
+    uint32_t conversionMode = 0;
+    if (FAILED(_pCompartmentConversion->_GetCompartmentU32(conversionMode)))
     {
         return;
     }
@@ -705,9 +705,9 @@ void CCompositionProcessorEngine::PrivateCompartmentsUpdated(_In_ ITfThreadMgr *
         return;
     }
 
-    DWORD conversionMode = 0;
-    DWORD conversionModePrev = 0;
-    if (FAILED(_pCompartmentConversion->_GetCompartmentDWORD(conversionMode)))
+    uint32_t conversionMode = 0;
+    uint32_t conversionModePrev = 0;
+    if (FAILED(_pCompartmentConversion->_GetCompartmentU32(conversionMode)))
     {
         return;
     }
@@ -744,7 +744,7 @@ void CCompositionProcessorEngine::PrivateCompartmentsUpdated(_In_ ITfThreadMgr *
 
     if (conversionMode != conversionModePrev)
     {
-        _pCompartmentConversion->_SetCompartmentDWORD(conversionMode);
+        _pCompartmentConversion->_SetCompartmentU32(conversionMode);
     }
 }
 
@@ -761,9 +761,9 @@ void CCompositionProcessorEngine::KeyboardOpenCompartmentUpdated(_In_ ITfThreadM
         return;
     }
 
-    DWORD conversionMode = 0;
-    DWORD conversionModePrev = 0;
-    if (FAILED(_pCompartmentConversion->_GetCompartmentDWORD(conversionMode)))
+    uint32_t conversionMode = 0;
+    uint32_t conversionModePrev = 0;
+    if (FAILED(_pCompartmentConversion->_GetCompartmentU32(conversionMode)))
     {
         return;
     }
@@ -786,7 +786,7 @@ void CCompositionProcessorEngine::KeyboardOpenCompartmentUpdated(_In_ ITfThreadM
 
     if (conversionMode != conversionModePrev)
     {
-        _pCompartmentConversion->_SetCompartmentDWORD(conversionMode);
+        _pCompartmentConversion->_SetCompartmentU32(conversionMode);
     }
 }
 

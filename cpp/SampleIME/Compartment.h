@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 class CCompartment
 {
 public:
@@ -16,8 +18,8 @@ public:
     HRESULT _GetCompartment(_Outptr_ ITfCompartment **ppCompartment);
     HRESULT _GetCompartmentBOOL(_Out_ BOOL &flag);
     HRESULT _SetCompartmentBOOL(_In_ BOOL flag);
-    HRESULT _GetCompartmentDWORD(_Out_ DWORD &dw);
-    HRESULT _SetCompartmentDWORD(_In_ DWORD dw);
+    HRESULT _GetCompartmentU32(uint32_t &dw);
+    HRESULT _SetCompartmentU32(uint32_t dw);
     HRESULT _ClearCompartment();
 
     VOID _GetGUID(GUID *pguid)

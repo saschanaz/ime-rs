@@ -63,8 +63,8 @@ HRESULT CCompartment::_GetCompartment(_Outptr_ ITfCompartment **ppCompartment)
 
 HRESULT CCompartment::_GetCompartmentBOOL(_Out_ BOOL &flag)
 {
-    DWORD dwValue = 0;
-    HRESULT hr = _GetCompartmentDWORD(dwValue);
+    uint32_t dwValue = 0;
+    HRESULT hr = _GetCompartmentU32(dwValue);
     flag = (dwValue != 0);
     return hr;
 }
@@ -75,14 +75,14 @@ HRESULT CCompartment::_GetCompartmentBOOL(_Out_ BOOL &flag)
 
 HRESULT CCompartment::_SetCompartmentBOOL(_In_ BOOL flag)
 {
-    return _SetCompartmentDWORD(flag);
+    return _SetCompartmentU32(flag);
 }
 
 //+---------------------------------------------------------------------------
-// _GetCompartmentDWORD
+// _GetCompartmentU32
 //----------------------------------------------------------------------------
 
-HRESULT CCompartment::_GetCompartmentDWORD(_Out_ DWORD &dw)
+HRESULT CCompartment::_GetCompartmentU32(uint32_t& dw)
 {
     HRESULT hr = S_OK;
     ITfCompartment* pCompartment = nullptr;
@@ -96,7 +96,7 @@ HRESULT CCompartment::_GetCompartmentDWORD(_Out_ DWORD &dw)
         {
             if (var.vt == VT_I4) // Even VT_EMPTY, GetValue() can succeed
             {
-                dw = (DWORD)var.lVal;
+                dw = var.lVal;
             }
             else
             {
@@ -110,10 +110,10 @@ HRESULT CCompartment::_GetCompartmentDWORD(_Out_ DWORD &dw)
 }
 
 //+---------------------------------------------------------------------------
-// _SetCompartmentDWORD
+// _SetCompartmentU32
 //----------------------------------------------------------------------------
 
-HRESULT CCompartment::_SetCompartmentDWORD(_In_ DWORD dw)
+HRESULT CCompartment::_SetCompartmentU32(uint32_t dw)
 {
     HRESULT hr = S_OK;
     ITfCompartment* pCompartment = nullptr;
