@@ -466,27 +466,27 @@ void CCompositionProcessorEngine::OnPreservedKey(REFGUID rguid, _Out_ BOOL *pIsE
             *pIsEaten = FALSE;
             return;
         }
-        BOOL isOpen = FALSE;
+        bool isOpen = false;
         CCompartment CompartmentKeyboardOpen(pThreadMgr, tfClientId, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
         CompartmentKeyboardOpen._GetCompartmentBOOL(isOpen);
-        CompartmentKeyboardOpen._SetCompartmentBOOL(isOpen ? FALSE : TRUE);
+        CompartmentKeyboardOpen._SetCompartmentBOOL(!isOpen);
 
         *pIsEaten = TRUE;
     }
     else if (IsEqualGUID(rguid, _PreservedKey_DoubleSingleByte.Guid))
     {
-        BOOL isDouble = FALSE;
+        bool isDouble = false;
         CCompartment CompartmentDoubleSingleByte(pThreadMgr, tfClientId, SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE);
         CompartmentDoubleSingleByte._GetCompartmentBOOL(isDouble);
-        CompartmentDoubleSingleByte._SetCompartmentBOOL(isDouble ? FALSE : TRUE);
+        CompartmentDoubleSingleByte._SetCompartmentBOOL(!isDouble);
         *pIsEaten = TRUE;
     }
     else if (IsEqualGUID(rguid, _PreservedKey_Punctuation.Guid))
     {
-        BOOL isPunctuation = FALSE;
+        bool isPunctuation = false;
         CCompartment CompartmentPunctuation(pThreadMgr, tfClientId, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION);
         CompartmentPunctuation._GetCompartmentBOOL(isPunctuation);
-        CompartmentPunctuation._SetCompartmentBOOL(isPunctuation ? FALSE : TRUE);
+        CompartmentPunctuation._SetCompartmentBOOL(!isPunctuation);
         *pIsEaten = TRUE;
     }
     else
@@ -650,44 +650,44 @@ void CCompositionProcessorEngine::ConversionModeCompartmentUpdated(_In_ ITfThrea
         return;
     }
 
-    BOOL isDouble = FALSE;
+    bool isDouble = false;
     CCompartment CompartmentDoubleSingleByte(pThreadMgr, _tfClientId, SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE);
     if (SUCCEEDED(CompartmentDoubleSingleByte._GetCompartmentBOOL(isDouble)))
     {
         if (!isDouble && (conversionMode & TF_CONVERSIONMODE_FULLSHAPE))
         {
-            CompartmentDoubleSingleByte._SetCompartmentBOOL(TRUE);
+            CompartmentDoubleSingleByte._SetCompartmentBOOL(true);
         }
         else if (isDouble && !(conversionMode & TF_CONVERSIONMODE_FULLSHAPE))
         {
-            CompartmentDoubleSingleByte._SetCompartmentBOOL(FALSE);
+            CompartmentDoubleSingleByte._SetCompartmentBOOL(false);
         }
     }
-    BOOL isPunctuation = FALSE;
+    bool isPunctuation = false;
     CCompartment CompartmentPunctuation(pThreadMgr, _tfClientId, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION);
     if (SUCCEEDED(CompartmentPunctuation._GetCompartmentBOOL(isPunctuation)))
     {
         if (!isPunctuation && (conversionMode & TF_CONVERSIONMODE_SYMBOL))
         {
-            CompartmentPunctuation._SetCompartmentBOOL(TRUE);
+            CompartmentPunctuation._SetCompartmentBOOL(true);
         }
         else if (isPunctuation && !(conversionMode & TF_CONVERSIONMODE_SYMBOL))
         {
-            CompartmentPunctuation._SetCompartmentBOOL(FALSE);
+            CompartmentPunctuation._SetCompartmentBOOL(false);
         }
     }
 
-    BOOL fOpen = FALSE;
+    bool fOpen = false;
     CCompartment CompartmentKeyboardOpen(pThreadMgr, _tfClientId, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
     if (SUCCEEDED(CompartmentKeyboardOpen._GetCompartmentBOOL(fOpen)))
     {
         if (fOpen && !(conversionMode & TF_CONVERSIONMODE_NATIVE))
         {
-            CompartmentKeyboardOpen._SetCompartmentBOOL(FALSE);
+            CompartmentKeyboardOpen._SetCompartmentBOOL(false);
         }
         else if (!fOpen && (conversionMode & TF_CONVERSIONMODE_NATIVE))
         {
-            CompartmentKeyboardOpen._SetCompartmentBOOL(TRUE);
+            CompartmentKeyboardOpen._SetCompartmentBOOL(true);
         }
     }
 }
@@ -714,7 +714,7 @@ void CCompositionProcessorEngine::PrivateCompartmentsUpdated(_In_ ITfThreadMgr *
 
     conversionModePrev = conversionMode;
 
-    BOOL isDouble = FALSE;
+    bool isDouble = false;
     CCompartment CompartmentDoubleSingleByte(pThreadMgr, _tfClientId, SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE);
     if (SUCCEEDED(CompartmentDoubleSingleByte._GetCompartmentBOOL(isDouble)))
     {
@@ -728,7 +728,7 @@ void CCompositionProcessorEngine::PrivateCompartmentsUpdated(_In_ ITfThreadMgr *
         }
     }
 
-    BOOL isPunctuation = FALSE;
+    bool isPunctuation = false;
     CCompartment CompartmentPunctuation(pThreadMgr, _tfClientId, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION);
     if (SUCCEEDED(CompartmentPunctuation._GetCompartmentBOOL(isPunctuation)))
     {
@@ -770,7 +770,7 @@ void CCompositionProcessorEngine::KeyboardOpenCompartmentUpdated(_In_ ITfThreadM
 
     conversionModePrev = conversionMode;
 
-    BOOL isOpen = FALSE;
+    bool isOpen = false;
     CCompartment CompartmentKeyboardOpen(pThreadMgr, _tfClientId, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
     if (SUCCEEDED(CompartmentKeyboardOpen._GetCompartmentBOOL(isOpen)))
     {

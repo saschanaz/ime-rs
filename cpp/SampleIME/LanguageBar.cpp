@@ -361,10 +361,10 @@ STDAPI CLangBarItemButton::OnClick(TfLBIClick click, POINT pt, _In_ const RECT *
     click;pt;
     prcArea;
 
-    BOOL isOn = FALSE;
+    bool isOn = false;
 
     _pCompartment->_GetCompartmentBOOL(isOn);
-    _pCompartment->_SetCompartmentBOOL(isOn ? FALSE : TRUE);
+    _pCompartment->_SetCompartmentBOOL(!isOn);
 
     return S_OK;
 }
@@ -403,7 +403,7 @@ STDAPI CLangBarItemButton::OnMenuSelect(UINT wID)
 
 STDAPI CLangBarItemButton::GetIcon(_Out_ HICON *phIcon)
 {
-    BOOL isOn = FALSE;
+    bool isOn = false;
 
     if (!_pCompartment)
     {

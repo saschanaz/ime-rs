@@ -61,7 +61,7 @@ HRESULT CCompartment::_GetCompartment(_Outptr_ ITfCompartment **ppCompartment)
 // _GetCompartmentBOOL
 //----------------------------------------------------------------------------
 
-HRESULT CCompartment::_GetCompartmentBOOL(_Out_ BOOL &flag)
+HRESULT CCompartment::_GetCompartmentBOOL(bool& flag)
 {
     uint32_t dwValue = 0;
     HRESULT hr = _GetCompartmentU32(dwValue);
@@ -73,7 +73,7 @@ HRESULT CCompartment::_GetCompartmentBOOL(_Out_ BOOL &flag)
 // _SetCompartmentBOOL
 //----------------------------------------------------------------------------
 
-HRESULT CCompartment::_SetCompartmentBOOL(_In_ BOOL flag)
+HRESULT CCompartment::_SetCompartmentBOOL(bool flag)
 {
     return _SetCompartmentU32(flag);
 }

@@ -65,15 +65,15 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_ UINT 
 
     *pCodeOut = codeIn;
 
-    BOOL isOpen = FALSE;
+    bool isOpen = false;
     CCompartment CompartmentKeyboardOpen(_pThreadMgr, _tfClientId, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
     CompartmentKeyboardOpen._GetCompartmentBOOL(isOpen);
 
-    BOOL isDoubleSingleByte = FALSE;
+    bool isDoubleSingleByte = false;
     CCompartment CompartmentDoubleSingleByte(_pThreadMgr, _tfClientId, SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE);
     CompartmentDoubleSingleByte._GetCompartmentBOOL(isDoubleSingleByte);
 
-    BOOL isPunctuation = FALSE;
+    bool isPunctuation = false;
     CCompartment CompartmentPunctuation(_pThreadMgr, _tfClientId, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION);
     CompartmentPunctuation._GetCompartmentBOOL(isPunctuation);
 
@@ -209,20 +209,20 @@ BOOL CSampleIME::_IsKeyboardDisabled()
 {
     ITfDocumentMgr* pDocMgrFocus = nullptr;
     ITfContext* pContext = nullptr;
-    BOOL isDisabled = FALSE;
+    bool isDisabled = false;
 
     if ((_pThreadMgr->GetFocus(&pDocMgrFocus) != S_OK) ||
         (pDocMgrFocus == nullptr))
     {
         // if there is no focus document manager object, the keyboard
         // is disabled.
-        isDisabled = TRUE;
+        isDisabled = true;
     }
     else if ((pDocMgrFocus->GetTop(&pContext) != S_OK) ||
         (pContext == nullptr))
     {
         // if there is no context object, the keyboard is disabled.
-        isDisabled = TRUE;
+        isDisabled = true;
     }
     else
     {

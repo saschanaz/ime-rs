@@ -16,8 +16,8 @@ public:
     ~CCompartment();
 
     HRESULT _GetCompartment(_Outptr_ ITfCompartment **ppCompartment);
-    HRESULT _GetCompartmentBOOL(_Out_ BOOL &flag);
-    HRESULT _SetCompartmentBOOL(_In_ BOOL flag);
+    HRESULT _GetCompartmentBOOL(bool& flag);
+    HRESULT _SetCompartmentBOOL(bool flag);
     HRESULT _GetCompartmentU32(uint32_t &dw);
     HRESULT _SetCompartmentU32(uint32_t dw);
     HRESULT _ClearCompartment();
