@@ -63,27 +63,9 @@ HRESULT CCompartment::_GetCompartment(_Outptr_ ITfCompartment **ppCompartment)
 
 HRESULT CCompartment::_GetCompartmentBOOL(_Out_ BOOL &flag)
 {
-    HRESULT hr = S_OK;
-    ITfCompartment* pCompartment = nullptr;
-    flag = FALSE;
-
-    if ((hr = _GetCompartment(&pCompartment)) == S_OK)
-    {
-        VARIANT var;
-        if ((hr = pCompartment->GetValue(&var)) == S_OK)
-        {
-            if (var.vt == VT_I4) // Even VT_EMPTY, GetValue() can succeed
-            {
-                flag = (BOOL)var.lVal;
-            }
-            else
-            {
-                hr = S_FALSE;
-            }
-        }
-        pCompartment->Release();
-    }
-
+    DWORD dwValue = 0;
+    HRESULT hr = _GetCompartmentDWORD(dwValue);
+    flag = (dwValue != 0);
     return hr;
 }
 
@@ -93,20 +75,7 @@ HRESULT CCompartment::_GetCompartmentBOOL(_Out_ BOOL &flag)
 
 HRESULT CCompartment::_SetCompartmentBOOL(_In_ BOOL flag)
 {
-    HRESULT hr = S_OK;
-    ITfCompartment* pCompartment = nullptr;
-
-    hr = _GetCompartment(&pCompartment);
-    if (SUCCEEDED(hr))
-    {
-        VARIANT var;
-        var.vt = VT_I4;
-        var.lVal = flag;
-        hr = pCompartment->SetValue(_tfClientId, &var);
-        pCompartment->Release();
-    }
-
-    return hr;
+    return _SetCompartmentDWORD(flag);
 }
 
 //+---------------------------------------------------------------------------
