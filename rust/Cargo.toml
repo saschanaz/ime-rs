@@ -5,6 +5,7 @@ members = [
     "dictionary_parser",
     "globals",
     "ime",
+    "itf_components",
     "numberkey_windows",
     "ruststringrange"
 ]

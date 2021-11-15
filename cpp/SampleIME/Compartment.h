@@ -22,15 +22,10 @@ public:
     HRESULT _SetCompartmentU32(uint32_t dw);
     HRESULT _ClearCompartment();
 
-    VOID _GetGUID(GUID *pguid)
-    {
-        *pguid = _guidCompartment;
-    }
+    void _GetGUID(GUID* pguid) const;
 
 private:
-    GUID _guidCompartment;
-    IUnknown* _punk;
-    TfClientId _tfClientId;
+    void* compartment;
 };
 
 typedef HRESULT (*CESCALLBACK)(void *pv, REFGUID guidCompartment);

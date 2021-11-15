@@ -8,6 +8,7 @@
 #include "Private.h"
 #include "Compartment.h"
 #include "Globals.h"
+#include "cbindgen/itf_components.h"
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -21,12 +22,7 @@
 
 CCompartment::CCompartment(_In_ IUnknown* punk, TfClientId tfClientId, _In_ REFGUID guidCompartment)
 {
-    _guidCompartment = guidCompartment;
-
-    _punk = punk;
-    _punk->AddRef();
-
-    _tfClientId = tfClientId;
+    compartment = compartment_new(punk, tfClientId, &guidCompartment);
 }
 
 //+---------------------------------------------------------------------------
@@ -35,26 +31,7 @@ CCompartment::CCompartment(_In_ IUnknown* punk, TfClientId tfClientId, _In_ REFG
 
 CCompartment::~CCompartment()
 {
-    _punk->Release();
-}
-
-//+---------------------------------------------------------------------------
-// _GetCompartment
-//----------------------------------------------------------------------------
-
-HRESULT CCompartment::_GetCompartment(_Outptr_ ITfCompartment **ppCompartment)
-{
-    HRESULT hr = S_OK;
-    ITfCompartmentMgr* pCompartmentMgr = nullptr;
-
-    hr = _punk->QueryInterface(IID_ITfCompartmentMgr, (void **)&pCompartmentMgr);
-    if (SUCCEEDED(hr))
-    {
-        hr = pCompartmentMgr->GetCompartment(_guidCompartment, ppCompartment);
-        pCompartmentMgr->Release();
-    }
-
-    return hr;
+    compartment_free(compartment);
 }
 
 //+---------------------------------------------------------------------------
@@ -63,10 +40,7 @@ HRESULT CCompartment::_GetCompartment(_Outptr_ ITfCompartment **ppCompartment)
 
 HRESULT CCompartment::_GetCompartmentBOOL(bool& flag)
 {
-    uint32_t dwValue = 0;
-    HRESULT hr = _GetCompartmentU32(dwValue);
-    flag = (dwValue != 0);
-    return hr;
+    return compartment_get_bool(compartment, &flag);
 }
 
 //+---------------------------------------------------------------------------
@@ -84,29 +58,7 @@ HRESULT CCompartment::_SetCompartmentBOOL(bool flag)
 
 HRESULT CCompartment::_GetCompartmentU32(uint32_t& dw)
 {
-    HRESULT hr = S_OK;
-    ITfCompartment* pCompartment = nullptr;
-    dw = 0;
-
-    hr = _GetCompartment(&pCompartment);
-    if (SUCCEEDED(hr))
-    {
-        VARIANT var;
-        if ((hr = pCompartment->GetValue(&var)) == S_OK)
-        {
-            if (var.vt == VT_I4) // Even VT_EMPTY, GetValue() can succeed
-            {
-                dw = var.lVal;
-            }
-            else
-            {
-                hr = S_FALSE;
-            }
-        }
-        pCompartment->Release();
-    }
-
-    return hr;
+    return compartment_get_u32(compartment, &dw);
 }
 
 //+---------------------------------------------------------------------------
@@ -115,20 +67,7 @@ HRESULT CCompartment::_GetCompartmentU32(uint32_t& dw)
 
 HRESULT CCompartment::_SetCompartmentU32(uint32_t dw)
 {
-    HRESULT hr = S_OK;
-    ITfCompartment* pCompartment = nullptr;
-
-    hr = _GetCompartment(&pCompartment);
-    if (SUCCEEDED(hr))
-    {
-        VARIANT var;
-        var.vt = VT_I4;
-        var.lVal = dw;
-        hr = pCompartment->SetValue(_tfClientId, &var);
-        pCompartment->Release();
-    }
-
-    return hr;
+    return compartment_set_u32(compartment, dw);
 }
 
 //+---------------------------------------------------------------------------
@@ -139,21 +78,11 @@ HRESULT CCompartment::_SetCompartmentU32(uint32_t dw)
 
 HRESULT CCompartment::_ClearCompartment()
 {
-    if (IsEqualGUID(_guidCompartment, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE))
-    {
-        return S_FALSE;
-    }
+    return compartment_clear(compartment);
+}
 
-    HRESULT hr = S_OK;
-    ITfCompartmentMgr* pCompartmentMgr = nullptr;
-
-    if ((hr = _punk->QueryInterface(IID_ITfCompartmentMgr, (void **)&pCompartmentMgr)) == S_OK)
-    {
-        hr = pCompartmentMgr->ClearCompartment(_tfClientId, _guidCompartment);
-        pCompartmentMgr->Release();
-    }
-
-    return hr;
+void CCompartment::_GetGUID(GUID* pguid) const {
+    compartment_guid(compartment, pguid);
 }
 
 //////////////////////////////////////////////////////////////////////

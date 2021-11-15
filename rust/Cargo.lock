@@ -41,10 +41,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "itf_components"
+version = "0.1.0"
+dependencies = [
+ "globals",
+ "windows",
+]
+
+[[package]]
 name = "numberkey_windows"
 version = "0.1.0"
 dependencies = [
  "windows",
+]
+
+[[package]]
+name = "proc-macro2"
+version = "1.0.32"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ba508cc11742c0dc5c1659771673afbab7a0efab23aa17e854cbab0837ed0b43"
+dependencies = [
+ "unicode-xid",
+]
+
+[[package]]
+name = "quote"
+version = "1.0.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "38bc8cc6a5f2e3655e0899c1b848643b2562f853f114bfec7be120678e3ace05"
+dependencies = [
+ "proc-macro2",
 ]
 
 [[package]]
@@ -53,6 +79,23 @@ version = "0.1.0"
 dependencies = [
  "compare_with_wildcard",
 ]
+
+[[package]]
+name = "syn"
+version = "1.0.81"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f2afee18b8beb5a596ecb4a2dce128c719b4ba399d34126b9e4396e3f9860966"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "unicode-xid",
+]
+
+[[package]]
+name = "unicode-xid"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8ccb82d61f80a663efe1f787a51b16b5a51e3314d6ac365b08639f52387b33f3"
 
 [[package]]
 name = "winapi"
@@ -83,8 +126,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "347cdcaae1addebdff584aea1f9fbc0426dedbe1315f1dcf30c7a9876401cd25"
 dependencies = [
  "windows_aarch64_msvc",
+ "windows_gen",
  "windows_i686_gnu",
  "windows_i686_msvc",
+ "windows_macros",
+ "windows_reader",
  "windows_x86_64_gnu",
  "windows_x86_64_msvc",
 ]
@@ -94,6 +140,16 @@ name = "windows_aarch64_msvc"
 version = "0.26.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f7758986b022add546ae53ccad31f4852ce6bd2e2c2d3cc2b1d7d06dea0b90da"
+
+[[package]]
+name = "windows_gen"
+version = "0.26.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ef36f7e8bb72482e1bf1324dbc9120549efd1fe155cc9eec1207435e6b937a84"
+dependencies = [
+ "windows_quote",
+ "windows_reader",
+]
 
 [[package]]
 name = "windows_i686_gnu"
@@ -106,6 +162,30 @@ name = "windows_i686_msvc"
 version = "0.26.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "43984fb3b944743142112ae926e7adeccb60f35bb81d43114f4d0fe2871f60ba"
+
+[[package]]
+name = "windows_macros"
+version = "0.26.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8f1891bc6ba6c1c8393428ad4df82a1df49ed9cf8a8cf30b40d536291585f422"
+dependencies = [
+ "syn",
+ "windows_gen",
+ "windows_quote",
+ "windows_reader",
+]
+
+[[package]]
+name = "windows_quote"
+version = "0.26.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f98b32f5906e66e303e1c015ad01b66b84737d1f75050a0480388484ac1aeb5b"
+
+[[package]]
+name = "windows_reader"
+version = "0.26.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5646fde9f2f3a948ff6b0e3d92608148936b2dcc480a14e1431642a224181d19"
 
 [[package]]
 name = "windows_x86_64_gnu"
