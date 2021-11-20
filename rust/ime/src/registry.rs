@@ -1,5 +1,5 @@
 use globals::{SAMPLEIME_CLSID, SAMPLEIME_GUID_PROFILE};
-use windows::runtime::GUID;
+use windows::core::GUID;
 use winreg::{enums::HKEY_CLASSES_ROOT, RegKey};
 
 use crate::com::create_instance_inproc;
@@ -31,7 +31,7 @@ fn get_module_file_name(dll_instance_handle: HINSTANCE) -> String {
     }
 }
 
-pub fn register_profile(dll_instance_handle: HINSTANCE) -> windows::runtime::Result<()> {
+pub fn register_profile(dll_instance_handle: HINSTANCE) -> windows::core::Result<()> {
     let profile_manager: ITfInputProcessorProfileMgr =
         create_instance_inproc(&CLSID_TF_InputProcessorProfiles)?;
 
@@ -61,7 +61,7 @@ pub fn register_profile(dll_instance_handle: HINSTANCE) -> windows::runtime::Res
     Ok(())
 }
 
-pub fn unregister_profile() -> Result<(), windows::runtime::Error> {
+pub fn unregister_profile() -> Result<(), windows::core::Error> {
     let profile_manager: ITfInputProcessorProfileMgr =
         create_instance_inproc(&CLSID_TF_InputProcessorProfiles)?;
 
@@ -88,7 +88,7 @@ static SUPPORT_CATEGORIES: [GUID; 8] = [
     GUID_TFCAT_TIPCAP_SYSTRAYSUPPORT,
 ];
 
-pub fn register_categories() -> windows::runtime::Result<()> {
+pub fn register_categories() -> windows::core::Result<()> {
     let category_manager: ITfCategoryMgr = create_instance_inproc(&CLSID_TF_CategoryMgr)?;
 
     for guid in SUPPORT_CATEGORIES {
@@ -100,7 +100,7 @@ pub fn register_categories() -> windows::runtime::Result<()> {
     Ok(())
 }
 
-pub fn unregister_categories() -> windows::runtime::Result<()> {
+pub fn unregister_categories() -> windows::core::Result<()> {
     let category_manager: ITfCategoryMgr = create_instance_inproc(&CLSID_TF_CategoryMgr)?;
 
     for guid in SUPPORT_CATEGORIES {

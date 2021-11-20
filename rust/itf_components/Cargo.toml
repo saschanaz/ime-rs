@@ -13,7 +13,7 @@ crate-type = ["staticlib"]
 globals = { path = "../globals" }
 
 [dependencies.windows]
-version = "0.26.0"
+version = "0.28.0"
 features = [
   "build",
   "std",

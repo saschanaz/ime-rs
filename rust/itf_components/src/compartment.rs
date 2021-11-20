@@ -2,7 +2,7 @@
 
 use std::ffi::c_void;
 
-use windows::runtime::{IUnknown, Interface, GUID, HRESULT};
+use windows::core::{IUnknown, Interface, GUID, HRESULT};
 use windows::Win32::System::Com::VARIANT;
 use windows::Win32::System::Ole::VT_I4;
 use windows::Win32::UI::TextServices::{
@@ -28,7 +28,7 @@ impl Compartment {
         Box::from_raw(engine as *mut Compartment)
     }
 
-    fn get_compartment(&self) -> windows::runtime::Result<ITfCompartment> {
+    fn get_compartment(&self) -> windows::core::Result<ITfCompartment> {
         let mut manager: Option<ITfCompartmentMgr> = None;
         unsafe {
             self.manager
@@ -38,17 +38,17 @@ impl Compartment {
         }
     }
 
-    pub fn get_bool(&self) -> windows::runtime::Result<bool> {
+    pub fn get_bool(&self) -> windows::core::Result<bool> {
         // VT_BOOL also exists and maybe preferrable for better strictness
         // The Microsoft demo was using VT_I4 here, so this just follows that.
         Ok(self.get_u32()? != 0)
     }
 
-    pub fn set_bool(&self, flag: bool) -> windows::runtime::Result<()> {
+    pub fn set_bool(&self, flag: bool) -> windows::core::Result<()> {
         self.set_u32(if flag { 1 } else { 0 })
     }
 
-    pub fn get_u32(&self) -> windows::runtime::Result<u32> {
+    pub fn get_u32(&self) -> windows::core::Result<u32> {
         unsafe {
             let variant = self.get_compartment()?.GetValue()?;
             if variant.Anonymous.Anonymous.vt != VT_I4.0 as u16 {
@@ -58,7 +58,7 @@ impl Compartment {
         }
     }
 
-    pub fn set_u32(&self, data: u32) -> windows::runtime::Result<()> {
+    pub fn set_u32(&self, data: u32) -> windows::core::Result<()> {
         let mut variant = VARIANT::default();
         unsafe {
             (*variant.Anonymous.Anonymous).vt = VT_I4.0 as u16;
@@ -68,7 +68,7 @@ impl Compartment {
         }
     }
 
-    pub fn clear(&self) -> windows::runtime::Result<()> {
+    pub fn clear(&self) -> windows::core::Result<()> {
         if self.guid == GUID_COMPARTMENT_KEYBOARD_OPENCLOSE {
             return Ok(());
         }
