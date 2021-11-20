@@ -11,9 +11,8 @@ pub static mut DLL_INSTANCE: HINSTANCE = HINSTANCE { 0: 0 };
 #[doc(hidden)]
 pub unsafe extern "system" fn DllRegisterServer() -> HRESULT {
     unsafe fn register() -> windows::core::Result<()> {
-        registry::register_server(DLL_INSTANCE).map_err(|_| {
-            windows::core::Error::new(E_FAIL, "Failed to register server".into())
-        })?;
+        registry::register_server(DLL_INSTANCE)
+            .map_err(|_| windows::core::Error::new(E_FAIL, "Failed to register server".into()))?;
         registry::register_profile(DLL_INSTANCE)?;
         registry::register_categories()?;
         Ok(())
