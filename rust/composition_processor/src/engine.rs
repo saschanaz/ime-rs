@@ -1,11 +1,16 @@
 use dictionary_parser::TableDictionaryEngine;
+use itf_components::compartment::Compartment;
 
 use crate::test_virtual_key::{
     test_virtual_key, CandidateMode, KeystrokeCategory, KeystrokeFunction,
 };
-use windows::Win32::{
-    Foundation::{HINSTANCE, MAX_PATH, PWSTR},
-    System::LibraryLoader::GetModuleFileNameW,
+use windows::{
+    core::GUID,
+    Win32::{
+        Foundation::{HINSTANCE, MAX_PATH, PWSTR},
+        System::LibraryLoader::GetModuleFileNameW,
+        UI::{Input::KeyboardAndMouse::VK_SHIFT, TextServices::ITfThreadMgr},
+    },
 };
 
 mod modifiers;
@@ -14,11 +19,15 @@ use modifiers::Modifiers;
 mod punctuations;
 use punctuations::PunctuationMapper;
 
+mod preserved_keys;
+use preserved_keys::PreservedKeys;
+
 pub struct CompositionProcessorEngine {
     keystroke_buffer: Vec<u16>,
     table_dictionary_engine: Option<TableDictionaryEngine>,
     modifiers: Modifiers,
     punctuation_mapper: PunctuationMapper,
+    preserved_keys: PreservedKeys,
 }
 
 impl CompositionProcessorEngine {
@@ -28,6 +37,7 @@ impl CompositionProcessorEngine {
             table_dictionary_engine: None,
             modifiers: Modifiers::default(),
             punctuation_mapper: PunctuationMapper::new(),
+            preserved_keys: PreservedKeys::new(),
         }
     }
 
@@ -77,6 +87,38 @@ impl CompositionProcessorEngine {
             || self.keystroke_buffer.contains(&(b'?' as u16))
     }
 
+    pub fn on_preserved_key(
+        &self,
+        guid: &GUID,
+        thread_mgr: ITfThreadMgr,
+        client_id: u32,
+    ) -> windows::core::Result<bool> {
+        let matching = self
+            .preserved_keys
+            .keys
+            .iter()
+            .find(|&preserved| preserved.key_guid == *guid);
+        if matching.is_none() {
+            return Ok(false);
+        }
+
+        let preserved = matching.unwrap();
+
+        if preserved.key.uVKey == VK_SHIFT.0 as u32 && !self.modifiers.is_shift_key_down_only() {
+            return Ok(false);
+        }
+
+        let compartment = Compartment::new(
+            &Some(thread_mgr.into()),
+            client_id,
+            preserved.compartment_guid,
+        );
+        let state = compartment.get_bool()?;
+        compartment.set_bool(!state)?;
+
+        Ok(true)
+    }
+
     pub fn setup_dictionary_file(
         &mut self,
         dll_instance_handle: HINSTANCE,
@@ -109,6 +151,10 @@ impl CompositionProcessorEngine {
 
     pub fn punctuation_mapper_mut(&mut self) -> &mut PunctuationMapper {
         &mut self.punctuation_mapper
+    }
+
+    pub fn preserved_keys(&self) -> &PreservedKeys {
+        &self.preserved_keys
     }
 }
 

@@ -185,7 +185,7 @@ BOOL CCompositionProcessorEngine::SetupLanguageProfile(LANGID langid, REFGUID gu
     _guidProfile = guidLanguageProfile;
     _tfClientId = tfClientId;
 
-    SetupPreserved(pThreadMgr, tfClientId);
+    engine_rust.PreservedKeysInit(pThreadMgr, tfClientId);
 	InitializeSampleIMECompartment(pThreadMgr, tfClientId);
     SetupLanguageBar(pThreadMgr, tfClientId, isSecureMode);
     SetDefaultCandidateTextFont();
@@ -362,138 +362,15 @@ BOOL CCompositionProcessorEngine::IsDoubleSingleByte(WCHAR wch)
 
 //+---------------------------------------------------------------------------
 //
-// SetupPreserved
-//
-//----------------------------------------------------------------------------
-
-void CCompositionProcessorEngine::SetupPreserved(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId)
-{
-    TF_PRESERVEDKEY preservedKeyImeMode;
-    preservedKeyImeMode.uVKey = VK_SHIFT;
-    preservedKeyImeMode.uModifiers = TF_MOD_ON_KEYUP;
-    SetPreservedKey(SAMPLEIME_GUID_IME_MODE_PRESERVE_KEY, preservedKeyImeMode, Global::ImeModeDescription, &_PreservedKey_IMEMode);
-
-    TF_PRESERVEDKEY preservedKeyDoubleSingleByte;
-    preservedKeyDoubleSingleByte.uVKey = VK_SPACE;
-    preservedKeyDoubleSingleByte.uModifiers = TF_MOD_SHIFT;
-    SetPreservedKey(SAMPLEIME_GUID_DOUBLE_SINGLE_BYTE_PRESERVE_KEY, preservedKeyDoubleSingleByte, Global::DoubleSingleByteDescription, &_PreservedKey_DoubleSingleByte);
-
-    TF_PRESERVEDKEY preservedKeyPunctuation;
-    preservedKeyPunctuation.uVKey = VK_OEM_PERIOD;
-    preservedKeyPunctuation.uModifiers = TF_MOD_CONTROL;
-    SetPreservedKey(SAMPLEIME_GUID_PUNCTUATION_PRESERVE_KEY, preservedKeyPunctuation, Global::PunctuationDescription, &_PreservedKey_Punctuation);
-
-    InitPreservedKey(&_PreservedKey_IMEMode, pThreadMgr, tfClientId);
-    InitPreservedKey(&_PreservedKey_DoubleSingleByte, pThreadMgr, tfClientId);
-    InitPreservedKey(&_PreservedKey_Punctuation, pThreadMgr, tfClientId);
-
-    return;
-}
-
-//+---------------------------------------------------------------------------
-//
-// SetKeystrokeTable
-//
-//----------------------------------------------------------------------------
-
-void CCompositionProcessorEngine::SetPreservedKey(const CLSID clsid, TF_PRESERVEDKEY & tfPreservedKey, _In_z_ LPCWSTR pwszDescription, _Out_ XPreservedKey *pXPreservedKey)
-{
-    pXPreservedKey->Guid = clsid;
-
-    pXPreservedKey->TSFPreservedKey = tfPreservedKey;
-
-	size_t srgKeystrokeBufLen = 0;
-	if (StringCchLength(pwszDescription, STRSAFE_MAX_CCH, &srgKeystrokeBufLen) != S_OK)
-    {
-        return;
-    }
-    pXPreservedKey->Description = new (std::nothrow) WCHAR[srgKeystrokeBufLen + 1];
-    if (!pXPreservedKey->Description)
-    {
-        return;
-    }
-
-    StringCchCopy((LPWSTR)pXPreservedKey->Description, srgKeystrokeBufLen, pwszDescription);
-
-    return;
-}
-//+---------------------------------------------------------------------------
-//
-// InitPreservedKey
-//
-// Register a hot key.
-//
-//----------------------------------------------------------------------------
-
-BOOL CCompositionProcessorEngine::InitPreservedKey(_In_ XPreservedKey *pXPreservedKey, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId)
-{
-    ITfKeystrokeMgr *pKeystrokeMgr = nullptr;
-
-    if (IsEqualGUID(pXPreservedKey->Guid, GUID_NULL))
-    {
-        return FALSE;
-    }
-
-    if (pThreadMgr->QueryInterface(IID_ITfKeystrokeMgr, (void **)&pKeystrokeMgr) != S_OK)
-    {
-        return FALSE;
-    }
-
-    size_t lenOfDesc = 0;
-    if (StringCchLength(pXPreservedKey->Description, STRSAFE_MAX_CCH, &lenOfDesc) != S_OK)
-    {
-        return FALSE;
-    }
-    pKeystrokeMgr->PreserveKey(tfClientId, pXPreservedKey->Guid, &pXPreservedKey->TSFPreservedKey, pXPreservedKey->Description, static_cast<ULONG>(lenOfDesc));
-
-    pKeystrokeMgr->Release();
-
-    return TRUE;
-}
-
-//+---------------------------------------------------------------------------
-//
 // OnPreservedKey
 //
 //----------------------------------------------------------------------------
 
 void CCompositionProcessorEngine::OnPreservedKey(REFGUID rguid, _Out_ BOOL *pIsEaten, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId)
 {
-    if (IsEqualGUID(rguid, _PreservedKey_IMEMode.Guid))
-    {
-        if (!engine_rust.ModifiersIsShiftKeyDownOnly())
-        {
-            *pIsEaten = FALSE;
-            return;
-        }
-        bool isOpen = false;
-        CCompartment CompartmentKeyboardOpen(pThreadMgr, tfClientId, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
-        CompartmentKeyboardOpen._GetCompartmentBOOL(isOpen);
-        CompartmentKeyboardOpen._SetCompartmentBOOL(!isOpen);
-
-        *pIsEaten = TRUE;
-    }
-    else if (IsEqualGUID(rguid, _PreservedKey_DoubleSingleByte.Guid))
-    {
-        bool isDouble = false;
-        CCompartment CompartmentDoubleSingleByte(pThreadMgr, tfClientId, SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE);
-        CompartmentDoubleSingleByte._GetCompartmentBOOL(isDouble);
-        CompartmentDoubleSingleByte._SetCompartmentBOOL(!isDouble);
-        *pIsEaten = TRUE;
-    }
-    else if (IsEqualGUID(rguid, _PreservedKey_Punctuation.Guid))
-    {
-        bool isPunctuation = false;
-        CCompartment CompartmentPunctuation(pThreadMgr, tfClientId, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION);
-        CompartmentPunctuation._GetCompartmentBOOL(isPunctuation);
-        CompartmentPunctuation._SetCompartmentBOOL(!isPunctuation);
-        *pIsEaten = TRUE;
-    }
-    else
-    {
-        *pIsEaten = FALSE;
-    }
-    *pIsEaten = TRUE;
+    bool isEaten;
+    engine_rust.OnPreservedKey(rguid, &isEaten, pThreadMgr, tfClientId);
+    *pIsEaten = isEaten;
 }
 
 //+---------------------------------------------------------------------------
@@ -790,64 +667,6 @@ void CCompositionProcessorEngine::KeyboardOpenCompartmentUpdated(_In_ ITfThreadM
     }
 }
 
-
-//////////////////////////////////////////////////////////////////////
-//
-// XPreservedKey implementation.
-//
-//////////////////////////////////////////////////////////////////////
-
-//+---------------------------------------------------------------------------
-//
-// UninitPreservedKey
-//
-//----------------------------------------------------------------------------
-
-BOOL CCompositionProcessorEngine::XPreservedKey::UninitPreservedKey(_In_ ITfThreadMgr *pThreadMgr)
-{
-    ITfKeystrokeMgr* pKeystrokeMgr = nullptr;
-
-    if (IsEqualGUID(Guid, GUID_NULL))
-    {
-        return FALSE;
-    }
-
-    if (FAILED(pThreadMgr->QueryInterface(IID_ITfKeystrokeMgr, (void **)&pKeystrokeMgr)))
-    {
-        return FALSE;
-    }
-
-    pKeystrokeMgr->UnpreserveKey(Guid, &TSFPreservedKey);
-
-    pKeystrokeMgr->Release();
-
-    return TRUE;
-}
-
-CCompositionProcessorEngine::XPreservedKey::XPreservedKey()
-{
-    Guid = GUID_NULL;
-    Description = nullptr;
-}
-
-CCompositionProcessorEngine::XPreservedKey::~XPreservedKey()
-{
-    ITfThreadMgr* pThreadMgr = nullptr;
-
-    HRESULT hr = CoCreateInstance(CLSID_TF_ThreadMgr, NULL, CLSCTX_INPROC_SERVER, IID_ITfThreadMgr, (void**)&pThreadMgr);
-    if (SUCCEEDED(hr))
-    {
-        UninitPreservedKey(pThreadMgr);
-        pThreadMgr->Release();
-        pThreadMgr = nullptr;
-    }
-
-    if (Description)
-    {
-        delete [] Description;
-    }
-}
-
 void CCompositionProcessorEngine::ShowAllLanguageBarIcons()
 {
     SetLanguageBarStatus(TF_LBI_STATUS_HIDDEN, FALSE);
@@ -944,6 +763,11 @@ bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::KeystrokeBuff
     return compositionprocessorengine_keystroke_buffer_includes_wildcard(engine);
 }
 
+HRESULT CCompositionProcessorEngine::CRustCompositionProcessorEngine::OnPreservedKey(REFGUID rguid, bool* isEaten, ITfThreadMgr* threadMgr, TfClientId clientId) {
+    threadMgr->AddRef();
+    return compositionprocessorengine_on_preserved_key(engine, &rguid, isEaten, threadMgr, clientId);
+}
+
 void CCompositionProcessorEngine::CRustCompositionProcessorEngine::SetupDictionaryFile(HINSTANCE dllInstanceHandle, const CRustStringRange& dictionaryFileName) {
     compositionprocessorengine_setup_dictionary_file(engine, dllInstanceHandle, dictionaryFileName.GetInternal());
 }
@@ -979,3 +803,8 @@ bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::PunctuationsH
 wchar_t CCompositionProcessorEngine::CRustCompositionProcessorEngine::PunctuationsGetAlternativePunctuationCounted(wchar_t wch) {
     return compositionprocessorengine_punctuations_get_alternative_punctuation_counted(engine, wch);
 }
+
+HRESULT CCompositionProcessorEngine::CRustCompositionProcessorEngine::PreservedKeysInit(ITfThreadMgr* threadMgr, TfClientId clientId) {
+    threadMgr->AddRef();
+    return compositionprocessorengine_preserved_keys_init(engine, threadMgr, clientId);
+};

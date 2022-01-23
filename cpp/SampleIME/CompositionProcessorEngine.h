@@ -79,15 +79,10 @@ public:
 private:
     BOOL InitLanguageBar(_In_ CLangBarItemButton *pLanguageBar, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId, REFGUID guidCompartment);
 
-    void SetupPreserved(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
     void SetupLanguageBar(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId, BOOL isSecureMode);
     void CreateLanguageBarButton(DWORD dwEnable, GUID guidLangBar, _In_z_ LPCWSTR pwszDescriptionValue, _In_z_ LPCWSTR pwszTooltipValue, DWORD dwOnIconIndex, DWORD dwOffIconIndex, _Outptr_result_maybenull_ CLangBarItemButton **ppLangBarItemButton, BOOL isSecureMode);
     void SetDefaultCandidateTextFont();
 	void InitializeSampleIMECompartment(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
-
-    class XPreservedKey;
-    void SetPreservedKey(const CLSID clsid, TF_PRESERVEDKEY & tfPreservedKey, _In_z_ LPCWSTR pwszDescription, _Out_ XPreservedKey *pXPreservedKey);
-    BOOL InitPreservedKey(_In_ XPreservedKey *pXPreservedKey, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
 
     static HRESULT CompartmentCallback(_In_ void *pv, REFGUID guidCompartment);
     void PrivateCompartmentsUpdated(_In_ ITfThreadMgr *pThreadMgr);
@@ -97,24 +92,6 @@ private:
     LANGID _langid;
     GUID _guidProfile;
     TfClientId  _tfClientId;
-
-    // Preserved key data
-    class XPreservedKey
-    {
-    public:
-        XPreservedKey();
-        ~XPreservedKey();
-        BOOL UninitPreservedKey(_In_ ITfThreadMgr *pThreadMgr);
-
-    public:
-        TF_PRESERVEDKEY TSFPreservedKey;
-        GUID Guid;
-        LPCWSTR Description;
-    };
-
-    XPreservedKey _PreservedKey_IMEMode;
-    XPreservedKey _PreservedKey_DoubleSingleByte;
-    XPreservedKey _PreservedKey_Punctuation;
 
     // Language bar data
     CLangBarItemButton* _pLanguageBar_IMEMode;
@@ -142,6 +119,8 @@ private:
         CRustStringRange GetReadingString();
         bool KeystrokeBufferIncludesWildcard();
 
+        HRESULT OnPreservedKey(REFGUID rguid, bool* isEaten, ITfThreadMgr* threadMgr, TfClientId clientId);
+
         void SetupDictionaryFile(HINSTANCE dllInstanceHandle, const CRustStringRange& dictionaryFileName);
         std::optional<CRustTableDictionaryEngine> GetTableDictionaryEngine() const;
 
@@ -152,6 +131,8 @@ private:
 
         bool PunctuationsHasAlternativePunctuation(WCHAR wch) const;
         WCHAR PunctuationsGetAlternativePunctuationCounted(WCHAR wch);
+
+        HRESULT PreservedKeysInit(ITfThreadMgr* threadMgr, TfClientId clientId);
     };
 
     CRustCompositionProcessorEngine engine_rust;

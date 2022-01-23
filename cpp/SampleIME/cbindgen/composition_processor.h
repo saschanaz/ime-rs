@@ -66,7 +66,17 @@ void compositionprocessorengine_modifiers_update(void *engine, WPARAM w, LPARAM 
 
 void *compositionprocessorengine_new();
 
+HRESULT compositionprocessorengine_on_preserved_key(void *engine,
+                                                    const GUID *guid,
+                                                    bool *out_is_eaten,
+                                                    ITfThreadMgr* thread_mgr,
+                                                    uint32_t client_id);
+
 void compositionprocessorengine_pop_virtual_key(void *engine);
+
+HRESULT compositionprocessorengine_preserved_keys_init(void *engine,
+                                                       ITfThreadMgr* thread_mgr,
+                                                       uint32_t client_id);
 
 uint16_t compositionprocessorengine_punctuations_get_alternative_punctuation_counted(void *engine,
                                                                                      uint16_t wch);

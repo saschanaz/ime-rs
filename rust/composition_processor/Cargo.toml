@@ -14,6 +14,8 @@ crate-type = ["staticlib"]
 dictionary_parser = { path = "../dictionary_parser" }
 ruststringrange = { path = "../ruststringrange" }
 numberkey_windows = { path = "../numberkey_windows" }
+globals = { path = "../globals" }
+itf_components = { path = "../itf_components" }
 
 [dependencies.windows]
 version = "0.28.0"

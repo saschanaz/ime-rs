@@ -4,7 +4,13 @@ use core::ffi::c_void;
 use dictionary_parser::TableDictionaryEngine;
 use ruststringrange::RustStringRange;
 
-use windows::Win32::Foundation::{HINSTANCE, LPARAM, WPARAM};
+use windows::{
+    core::{GUID, HRESULT},
+    Win32::{
+        Foundation::{HINSTANCE, LPARAM, WPARAM},
+        UI::TextServices::ITfThreadMgr,
+    },
+};
 
 mod engine;
 use engine::CompositionProcessorEngine;
@@ -172,4 +178,30 @@ pub unsafe extern "C" fn compositionprocessorengine_punctuations_get_alternative
     let mut b = [0; 1];
     result.encode_utf16(&mut b);
     b[0]
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn compositionprocessorengine_preserved_keys_init(
+    engine: *mut c_void,
+    thread_mgr: ITfThreadMgr,
+    client_id: u32,
+) -> HRESULT {
+    let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
+    HRESULT::from(engine.preserved_keys().init_keys(thread_mgr, client_id))
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn compositionprocessorengine_on_preserved_key(
+    engine: *mut c_void,
+    guid: &GUID,
+    out_is_eaten: *mut bool,
+    thread_mgr: ITfThreadMgr,
+    client_id: u32,
+) -> HRESULT {
+    let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
+    let result = engine.on_preserved_key(guid, thread_mgr, client_id);
+
+    *out_is_eaten = *result.as_ref().unwrap_or(&false);
+
+    HRESULT::from(result)
 }

@@ -11,6 +11,8 @@ name = "composition_processor"
 version = "0.1.0"
 dependencies = [
  "dictionary_parser",
+ "globals",
+ "itf_components",
  "numberkey_windows",
  "ruststringrange",
  "windows",
