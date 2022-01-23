@@ -13,6 +13,7 @@
 #pragma comment(lib, "advapi32.lib")
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "userenv.lib")
+#pragma comment(lib, "bcrypt.lib")
 
 const DWORD_PTR CStringRangeUtf16::GetLength() const
 {
