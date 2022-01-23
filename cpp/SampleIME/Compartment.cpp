@@ -49,7 +49,7 @@ HRESULT CCompartment::_GetCompartmentBOOL(bool& flag)
 
 HRESULT CCompartment::_SetCompartmentBOOL(bool flag)
 {
-    return _SetCompartmentU32(flag);
+    return compartment_set_bool(compartment, flag);
 }
 
 //+---------------------------------------------------------------------------
