@@ -45,7 +45,7 @@ impl Compartment {
     }
 
     pub fn set_bool(&self, flag: bool) -> windows::core::Result<()> {
-        self.set_u32(if flag { 1 } else { 0 })
+        self.set_u32(flag.into())
     }
 
     pub fn get_u32(&self) -> windows::core::Result<u32> {
