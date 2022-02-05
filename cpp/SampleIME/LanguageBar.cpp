@@ -88,7 +88,7 @@ VOID CCompositionProcessorEngine::SetLanguageBarStatus(DWORD status, BOOL isSet)
 //
 //----------------------------------------------------------------------------
 
-CLangBarItemButton::CLangBarItemButton(REFGUID guidLangBar, LPCWSTR description, LPCWSTR tooltip, DWORD onIconIndex, DWORD offIconIndex, BOOL isSecureMode)
+CLangBarItemButton::CLangBarItemButton(REFGUID guidLangBar, LPCWSTR description, LPCWSTR tooltip, DWORD onIconIndex, DWORD offIconIndex)
 {
     DWORD bufLen = 0;
 
@@ -113,7 +113,6 @@ CLangBarItemButton::CLangBarItemButton(REFGUID guidLangBar, LPCWSTR description,
     _pCompartmentEventSink = nullptr;
 
     _isAddedToLanguageBar = FALSE;
-    _isSecureMode = isSecureMode;
     _status = 0;
 
     _refCount = 1;
@@ -420,12 +419,9 @@ STDAPI CLangBarItemButton::GetIcon(_Out_ HICON *phIcon)
     DWORD status = 0;
     GetStatus(&status);
 
-	// If IME is working on the UAC mode, the size of ICON should be 24 x 24.
+    // Ideally GetSystemMetrics() should be used, but here we just keep the original demo behavior.
+    // https://docs.microsoft.com/en-us/windows/win32/api/ctfutb/nf-ctfutb-itflangbaritembutton-geticon
     int desiredSize = 16;
-    if (_isSecureMode) // detect UAC mode
-    {
-        desiredSize = _isSecureMode ? 24 : 16;
-    }
 
     if (isOn && !(status & TF_LBI_STATUS_DISABLED))
     {

@@ -25,6 +25,12 @@ These features are all from the original sample and being ported.
 Not all features are alive, because Windows API support has changed since the initial release of the sample.
 
 * Multiple language bar buttons. Originally the sample wanted to add wide character mode and alternative punctuation mode buttons in addition to the pinyin button, but [Windows 8+ allows only a single button](https://docs.microsoft.com/en-us/windows/win32/api/ctfutb/nf-ctfutb-itflangbaritem-getinfo#parameters).
+* 24px icon in secure mode. The original demo used 24px icon if the IME was activated with `TF_TMAE_SECUREMODE` flag, but:
+
+  1. It's not clear what "secure mode" means here.
+      * A comment in the demo claimed it was about UAC, but the flag never turns on regardless of the privilege, at least on Windows 11 21H2.
+  1. It needlessly complicates the code by passing `isSecureMode` only for that specific "feature".
+  1. Even if the "secure mode" was a real thing, it doesn't make sense to use higher resolution based on that.
 
 Below is the original README of this sample.
 
