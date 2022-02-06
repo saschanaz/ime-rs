@@ -14,7 +14,7 @@ globals = { path = "../globals" }
 winreg = "0.10.1"
 
 [dependencies.windows]
-version = "0.28.0"
+version = "0.32.0"
 features = [
   "Win32_System_Com",
   "Win32_System_SystemServices",

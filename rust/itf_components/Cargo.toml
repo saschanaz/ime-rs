@@ -13,10 +13,8 @@ crate-type = ["rlib", "staticlib"]
 globals = { path = "../globals" }
 
 [dependencies.windows]
-version = "0.28.0"
+version = "0.32.0"
 features = [
-  "build",
-  "std",
   "Win32_Foundation",
   "Win32_UI_TextServices",
   "Win32_UI_WindowsAndMessaging",
