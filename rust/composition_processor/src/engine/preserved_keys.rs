@@ -67,16 +67,7 @@ impl PreservedKeys {
         // This function is ignoring the failures to follow the original Microsoft demo behavior.
         // It's also probably better to make it partially work than to not work at all.
 
-        let mut keystroke_mgr: Option<ITfKeystrokeMgr> = None;
-        unsafe {
-            thread_mgr.query(
-                &ITfKeystrokeMgr::IID,
-                core::mem::transmute(&mut keystroke_mgr),
-            )
-        }
-        .ok()?;
-
-        let keystroke_mgr = keystroke_mgr.unwrap();
+        let keystroke_mgr: ITfKeystrokeMgr = thread_mgr.cast()?;
 
         for preserved in &self.keys {
             Self::init_key(preserved, &keystroke_mgr, client_id)?;

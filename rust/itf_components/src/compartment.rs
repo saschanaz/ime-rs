@@ -29,13 +29,8 @@ impl Compartment {
     }
 
     fn get_compartment(&self) -> windows::core::Result<ITfCompartment> {
-        let mut manager: Option<ITfCompartmentMgr> = None;
-        unsafe {
-            self.manager
-                .query(&ITfCompartmentMgr::IID, core::mem::transmute(&mut manager))
-                .ok()?;
-            manager.unwrap().GetCompartment(&self.guid)
-        }
+        let manager: ITfCompartmentMgr = self.manager.cast()?;
+        unsafe { manager.GetCompartment(&self.guid) }
     }
 
     pub fn get_bool(&self) -> windows::core::Result<bool> {
@@ -72,15 +67,8 @@ impl Compartment {
         if self.guid == GUID_COMPARTMENT_KEYBOARD_OPENCLOSE {
             return Ok(());
         }
-        let mut manager: Option<ITfCompartmentMgr> = None;
-        unsafe {
-            self.manager
-                .query(&ITfCompartmentMgr::IID, core::mem::transmute(&mut manager))
-                .ok()?;
-            manager
-                .unwrap()
-                .ClearCompartment(self.tf_client_id, &self.guid)
-        }
+        let manager: ITfCompartmentMgr = self.manager.cast()?;
+        unsafe { manager.ClearCompartment(self.tf_client_id, &self.guid) }
     }
 
     pub fn guid(&self) -> GUID {
