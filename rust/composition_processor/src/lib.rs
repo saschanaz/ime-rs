@@ -57,25 +57,25 @@ pub unsafe extern "C" fn compositionprocessorengine_add_virtual_key(
     wch: u16,
 ) -> bool {
     let engine = Box::leak(CompositionProcessorEngine::from_void(engine));
-    engine.add_virtual_key(wch)
+    engine.virtual_key_manager_mut().add_virtual_key(wch)
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn compositionprocessorengine_pop_virtual_key(engine: *mut c_void) {
     let engine = Box::leak(CompositionProcessorEngine::from_void(engine));
-    engine.pop_virtual_key();
+    engine.virtual_key_manager_mut().pop_virtual_key();
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn compositionprocessorengine_purge_virtual_key(engine: *mut c_void) {
     let engine = Box::leak(CompositionProcessorEngine::from_void(engine));
-    engine.purge_virtual_key();
+    engine.virtual_key_manager_mut().purge_virtual_key();
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn compositionprocessorengine_has_virtual_key(engine: *mut c_void) -> bool {
     let engine = Box::leak(CompositionProcessorEngine::from_void(engine));
-    engine.has_virtual_key()
+    engine.virtual_key_manager().has_virtual_key()
 }
 
 #[no_mangle]
@@ -83,7 +83,7 @@ pub unsafe extern "C" fn compositionprocessorengine_get_reading_string(
     engine: *mut c_void,
 ) -> *mut c_void {
     let engine = Box::leak(CompositionProcessorEngine::from_void(engine));
-    let s = engine.get_reading_string();
+    let s = engine.virtual_key_manager().get_reading_string();
     Box::into_raw(Box::new(RustStringRange::from_str(&s))) as *mut c_void
 }
 
@@ -92,7 +92,9 @@ pub unsafe extern "C" fn compositionprocessorengine_keystroke_buffer_includes_wi
     engine: *mut c_void,
 ) -> bool {
     let engine = Box::leak(CompositionProcessorEngine::from_void(engine));
-    engine.keystroke_buffer_includes_wildcard()
+    engine
+        .virtual_key_manager()
+        .keystroke_buffer_includes_wildcard()
 }
 
 #[no_mangle]

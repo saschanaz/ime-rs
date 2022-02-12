@@ -13,6 +13,9 @@ use windows::{
     },
 };
 
+pub mod keystroke_buffer;
+use keystroke_buffer::KeystrokeBuffer;
+
 mod modifiers;
 use modifiers::Modifiers;
 
@@ -23,7 +26,7 @@ mod preserved_keys;
 use preserved_keys::PreservedKeys;
 
 pub struct CompositionProcessorEngine {
-    keystroke_buffer: Vec<u16>,
+    virtual_key_manager: KeystrokeBuffer,
     table_dictionary_engine: Option<TableDictionaryEngine>,
     modifiers: Modifiers,
     punctuation_mapper: PunctuationMapper,
@@ -33,7 +36,7 @@ pub struct CompositionProcessorEngine {
 impl CompositionProcessorEngine {
     pub fn new() -> CompositionProcessorEngine {
         CompositionProcessorEngine {
-            keystroke_buffer: Vec::new(),
+            virtual_key_manager: KeystrokeBuffer::new(),
             table_dictionary_engine: None,
             modifiers: Modifiers::default(),
             punctuation_mapper: PunctuationMapper::new(),
@@ -53,38 +56,6 @@ impl CompositionProcessorEngine {
         candidate_mode: CandidateMode,
     ) -> (bool, KeystrokeCategory, KeystrokeFunction) {
         test_virtual_key(self, code, ch, composing, candidate_mode)
-    }
-
-    pub fn add_virtual_key(&mut self, wch: u16) -> bool {
-        if wch == 0 {
-            return false;
-        }
-        self.keystroke_buffer.push(wch);
-        true
-    }
-
-    pub fn pop_virtual_key(&mut self) {
-        if self.keystroke_buffer.is_empty() {
-            return;
-        }
-        self.keystroke_buffer.pop();
-    }
-
-    pub fn purge_virtual_key(&mut self) {
-        self.keystroke_buffer.clear();
-    }
-
-    pub fn has_virtual_key(&self) -> bool {
-        !self.keystroke_buffer.is_empty()
-    }
-
-    pub fn get_reading_string(&self) -> String {
-        String::from_utf16(&self.keystroke_buffer).unwrap()
-    }
-
-    pub fn keystroke_buffer_includes_wildcard(&self) -> bool {
-        self.keystroke_buffer.contains(&(b'*' as u16))
-            || self.keystroke_buffer.contains(&(b'?' as u16))
     }
 
     pub fn on_preserved_key(
@@ -156,51 +127,12 @@ impl CompositionProcessorEngine {
     pub fn preserved_keys(&self) -> &PreservedKeys {
         &self.preserved_keys
     }
-}
 
-#[cfg(test)]
-mod tests {
-    mod virtual_key {
-        use super::super::CompositionProcessorEngine;
-        #[test]
-        fn add_virtual_key() {
-            let mut engine = CompositionProcessorEngine::new();
-            engine.add_virtual_key(0xce74);
-            engine.add_virtual_key(0xac00);
-            engine.add_virtual_key(0xbbf8);
-            assert_eq!(engine.get_reading_string(), "카가미");
-        }
+    pub fn virtual_key_manager(&self) -> &KeystrokeBuffer {
+        &self.virtual_key_manager
+    }
 
-        #[test]
-        fn pop_virtual_key() {
-            let mut engine = CompositionProcessorEngine::new();
-            engine.add_virtual_key(0xb8e8);
-            engine.add_virtual_key(0xc2e4);
-            engine.add_virtual_key(0xb9ac);
-            engine.add_virtual_key(0xce74);
-            engine.pop_virtual_key();
-            engine.pop_virtual_key();
-            assert_eq!(engine.get_reading_string(), "루실");
-        }
-
-        #[test]
-        fn purge_virtual_key() {
-            let mut engine = CompositionProcessorEngine::new();
-            engine.add_virtual_key(0xce74);
-            engine.pop_virtual_key();
-            assert_eq!(engine.get_reading_string(), "");
-        }
-
-        #[test]
-        fn has_virtual_key() {
-            let mut engine = CompositionProcessorEngine::new();
-            assert!(!engine.has_virtual_key());
-
-            engine.add_virtual_key(0xce74);
-            assert!(engine.has_virtual_key());
-
-            engine.pop_virtual_key();
-            assert!(!engine.has_virtual_key());
-        }
+    pub fn virtual_key_manager_mut(&mut self) -> &mut KeystrokeBuffer {
+        &mut self.virtual_key_manager
     }
 }

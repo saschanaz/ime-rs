@@ -103,9 +103,13 @@ pub fn test_virtual_key(
         || candidate_mode == CandidateMode::Incremental
         || candidate_mode == CandidateMode::None
     {
-        if (ch == '*' || ch == '?') && engine.has_virtual_key() {
+        if (ch == '*' || ch == '?') && engine.virtual_key_manager().has_virtual_key() {
             return (true, KeystrokeCategory::Composing, KeystrokeFunction::Input);
-        } else if engine.keystroke_buffer_includes_wildcard() && code == VK_SPACE.0 {
+        } else if engine
+            .virtual_key_manager()
+            .keystroke_buffer_includes_wildcard()
+            && code == VK_SPACE.0
+        {
             return (
                 true,
                 KeystrokeCategory::Composing,
