@@ -46,6 +46,9 @@ extern "C" {
 
 bool compositionprocessorengine_add_virtual_key(void *engine, uint16_t wch);
 
+void compositionprocessorengine_compartmentwrapper_conversion_mode_compartment_updated(void *engine,
+                                                                                       ITfThreadMgr* thread_mgr);
+
 void compositionprocessorengine_free(void *engine);
 
 void *compositionprocessorengine_get_reading_string(void *engine);
@@ -64,7 +67,7 @@ bool compositionprocessorengine_modifiers_is_shift_key_down_only(void *engine);
 
 void compositionprocessorengine_modifiers_update(void *engine, WPARAM w, LPARAM l);
 
-void *compositionprocessorengine_new();
+void *compositionprocessorengine_new(ITfThreadMgr* thread_mgr, uint32_t tf_client_id);
 
 HRESULT compositionprocessorengine_on_preserved_key(void *engine,
                                                     const GUID *guid,

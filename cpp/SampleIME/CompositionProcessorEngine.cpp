@@ -67,7 +67,7 @@ BOOL CSampleIME::_AddTextProcessorEngine()
     // Create composition processor engine
     if (_pCompositionProcessorEngine == nullptr)
     {
-        _pCompositionProcessorEngine = new (std::nothrow) CCompositionProcessorEngine();
+        _pCompositionProcessorEngine = new (std::nothrow) CCompositionProcessorEngine(_GetThreadMgr(), _GetClientId());
     }
     if (!_pCompositionProcessorEngine)
     {
@@ -95,7 +95,8 @@ BOOL CSampleIME::_AddTextProcessorEngine()
 //
 //----------------------------------------------------------------------------
 
-CCompositionProcessorEngine::CCompositionProcessorEngine()
+CCompositionProcessorEngine::CCompositionProcessorEngine(ITfThreadMgr *threadMgr, TfClientId clientId)
+    : engine_rust(threadMgr, clientId)
 {
     _langid = 0xffff;
     _guidProfile = GUID_NULL;
@@ -515,57 +516,7 @@ HRESULT CCompositionProcessorEngine::CompartmentCallback(_In_ void *pv, REFGUID 
 
 void CCompositionProcessorEngine::ConversionModeCompartmentUpdated(_In_ ITfThreadMgr *pThreadMgr)
 {
-    if (!_pCompartmentConversion)
-    {
-        return;
-    }
-
-    uint32_t conversionMode = 0;
-    if (FAILED(_pCompartmentConversion->_GetCompartmentU32(conversionMode)))
-    {
-        return;
-    }
-
-    bool isDouble = false;
-    CCompartment CompartmentDoubleSingleByte(pThreadMgr, _tfClientId, SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE);
-    if (SUCCEEDED(CompartmentDoubleSingleByte._GetCompartmentBOOL(isDouble)))
-    {
-        if (!isDouble && (conversionMode & TF_CONVERSIONMODE_FULLSHAPE))
-        {
-            CompartmentDoubleSingleByte._SetCompartmentBOOL(true);
-        }
-        else if (isDouble && !(conversionMode & TF_CONVERSIONMODE_FULLSHAPE))
-        {
-            CompartmentDoubleSingleByte._SetCompartmentBOOL(false);
-        }
-    }
-    bool isPunctuation = false;
-    CCompartment CompartmentPunctuation(pThreadMgr, _tfClientId, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION);
-    if (SUCCEEDED(CompartmentPunctuation._GetCompartmentBOOL(isPunctuation)))
-    {
-        if (!isPunctuation && (conversionMode & TF_CONVERSIONMODE_SYMBOL))
-        {
-            CompartmentPunctuation._SetCompartmentBOOL(true);
-        }
-        else if (isPunctuation && !(conversionMode & TF_CONVERSIONMODE_SYMBOL))
-        {
-            CompartmentPunctuation._SetCompartmentBOOL(false);
-        }
-    }
-
-    bool fOpen = false;
-    CCompartment CompartmentKeyboardOpen(pThreadMgr, _tfClientId, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
-    if (SUCCEEDED(CompartmentKeyboardOpen._GetCompartmentBOOL(fOpen)))
-    {
-        if (fOpen && !(conversionMode & TF_CONVERSIONMODE_NATIVE))
-        {
-            CompartmentKeyboardOpen._SetCompartmentBOOL(false);
-        }
-        else if (!fOpen && (conversionMode & TF_CONVERSIONMODE_NATIVE))
-        {
-            CompartmentKeyboardOpen._SetCompartmentBOOL(true);
-        }
-    }
+    engine_rust.ConversionModeCompartmentUpdated(pThreadMgr);
 }
 
 //+---------------------------------------------------------------------------
@@ -720,8 +671,9 @@ std::tuple<bool, KeystrokeCategory, KeystrokeFunction> CCompositionProcessorEngi
     return engine_rust.TestVirtualKey(uCode, wch, fComposing, candidateMode);
 }
 
-CCompositionProcessorEngine::CRustCompositionProcessorEngine::CRustCompositionProcessorEngine() {
-    engine = compositionprocessorengine_new();
+CCompositionProcessorEngine::CRustCompositionProcessorEngine::CRustCompositionProcessorEngine(ITfThreadMgr *threadMgr, TfClientId clientId) {
+    threadMgr->AddRef();
+    engine = compositionprocessorengine_new(threadMgr, clientId);
 }
 
 CCompositionProcessorEngine::CRustCompositionProcessorEngine::~CRustCompositionProcessorEngine() {
@@ -806,4 +758,9 @@ wchar_t CCompositionProcessorEngine::CRustCompositionProcessorEngine::Punctuatio
 HRESULT CCompositionProcessorEngine::CRustCompositionProcessorEngine::PreservedKeysInit(ITfThreadMgr* threadMgr, TfClientId clientId) {
     threadMgr->AddRef();
     return compositionprocessorengine_preserved_keys_init(engine, threadMgr, clientId);
-};
+}
+
+void CCompositionProcessorEngine::CRustCompositionProcessorEngine::ConversionModeCompartmentUpdated(ITfThreadMgr *threadMgr) {
+    threadMgr->AddRef();
+    compositionprocessorengine_compartmentwrapper_conversion_mode_compartment_updated(engine, threadMgr);
+}

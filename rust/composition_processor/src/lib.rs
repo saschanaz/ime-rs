@@ -19,8 +19,14 @@ mod test_virtual_key;
 use test_virtual_key::{CandidateMode, KeystrokeCategory, KeystrokeFunction};
 
 #[no_mangle]
-pub extern "C" fn compositionprocessorengine_new() -> *mut c_void {
-    Box::into_raw(Box::new(CompositionProcessorEngine::new())) as *mut c_void
+pub extern "C" fn compositionprocessorengine_new(
+    thread_mgr: ITfThreadMgr,
+    tf_client_id: u32,
+) -> *mut c_void {
+    Box::into_raw(Box::new(CompositionProcessorEngine::new(
+        thread_mgr,
+        tf_client_id,
+    ))) as *mut c_void
 }
 
 #[no_mangle]
@@ -206,4 +212,15 @@ pub unsafe extern "C" fn compositionprocessorengine_on_preserved_key(
     *out_is_eaten = *result.as_ref().unwrap_or(&false);
 
     HRESULT::from(result)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn compositionprocessorengine_compartmentwrapper_conversion_mode_compartment_updated(
+    engine: *mut c_void,
+    thread_mgr: ITfThreadMgr,
+) {
+    let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
+    engine
+        .compartment_wrapper()
+        .conversion_mode_compartment_updated(thread_mgr);
 }

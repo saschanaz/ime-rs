@@ -22,7 +22,7 @@
 class CCompositionProcessorEngine
 {
 public:
-    CCompositionProcessorEngine(void);
+    CCompositionProcessorEngine(ITfThreadMgr* threadMgr, TfClientId clientId);
     ~CCompositionProcessorEngine(void);
 
     BOOL SetupLanguageProfile(LANGID langid, REFGUID guidLanguageProfile, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
@@ -107,7 +107,7 @@ private:
     class CRustCompositionProcessorEngine {
         void* engine;
     public:
-        CRustCompositionProcessorEngine();
+        CRustCompositionProcessorEngine(ITfThreadMgr* threadMgr, TfClientId clientId);
         ~CRustCompositionProcessorEngine();
 
         std::tuple<bool, KeystrokeCategory, KeystrokeFunction> TestVirtualKey(uint16_t code, char16_t ch, bool composing, CandidateMode candidateMode);
@@ -133,6 +133,8 @@ private:
         WCHAR PunctuationsGetAlternativePunctuationCounted(WCHAR wch);
 
         HRESULT PreservedKeysInit(ITfThreadMgr* threadMgr, TfClientId clientId);
+
+        void ConversionModeCompartmentUpdated(ITfThreadMgr* threadMgr);
     };
 
     CRustCompositionProcessorEngine engine_rust;
