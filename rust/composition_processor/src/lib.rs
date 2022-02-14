@@ -224,3 +224,25 @@ pub unsafe extern "C" fn compositionprocessorengine_compartmentwrapper_conversio
         .compartment_wrapper()
         .conversion_mode_compartment_updated(thread_mgr);
 }
+
+#[no_mangle]
+pub unsafe extern "C" fn compositionprocessorengine_compartmentwrapper_private_compartments_updated(
+    engine: *mut c_void,
+    thread_mgr: ITfThreadMgr,
+) {
+    let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
+    engine
+        .compartment_wrapper()
+        .private_compartments_updated(thread_mgr);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn compositionprocessorengine_compartmentwrapper_keyboard_open_compartment_updated(
+    engine: *mut c_void,
+    thread_mgr: ITfThreadMgr,
+) {
+    let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
+    engine
+        .compartment_wrapper()
+        .keyboard_open_compartment_updated(thread_mgr);
+}

@@ -527,52 +527,7 @@ void CCompositionProcessorEngine::ConversionModeCompartmentUpdated(_In_ ITfThrea
 
 void CCompositionProcessorEngine::PrivateCompartmentsUpdated(_In_ ITfThreadMgr *pThreadMgr)
 {
-    if (!_pCompartmentConversion)
-    {
-        return;
-    }
-
-    uint32_t conversionMode = 0;
-    uint32_t conversionModePrev = 0;
-    if (FAILED(_pCompartmentConversion->_GetCompartmentU32(conversionMode)))
-    {
-        return;
-    }
-
-    conversionModePrev = conversionMode;
-
-    bool isDouble = false;
-    CCompartment CompartmentDoubleSingleByte(pThreadMgr, _tfClientId, SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE);
-    if (SUCCEEDED(CompartmentDoubleSingleByte._GetCompartmentBOOL(isDouble)))
-    {
-        if (!isDouble && (conversionMode & TF_CONVERSIONMODE_FULLSHAPE))
-        {
-            conversionMode &= ~TF_CONVERSIONMODE_FULLSHAPE;
-        }
-        else if (isDouble && !(conversionMode & TF_CONVERSIONMODE_FULLSHAPE))
-        {
-            conversionMode |= TF_CONVERSIONMODE_FULLSHAPE;
-        }
-    }
-
-    bool isPunctuation = false;
-    CCompartment CompartmentPunctuation(pThreadMgr, _tfClientId, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION);
-    if (SUCCEEDED(CompartmentPunctuation._GetCompartmentBOOL(isPunctuation)))
-    {
-        if (!isPunctuation && (conversionMode & TF_CONVERSIONMODE_SYMBOL))
-        {
-            conversionMode &= ~TF_CONVERSIONMODE_SYMBOL;
-        }
-        else if (isPunctuation && !(conversionMode & TF_CONVERSIONMODE_SYMBOL))
-        {
-            conversionMode |= TF_CONVERSIONMODE_SYMBOL;
-        }
-    }
-
-    if (conversionMode != conversionModePrev)
-    {
-        _pCompartmentConversion->_SetCompartmentU32(conversionMode);
-    }
+    engine_rust.PrivateCompartmentsUpdated(pThreadMgr);
 }
 
 //+---------------------------------------------------------------------------
@@ -583,38 +538,7 @@ void CCompositionProcessorEngine::PrivateCompartmentsUpdated(_In_ ITfThreadMgr *
 
 void CCompositionProcessorEngine::KeyboardOpenCompartmentUpdated(_In_ ITfThreadMgr *pThreadMgr)
 {
-    if (!_pCompartmentConversion)
-    {
-        return;
-    }
-
-    uint32_t conversionMode = 0;
-    uint32_t conversionModePrev = 0;
-    if (FAILED(_pCompartmentConversion->_GetCompartmentU32(conversionMode)))
-    {
-        return;
-    }
-
-    conversionModePrev = conversionMode;
-
-    bool isOpen = false;
-    CCompartment CompartmentKeyboardOpen(pThreadMgr, _tfClientId, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
-    if (SUCCEEDED(CompartmentKeyboardOpen._GetCompartmentBOOL(isOpen)))
-    {
-        if (isOpen && !(conversionMode & TF_CONVERSIONMODE_NATIVE))
-        {
-            conversionMode |= TF_CONVERSIONMODE_NATIVE;
-        }
-        else if (!isOpen && (conversionMode & TF_CONVERSIONMODE_NATIVE))
-        {
-            conversionMode &= ~TF_CONVERSIONMODE_NATIVE;
-        }
-    }
-
-    if (conversionMode != conversionModePrev)
-    {
-        _pCompartmentConversion->_SetCompartmentU32(conversionMode);
-    }
+    engine_rust.KeyboardOpenCompartmentUpdated(pThreadMgr);
 }
 
 void CCompositionProcessorEngine::ShowAllLanguageBarIcons()
@@ -763,4 +687,14 @@ HRESULT CCompositionProcessorEngine::CRustCompositionProcessorEngine::PreservedK
 void CCompositionProcessorEngine::CRustCompositionProcessorEngine::ConversionModeCompartmentUpdated(ITfThreadMgr *threadMgr) {
     threadMgr->AddRef();
     compositionprocessorengine_compartmentwrapper_conversion_mode_compartment_updated(engine, threadMgr);
+}
+
+void CCompositionProcessorEngine::CRustCompositionProcessorEngine::PrivateCompartmentsUpdated(ITfThreadMgr *threadMgr) {
+    threadMgr->AddRef();
+    compositionprocessorengine_compartmentwrapper_private_compartments_updated(engine, threadMgr);
+}
+
+void CCompositionProcessorEngine::CRustCompositionProcessorEngine::KeyboardOpenCompartmentUpdated(ITfThreadMgr *threadMgr) {
+    threadMgr->AddRef();
+    compositionprocessorengine_compartmentwrapper_keyboard_open_compartment_updated(engine, threadMgr);
 }

@@ -135,6 +135,8 @@ private:
         HRESULT PreservedKeysInit(ITfThreadMgr* threadMgr, TfClientId clientId);
 
         void ConversionModeCompartmentUpdated(ITfThreadMgr* threadMgr);
+        void PrivateCompartmentsUpdated(ITfThreadMgr* threadMgr);
+        void KeyboardOpenCompartmentUpdated(ITfThreadMgr* threadMgr);
     };
 
     CRustCompositionProcessorEngine engine_rust;

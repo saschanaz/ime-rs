@@ -49,6 +49,12 @@ bool compositionprocessorengine_add_virtual_key(void *engine, uint16_t wch);
 void compositionprocessorengine_compartmentwrapper_conversion_mode_compartment_updated(void *engine,
                                                                                        ITfThreadMgr* thread_mgr);
 
+void compositionprocessorengine_compartmentwrapper_keyboard_open_compartment_updated(void *engine,
+                                                                                     ITfThreadMgr* thread_mgr);
+
+void compositionprocessorengine_compartmentwrapper_private_compartments_updated(void *engine,
+                                                                                ITfThreadMgr* thread_mgr);
+
 void compositionprocessorengine_free(void *engine);
 
 void *compositionprocessorengine_get_reading_string(void *engine);
