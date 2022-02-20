@@ -178,7 +178,7 @@ STDAPI_(ULONG) CCompartmentEventSink::Release()
 
 STDAPI CCompartmentEventSink::OnChange(_In_ REFGUID guidCompartment)
 {
-    return _pfnCallback(_pv, guidCompartment);
+    return _pfnCallback(_pv, &guidCompartment);
 }
 
 //+---------------------------------------------------------------------------

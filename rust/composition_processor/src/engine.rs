@@ -25,7 +25,7 @@ use punctuations::PunctuationMapper;
 mod preserved_keys;
 use preserved_keys::PreservedKeys;
 
-mod compartment_wrapper;
+pub mod compartment_wrapper;
 use compartment_wrapper::CompartmentWrapper;
 
 pub struct CompositionProcessorEngine {

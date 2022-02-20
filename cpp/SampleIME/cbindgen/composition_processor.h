@@ -44,16 +44,17 @@ enum class KeystrokeFunction {
 
 extern "C" {
 
+HRESULT compartment_callback(const void *wrapper, const GUID *guid);
+
 bool compositionprocessorengine_add_virtual_key(void *engine, uint16_t wch);
 
 void compositionprocessorengine_compartmentwrapper_conversion_mode_compartment_updated(void *engine,
                                                                                        ITfThreadMgr* thread_mgr);
 
-void compositionprocessorengine_compartmentwrapper_keyboard_open_compartment_updated(void *engine,
-                                                                                     ITfThreadMgr* thread_mgr);
-
 void compositionprocessorengine_compartmentwrapper_private_compartments_updated(void *engine,
                                                                                 ITfThreadMgr* thread_mgr);
+
+const void *compositionprocessorengine_compartmentwrapper_raw_ptr(void *engine);
 
 void compositionprocessorengine_free(void *engine);
 

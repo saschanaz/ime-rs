@@ -84,9 +84,7 @@ private:
     void SetDefaultCandidateTextFont();
 	void InitializeSampleIMECompartment(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
 
-    static HRESULT CompartmentCallback(_In_ void *pv, REFGUID guidCompartment);
     void PrivateCompartmentsUpdated(_In_ ITfThreadMgr *pThreadMgr);
-    void KeyboardOpenCompartmentUpdated(_In_ ITfThreadMgr *pThreadMgr);
 
 private:
     LANGID _langid;
@@ -134,9 +132,9 @@ private:
 
         HRESULT PreservedKeysInit(ITfThreadMgr* threadMgr, TfClientId clientId);
 
+        void* CompartmentWrapperRawPtr();
         void ConversionModeCompartmentUpdated(ITfThreadMgr* threadMgr);
         void PrivateCompartmentsUpdated(ITfThreadMgr* threadMgr);
-        void KeyboardOpenCompartmentUpdated(ITfThreadMgr* threadMgr);
     };
 
     CRustCompositionProcessorEngine engine_rust;

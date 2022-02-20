@@ -28,7 +28,7 @@ private:
     void* compartment;
 };
 
-typedef HRESULT (*CESCALLBACK)(void *pv, REFGUID guidCompartment);
+typedef HRESULT (*CESCALLBACK)(const void* pv, const GUID* guidCompartment);
 
 class CCompartmentEventSink : public ITfCompartmentEventSink
 {

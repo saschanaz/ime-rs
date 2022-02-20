@@ -2,10 +2,16 @@ use globals::{
     SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION,
 };
 use itf_components::compartment::Compartment;
-use windows::Win32::UI::TextServices::{
-    ITfThreadMgr, GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION,
-    GUID_COMPARTMENT_KEYBOARD_OPENCLOSE, TF_CONVERSIONMODE_FULLSHAPE, TF_CONVERSIONMODE_NATIVE,
-    TF_CONVERSIONMODE_SYMBOL,
+use windows::{
+    core::HRESULT,
+    Win32::{
+        System::Com::{CoCreateInstance, CLSCTX_INPROC_SERVER},
+        UI::TextServices::{
+            CLSID_TF_ThreadMgr, ITfThreadMgr, GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION,
+            GUID_COMPARTMENT_KEYBOARD_INPUTMODE_SENTENCE, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE,
+            TF_CONVERSIONMODE_FULLSHAPE, TF_CONVERSIONMODE_NATIVE, TF_CONVERSIONMODE_SYMBOL,
+        },
+    },
 };
 
 pub struct CompartmentWrapper {
@@ -147,4 +153,36 @@ impl CompartmentWrapper {
             self.compartment.set_u32(conversion_mode).ok();
         }
     }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn compartment_callback(
+    wrapper: *const std::ffi::c_void,
+    guid: &windows::core::GUID,
+) -> HRESULT {
+    let wrapper = wrapper as *const CompartmentWrapper;
+
+    let thread_mgr: windows::core::Result<ITfThreadMgr> =
+        CoCreateInstance(&CLSID_TF_ThreadMgr, None, CLSCTX_INPROC_SERVER);
+
+    if thread_mgr.is_err() {
+        return HRESULT::from(thread_mgr);
+    }
+
+    let thread_mgr = thread_mgr.unwrap();
+    let wrapper = wrapper.as_ref().unwrap();
+
+    if guid == &SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE
+        || guid == &SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION
+    {
+        wrapper.private_compartments_updated(thread_mgr);
+    } else if guid == &GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION
+        || guid == &GUID_COMPARTMENT_KEYBOARD_INPUTMODE_SENTENCE
+    {
+        wrapper.conversion_mode_compartment_updated(thread_mgr);
+    } else if guid == &GUID_COMPARTMENT_KEYBOARD_OPENCLOSE {
+        wrapper.keyboard_open_compartment_updated(thread_mgr);
+    }
+
+    HRESULT::from(Ok(()))
 }

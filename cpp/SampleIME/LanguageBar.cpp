@@ -634,14 +634,14 @@ BOOL CLangBarItemButton::_UnregisterCompartment(_In_ ITfThreadMgr *pThreadMgr)
 //----------------------------------------------------------------------------
 
 // static
-HRESULT CLangBarItemButton::_CompartmentCallback(_In_ void *pv, REFGUID guidCompartment)
+HRESULT CLangBarItemButton::_CompartmentCallback(const void* pv, const GUID* guidCompartment)
 {
     CLangBarItemButton* fakeThis = (CLangBarItemButton*)pv;
 
     GUID guid = GUID_NULL;
     fakeThis->_pCompartment->_GetGUID(&guid);
 
-    if (IsEqualGUID(guid, guidCompartment))
+    if (IsEqualGUID(guid, *guidCompartment))
     {
         if (fakeThis->_pLangBarItemSink)
         {

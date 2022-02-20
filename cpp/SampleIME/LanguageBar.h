@@ -64,7 +64,7 @@ private:
 
     CCompartment* _pCompartment;
     CCompartmentEventSink* _pCompartmentEventSink;
-    static HRESULT _CompartmentCallback(_In_ void *pv, REFGUID guidCompartment);
+    static HRESULT _CompartmentCallback(const void* pv, const GUID* guidCompartment);
 
     // The cookie for the sink to CLangBarItemButton.
     static const DWORD _cookie = 0;

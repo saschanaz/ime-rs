@@ -387,10 +387,10 @@ void CCompositionProcessorEngine::SetupLanguageBar(_In_ ITfThreadMgr *pThreadMgr
     InitLanguageBar(_pLanguageBar_IMEMode, pThreadMgr, tfClientId, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
 
     _pCompartmentConversion = new (std::nothrow) CCompartment(pThreadMgr, tfClientId, GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION);
-    _pCompartmentKeyboardOpenEventSink = new (std::nothrow) CCompartmentEventSink(CompartmentCallback, this);
-    _pCompartmentConversionEventSink = new (std::nothrow) CCompartmentEventSink(CompartmentCallback, this);
-    _pCompartmentDoubleSingleByteEventSink = new (std::nothrow) CCompartmentEventSink(CompartmentCallback, this);
-    _pCompartmentPunctuationEventSink = new (std::nothrow) CCompartmentEventSink(CompartmentCallback, this);
+    _pCompartmentKeyboardOpenEventSink = new (std::nothrow) CCompartmentEventSink(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
+    _pCompartmentConversionEventSink = new (std::nothrow) CCompartmentEventSink(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
+    _pCompartmentDoubleSingleByteEventSink = new (std::nothrow) CCompartmentEventSink(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
+    _pCompartmentPunctuationEventSink = new (std::nothrow) CCompartmentEventSink(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
 
     if (_pCompartmentKeyboardOpenEventSink)
     {
@@ -465,48 +465,6 @@ void CCompositionProcessorEngine::InitializeSampleIMECompartment(_In_ ITfThreadM
 
     PrivateCompartmentsUpdated(pThreadMgr);
 }
-//+---------------------------------------------------------------------------
-//
-// CompartmentCallback
-//
-//----------------------------------------------------------------------------
-
-// static
-HRESULT CCompositionProcessorEngine::CompartmentCallback(_In_ void *pv, REFGUID guidCompartment)
-{
-    CCompositionProcessorEngine* fakeThis = (CCompositionProcessorEngine*)pv;
-    if (nullptr == fakeThis)
-    {
-        return E_INVALIDARG;
-    }
-
-    ITfThreadMgr* pThreadMgr = nullptr;
-    HRESULT hr = CoCreateInstance(CLSID_TF_ThreadMgr, nullptr, CLSCTX_INPROC_SERVER, IID_ITfThreadMgr, (void**)&pThreadMgr);
-    if (FAILED(hr))
-    {
-        return E_FAIL;
-    }
-
-    if (IsEqualGUID(guidCompartment, SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE) ||
-        IsEqualGUID(guidCompartment, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION))
-    {
-        fakeThis->PrivateCompartmentsUpdated(pThreadMgr);
-    }
-    else if (IsEqualGUID(guidCompartment, GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION) ||
-        IsEqualGUID(guidCompartment, GUID_COMPARTMENT_KEYBOARD_INPUTMODE_SENTENCE))
-    {
-        fakeThis->ConversionModeCompartmentUpdated(pThreadMgr);
-    }
-    else if (IsEqualGUID(guidCompartment, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE))
-    {
-        fakeThis->KeyboardOpenCompartmentUpdated(pThreadMgr);
-    }
-
-    pThreadMgr->Release();
-    pThreadMgr = nullptr;
-
-    return S_OK;
-}
 
 //+---------------------------------------------------------------------------
 //
@@ -528,17 +486,6 @@ void CCompositionProcessorEngine::ConversionModeCompartmentUpdated(_In_ ITfThrea
 void CCompositionProcessorEngine::PrivateCompartmentsUpdated(_In_ ITfThreadMgr *pThreadMgr)
 {
     engine_rust.PrivateCompartmentsUpdated(pThreadMgr);
-}
-
-//+---------------------------------------------------------------------------
-//
-// KeyboardOpenCompartmentUpdated
-//
-//----------------------------------------------------------------------------
-
-void CCompositionProcessorEngine::KeyboardOpenCompartmentUpdated(_In_ ITfThreadMgr *pThreadMgr)
-{
-    engine_rust.KeyboardOpenCompartmentUpdated(pThreadMgr);
 }
 
 void CCompositionProcessorEngine::ShowAllLanguageBarIcons()
@@ -684,6 +631,10 @@ HRESULT CCompositionProcessorEngine::CRustCompositionProcessorEngine::PreservedK
     return compositionprocessorengine_preserved_keys_init(engine, threadMgr, clientId);
 }
 
+void* CCompositionProcessorEngine::CRustCompositionProcessorEngine::CompartmentWrapperRawPtr() {
+    return const_cast<void*>(compositionprocessorengine_compartmentwrapper_raw_ptr(engine));
+}
+
 void CCompositionProcessorEngine::CRustCompositionProcessorEngine::ConversionModeCompartmentUpdated(ITfThreadMgr *threadMgr) {
     threadMgr->AddRef();
     compositionprocessorengine_compartmentwrapper_conversion_mode_compartment_updated(engine, threadMgr);
@@ -692,9 +643,4 @@ void CCompositionProcessorEngine::CRustCompositionProcessorEngine::ConversionMod
 void CCompositionProcessorEngine::CRustCompositionProcessorEngine::PrivateCompartmentsUpdated(ITfThreadMgr *threadMgr) {
     threadMgr->AddRef();
     compositionprocessorengine_compartmentwrapper_private_compartments_updated(engine, threadMgr);
-}
-
-void CCompositionProcessorEngine::CRustCompositionProcessorEngine::KeyboardOpenCompartmentUpdated(ITfThreadMgr *threadMgr) {
-    threadMgr->AddRef();
-    compositionprocessorengine_compartmentwrapper_keyboard_open_compartment_updated(engine, threadMgr);
 }
