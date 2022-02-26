@@ -96,10 +96,10 @@ private:
 
     // Compartment
     CCompartment* _pCompartmentConversion;
-    CCompartmentEventSink* _pCompartmentConversionEventSink;
-    CCompartmentEventSink* _pCompartmentKeyboardOpenEventSink;
-    CCompartmentEventSink* _pCompartmentDoubleSingleByteEventSink;
-    CCompartmentEventSink* _pCompartmentPunctuationEventSink;
+    ITfCompartmentEventSink* _pCompartmentConversionEventSink;
+    ITfCompartmentEventSink* _pCompartmentKeyboardOpenEventSink;
+    ITfCompartmentEventSink* _pCompartmentDoubleSingleByteEventSink;
+    ITfCompartmentEventSink* _pCompartmentPunctuationEventSink;
 
     // Rust port
     class CRustCompositionProcessorEngine {

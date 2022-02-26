@@ -13,6 +13,7 @@
 #include "Compartment.h"
 #include "cbindgen/globals.h"
 #include "cbindgen/ime.h"
+#include "cbindgen/itf_components.h"
 
 //+---------------------------------------------------------------------------
 //
@@ -184,7 +185,7 @@ void CLangBarItemButton::CleanUp()
 
     if (_pCompartmentEventSink)
     {
-        delete _pCompartmentEventSink;
+        _pCompartmentEventSink->Release();
         _pCompartmentEventSink = nullptr;
     }
 }
@@ -588,10 +589,10 @@ BOOL CLangBarItemButton::_RegisterCompartment(_In_ ITfThreadMgr *pThreadMgr, TfC
     if (_pCompartment)
     {
         // Advice ITfCompartmentEventSink
-        _pCompartmentEventSink = new (std::nothrow) CCompartmentEventSink(_CompartmentCallback, this);
+        _pCompartmentEventSink = (ITfCompartmentEventSink*)compartmenteventsink_new(_CompartmentCallback, this);
         if (_pCompartmentEventSink)
         {
-            _pCompartmentEventSink->_Advise(pThreadMgr, guidCompartment);
+            RustCompartmentSink::Advise(_pCompartmentEventSink, pThreadMgr, &guidCompartment);
         }
         else
         {
@@ -617,7 +618,7 @@ BOOL CLangBarItemButton::_UnregisterCompartment(_In_ ITfThreadMgr *pThreadMgr)
         // Unadvice ITfCompartmentEventSink
         if (_pCompartmentEventSink)
         {
-            _pCompartmentEventSink->_Unadvise();
+            RustCompartmentSink::Unadvise(_pCompartmentEventSink);
         }
 
         // clear ITfCompartment

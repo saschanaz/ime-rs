@@ -14,6 +14,7 @@
 #include "LanguageBar.h"
 #include "cbindgen/globals.h"
 #include "cbindgen/ime.h"
+#include "cbindgen/itf_components.h"
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -133,26 +134,26 @@ CCompositionProcessorEngine::~CCompositionProcessorEngine()
     }
     if (_pCompartmentKeyboardOpenEventSink)
     {
-        _pCompartmentKeyboardOpenEventSink->_Unadvise();
-        delete _pCompartmentKeyboardOpenEventSink;
+        RustCompartmentSink::Unadvise(_pCompartmentKeyboardOpenEventSink);
+        _pCompartmentKeyboardOpenEventSink->Release();
         _pCompartmentKeyboardOpenEventSink = nullptr;
     }
     if (_pCompartmentConversionEventSink)
     {
-        _pCompartmentConversionEventSink->_Unadvise();
-        delete _pCompartmentConversionEventSink;
+        RustCompartmentSink::Unadvise(_pCompartmentConversionEventSink);
+        _pCompartmentConversionEventSink->Release();
         _pCompartmentConversionEventSink = nullptr;
     }
     if (_pCompartmentDoubleSingleByteEventSink)
     {
-        _pCompartmentDoubleSingleByteEventSink->_Unadvise();
-        delete _pCompartmentDoubleSingleByteEventSink;
+        RustCompartmentSink::Unadvise(_pCompartmentDoubleSingleByteEventSink);
+        _pCompartmentDoubleSingleByteEventSink->Release();
         _pCompartmentDoubleSingleByteEventSink = nullptr;
     }
     if (_pCompartmentPunctuationEventSink)
     {
-        _pCompartmentPunctuationEventSink->_Unadvise();
-        delete _pCompartmentPunctuationEventSink;
+        RustCompartmentSink::Unadvise(_pCompartmentPunctuationEventSink);
+        _pCompartmentPunctuationEventSink->Release();
         _pCompartmentPunctuationEventSink = nullptr;
     }
 }
@@ -387,26 +388,26 @@ void CCompositionProcessorEngine::SetupLanguageBar(_In_ ITfThreadMgr *pThreadMgr
     InitLanguageBar(_pLanguageBar_IMEMode, pThreadMgr, tfClientId, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
 
     _pCompartmentConversion = new (std::nothrow) CCompartment(pThreadMgr, tfClientId, GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION);
-    _pCompartmentKeyboardOpenEventSink = new (std::nothrow) CCompartmentEventSink(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
-    _pCompartmentConversionEventSink = new (std::nothrow) CCompartmentEventSink(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
-    _pCompartmentDoubleSingleByteEventSink = new (std::nothrow) CCompartmentEventSink(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
-    _pCompartmentPunctuationEventSink = new (std::nothrow) CCompartmentEventSink(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
+    _pCompartmentKeyboardOpenEventSink = (ITfCompartmentEventSink*)compartmenteventsink_new(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
+    _pCompartmentConversionEventSink = (ITfCompartmentEventSink*)compartmenteventsink_new(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
+    _pCompartmentDoubleSingleByteEventSink = (ITfCompartmentEventSink*)compartmenteventsink_new(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
+    _pCompartmentPunctuationEventSink = (ITfCompartmentEventSink*)compartmenteventsink_new(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
 
     if (_pCompartmentKeyboardOpenEventSink)
     {
-        _pCompartmentKeyboardOpenEventSink->_Advise(pThreadMgr, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
+        RustCompartmentSink::Advise(_pCompartmentKeyboardOpenEventSink, pThreadMgr, &GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
     }
     if (_pCompartmentConversionEventSink)
     {
-        _pCompartmentConversionEventSink->_Advise(pThreadMgr, GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION);
+        RustCompartmentSink::Advise(_pCompartmentConversionEventSink, pThreadMgr, &GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION);
     }
     if (_pCompartmentDoubleSingleByteEventSink)
     {
-        _pCompartmentDoubleSingleByteEventSink->_Advise(pThreadMgr, SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE);
+        RustCompartmentSink::Advise(_pCompartmentDoubleSingleByteEventSink, pThreadMgr, &SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE);
     }
     if (_pCompartmentPunctuationEventSink)
     {
-        _pCompartmentPunctuationEventSink->_Advise(pThreadMgr, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION);
+        RustCompartmentSink::Advise(_pCompartmentPunctuationEventSink, pThreadMgr, &SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION);
     }
 
     return;

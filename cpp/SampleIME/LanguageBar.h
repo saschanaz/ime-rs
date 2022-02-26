@@ -8,7 +8,6 @@
 #pragma once
 
 class CCompartment;
-class CCompartmentEventSink;
 
 class CLangBarItemButton : public ITfLangBarItemButton,
     public ITfSource
@@ -63,7 +62,7 @@ private:
     DWORD _status;
 
     CCompartment* _pCompartment;
-    CCompartmentEventSink* _pCompartmentEventSink;
+    ITfCompartmentEventSink* _pCompartmentEventSink;
     static HRESULT _CompartmentCallback(const void* pv, const GUID* guidCompartment);
 
     // The cookie for the sink to CLangBarItemButton.

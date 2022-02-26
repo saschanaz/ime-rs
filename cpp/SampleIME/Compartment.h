@@ -28,31 +28,9 @@ private:
     void* compartment;
 };
 
-typedef HRESULT (*CESCALLBACK)(const void* pv, const GUID* guidCompartment);
-
-class CCompartmentEventSink : public ITfCompartmentEventSink
+class RustCompartmentSink
 {
 public:
-    CCompartmentEventSink(_In_ CESCALLBACK pfnCallback, _In_ void *pv);
-    ~CCompartmentEventSink();
-
-    // IUnknown
-    STDMETHODIMP QueryInterface(REFIID riid, _Outptr_ void **ppvObj);
-    STDMETHODIMP_(ULONG) AddRef(void);
-    STDMETHODIMP_(ULONG) Release(void);
-
-    // ITfCompartmentEventSink
-    STDMETHODIMP OnChange(_In_ REFGUID guid);
-
-    // function
-    HRESULT _Advise(_In_ IUnknown *punk, _In_ REFGUID guidCompartment);
-    HRESULT _Unadvise();
-
-private:
-    ITfCompartment *_pCompartment;
-    DWORD _dwCookie;
-    CESCALLBACK _pfnCallback;
-    void *_pv;
-
-    LONG _refCount;
+    static HRESULT Advise(ITfCompartmentEventSink *sink, IUnknown *punk, const GUID *guid);
+    static HRESULT Unadvise(ITfCompartmentEventSink *sink);
 };
