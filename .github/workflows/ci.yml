@@ -14,11 +14,14 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Install stable toolchain
+      - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          # windows-rs 0.31+ requires Nightly to use #[implement].
+          # https://github.com/microsoft/windows-rs/issues/1408#issuecomment-1021692345
+          # https://github.com/microsoft/windows-rs/issues/1523
+          toolchain: nightly
           override: true
 
       - name: Run cargo test
@@ -36,11 +39,14 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Install stable toolchain
+      - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          # windows-rs 0.31+ requires Nightly to use #[implement].
+          # https://github.com/microsoft/windows-rs/issues/1408#issuecomment-1021692345
+          # https://github.com/microsoft/windows-rs/issues/1523
+          toolchain: nightly
           override: true
           components: rustfmt, clippy
 

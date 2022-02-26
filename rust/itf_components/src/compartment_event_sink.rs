@@ -1,4 +1,6 @@
 #![allow(clippy::missing_safety_doc)]
+// https://github.com/microsoft/windows-rs/issues/1506
+#![allow(clippy::not_unsafe_ptr_arg_deref)]
 
 use std::ffi::c_void;
 
