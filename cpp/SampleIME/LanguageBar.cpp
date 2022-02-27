@@ -428,14 +428,14 @@ STDAPI CLangBarItemButton::GetIcon(_Out_ HICON *phIcon)
     {
         if (DLL_INSTANCE)
         {
-            *phIcon = reinterpret_cast<HICON>(LoadImage(DLL_INSTANCE, MAKEINTRESOURCE(_onIconIndex), IMAGE_ICON, desiredSize, desiredSize, 0));
+            *phIcon = get_icon(desiredSize, _onIconIndex);
         }
     }
     else
     {
         if (DLL_INSTANCE)
         {
-            *phIcon = reinterpret_cast<HICON>(LoadImage(DLL_INSTANCE, MAKEINTRESOURCE(_offIconIndex), IMAGE_ICON, desiredSize, desiredSize, 0));
+            *phIcon = get_icon(desiredSize, _offIconIndex);
         }
     }
 
