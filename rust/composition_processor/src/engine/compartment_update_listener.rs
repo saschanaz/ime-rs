@@ -14,14 +14,14 @@ use windows::{
     },
 };
 
-pub struct CompartmentWrapper {
+pub struct CompartmentUpdateListener {
     compartment: Compartment,
     tf_client_id: u32,
 }
 
-impl CompartmentWrapper {
-    pub fn new(thread_mgr: ITfThreadMgr, tf_client_id: u32) -> CompartmentWrapper {
-        CompartmentWrapper {
+impl CompartmentUpdateListener {
+    pub fn new(thread_mgr: ITfThreadMgr, tf_client_id: u32) -> CompartmentUpdateListener {
+        CompartmentUpdateListener {
             compartment: Compartment::new(
                 &Some(thread_mgr.into()),
                 tf_client_id,
@@ -160,7 +160,7 @@ pub unsafe extern "C" fn compartment_callback(
     wrapper: *const std::ffi::c_void,
     guid: &windows::core::GUID,
 ) -> HRESULT {
-    let wrapper = wrapper as *const CompartmentWrapper;
+    let wrapper = wrapper as *const CompartmentUpdateListener;
 
     let thread_mgr: windows::core::Result<ITfThreadMgr> =
         CoCreateInstance(&CLSID_TF_ThreadMgr, None, CLSCTX_INPROC_SERVER);

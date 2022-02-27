@@ -25,8 +25,8 @@ use punctuations::PunctuationMapper;
 mod preserved_keys;
 use preserved_keys::PreservedKeys;
 
-pub mod compartment_wrapper;
-use compartment_wrapper::CompartmentWrapper;
+pub mod compartment_update_listener;
+use compartment_update_listener::CompartmentUpdateListener;
 
 pub struct CompositionProcessorEngine {
     virtual_key_manager: KeystrokeBuffer,
@@ -34,7 +34,7 @@ pub struct CompositionProcessorEngine {
     modifiers: Modifiers,
     punctuation_mapper: PunctuationMapper,
     preserved_keys: PreservedKeys,
-    compartment_wrapper: CompartmentWrapper,
+    compartment_wrapper: CompartmentUpdateListener,
 }
 
 impl CompositionProcessorEngine {
@@ -45,7 +45,7 @@ impl CompositionProcessorEngine {
             modifiers: Modifiers::default(),
             punctuation_mapper: PunctuationMapper::new(),
             preserved_keys: PreservedKeys::new(),
-            compartment_wrapper: CompartmentWrapper::new(thread_mgr, tf_client_id),
+            compartment_wrapper: CompartmentUpdateListener::new(thread_mgr, tf_client_id),
         }
     }
 
@@ -141,7 +141,7 @@ impl CompositionProcessorEngine {
         &mut self.virtual_key_manager
     }
 
-    pub fn compartment_wrapper(&self) -> &CompartmentWrapper {
+    pub fn compartment_wrapper(&self) -> &CompartmentUpdateListener {
         &self.compartment_wrapper
     }
 }
