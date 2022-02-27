@@ -105,7 +105,6 @@ CCompositionProcessorEngine::CCompositionProcessorEngine(ITfThreadMgr *threadMgr
 
     _pLanguageBar_IMEMode = nullptr;
 
-    _pCompartmentConversion = nullptr;
     _pCompartmentKeyboardOpenEventSink = nullptr;
     _pCompartmentConversionEventSink = nullptr;
     _pCompartmentDoubleSingleByteEventSink = nullptr;
@@ -126,11 +125,6 @@ CCompositionProcessorEngine::~CCompositionProcessorEngine()
         _pLanguageBar_IMEMode = nullptr;
     }
 
-    if (_pCompartmentConversion)
-    {
-        delete _pCompartmentConversion;
-        _pCompartmentConversion = nullptr;
-    }
     if (_pCompartmentKeyboardOpenEventSink)
     {
         RustCompartmentSink::Unadvise(_pCompartmentKeyboardOpenEventSink);
@@ -385,7 +379,6 @@ void CCompositionProcessorEngine::SetupLanguageBar(_In_ ITfThreadMgr *pThreadMgr
 
     RustLangBarItemButton::Init(_pLanguageBar_IMEMode, pThreadMgr, tfClientId, &GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
 
-    _pCompartmentConversion = new (std::nothrow) CCompartment(pThreadMgr, tfClientId, GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION);
     _pCompartmentKeyboardOpenEventSink = (ITfCompartmentEventSink*)compartmenteventsink_new(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
     _pCompartmentConversionEventSink = (ITfCompartmentEventSink*)compartmenteventsink_new(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
     _pCompartmentDoubleSingleByteEventSink = (ITfCompartmentEventSink*)compartmenteventsink_new(compartment_callback, engine_rust.CompartmentWrapperRawPtr());

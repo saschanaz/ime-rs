@@ -92,7 +92,6 @@ private:
     ITfLangBarItemButton* _pLanguageBar_IMEMode;
 
     // Compartment
-    CCompartment* _pCompartmentConversion;
     ITfCompartmentEventSink* _pCompartmentConversionEventSink;
     ITfCompartmentEventSink* _pCompartmentKeyboardOpenEventSink;
     ITfCompartmentEventSink* _pCompartmentDoubleSingleByteEventSink;
