@@ -93,6 +93,7 @@ void CCompartment::_GetGUID(GUID* pguid) const {
 
 HRESULT RustCompartmentSink::Advise(ITfCompartmentEventSink *sink, IUnknown *punk, const GUID *guid) {
     sink->AddRef();
+    punk->AddRef();
     return compartmenteventsink_advise(sink, punk, guid);
 }
 
