@@ -7,7 +7,7 @@ edition = "2021"
 
 [lib]
 name = "ime"
-crate-type = ["staticlib"]
+crate-type = ["rlib", "staticlib"]
 
 [dependencies]
 globals = { path = "../globals" }

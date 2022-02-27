@@ -31,4 +31,19 @@ void *compartmenteventsink_new(CESCALLBACK callback, const void *pv);
 
 HRESULT compartmenteventsink_unadvise(ITfCompartmentEventSink* sink);
 
+void langbaritembutton_cleanup(ITfLangBarItemButton* button);
+
+HRESULT langbaritembutton_init(ITfLangBarItemButton* button,
+                               ITfThreadMgr* thread_mgr,
+                               uint32_t tf_client_id,
+                               const GUID *compartment_guid);
+
+void *langbaritembutton_new(const GUID *item_guid,
+                            void *description,
+                            void *tooltip,
+                            uint32_t on_icon_index,
+                            uint32_t off_icon_index);
+
+HRESULT langbaritembutton_set_status(ITfLangBarItemButton* button, uint32_t status, bool set);
+
 } // extern "C"

@@ -1,4 +1,4 @@
 mod com;
 mod dll;
-mod icon;
+pub mod icon;
 mod registry;

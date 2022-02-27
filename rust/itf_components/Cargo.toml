@@ -10,11 +10,14 @@ name = "itf_components"
 crate-type = ["rlib", "staticlib"]
 
 [dependencies]
+ime = { path = "../ime" }
 globals = { path = "../globals" }
+ruststringrange = { path = "../ruststringrange" }
 
 [dependencies.windows]
 version = "0.32.0"
 features = [
+  "alloc",
   "implement",
   "Win32_Foundation",
   "Win32_UI_TextServices",

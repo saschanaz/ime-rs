@@ -77,10 +77,7 @@ public:
     const uint32_t CandidateWindowWidth = 13;  // * tmMaxCharWidth
 
 private:
-    BOOL InitLanguageBar(_In_ CLangBarItemButton *pLanguageBar, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId, REFGUID guidCompartment);
-
     void SetupLanguageBar(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
-    void CreateLanguageBarButton(DWORD dwEnable, GUID guidLangBar, _In_z_ LPCWSTR pwszDescriptionValue, _In_z_ LPCWSTR pwszTooltipValue, DWORD dwOnIconIndex, DWORD dwOffIconIndex, _Outptr_result_maybenull_ CLangBarItemButton **ppLangBarItemButton);
     void SetDefaultCandidateTextFont();
 	void InitializeSampleIMECompartment(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
 
@@ -92,7 +89,7 @@ private:
     TfClientId  _tfClientId;
 
     // Language bar data
-    CLangBarItemButton* _pLanguageBar_IMEMode;
+    ITfLangBarItemButton* _pLanguageBar_IMEMode;
 
     // Compartment
     CCompartment* _pCompartmentConversion;

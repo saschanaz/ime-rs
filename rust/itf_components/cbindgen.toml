@@ -1,3 +1,5 @@
 [export.rename]
 "IUnknown" = "IUnknown*"
 "ITfCompartmentEventSink" = "ITfCompartmentEventSink*"
+"ITfLangBarItemButton" = "ITfLangBarItemButton*"
+"ITfThreadMgr" = "ITfThreadMgr*"

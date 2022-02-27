@@ -10,7 +10,6 @@
 #include "KeyHandlerEditSession.h"
 #include "SampleIMEBaseStructure.h"
 
-class CLangBarItemButton;
 class CCandidateListUIPresenter;
 class CCompositionProcessorEngine;
 
@@ -211,9 +210,6 @@ private:
 
     // Composition Processor Engine object.
     CCompositionProcessorEngine* _pCompositionProcessorEngine;
-
-    // Language bar item object.
-    CLangBarItemButton* _pLangBarItem;
 
     // the current composition object.
     ITfComposition* _pComposition;

@@ -122,8 +122,7 @@ CCompositionProcessorEngine::~CCompositionProcessorEngine()
 {
     if (_pLanguageBar_IMEMode)
     {
-        _pLanguageBar_IMEMode->CleanUp();
-        _pLanguageBar_IMEMode->Release();
+        RustLangBarItemButton::Cleanup(_pLanguageBar_IMEMode);
         _pLanguageBar_IMEMode = nullptr;
     }
 
@@ -382,10 +381,9 @@ void CCompositionProcessorEngine::OnPreservedKey(REFGUID rguid, _Out_ BOOL *pIsE
 
 void CCompositionProcessorEngine::SetupLanguageBar(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId)
 {
-    DWORD dwEnable = 1;
-    CreateLanguageBarButton(dwEnable, GUID_LBI_INPUTMODE, Global::LangbarImeModeDescription, Global::ImeModeDescription, Global::ImeModeOnIcoIndex, Global::ImeModeOffIcoIndex, &_pLanguageBar_IMEMode);
+    _pLanguageBar_IMEMode = RustLangBarItemButton::New();
 
-    InitLanguageBar(_pLanguageBar_IMEMode, pThreadMgr, tfClientId, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
+    RustLangBarItemButton::Init(_pLanguageBar_IMEMode, pThreadMgr, tfClientId, &GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
 
     _pCompartmentConversion = new (std::nothrow) CCompartment(pThreadMgr, tfClientId, GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION);
     _pCompartmentKeyboardOpenEventSink = (ITfCompartmentEventSink*)compartmenteventsink_new(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
@@ -411,45 +409,6 @@ void CCompositionProcessorEngine::SetupLanguageBar(_In_ ITfThreadMgr *pThreadMgr
     }
 
     return;
-}
-
-//+---------------------------------------------------------------------------
-//
-// CreateLanguageBarButton
-//
-//----------------------------------------------------------------------------
-
-void CCompositionProcessorEngine::CreateLanguageBarButton(DWORD dwEnable, GUID guidLangBar, _In_z_ LPCWSTR pwszDescriptionValue, _In_z_ LPCWSTR pwszTooltipValue, DWORD dwOnIconIndex, DWORD dwOffIconIndex, _Outptr_result_maybenull_ CLangBarItemButton **ppLangBarItemButton)
-{
-	dwEnable;
-
-    if (ppLangBarItemButton)
-    {
-        *ppLangBarItemButton = new (std::nothrow) CLangBarItemButton(guidLangBar, pwszDescriptionValue, pwszTooltipValue, dwOnIconIndex, dwOffIconIndex);
-    }
-
-    return;
-}
-
-//+---------------------------------------------------------------------------
-//
-// InitLanguageBar
-//
-//----------------------------------------------------------------------------
-
-BOOL CCompositionProcessorEngine::InitLanguageBar(_In_ CLangBarItemButton *pLangBarItemButton, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId, REFGUID guidCompartment)
-{
-    if (pLangBarItemButton)
-    {
-        if (pLangBarItemButton->_AddItem(pThreadMgr) == S_OK)
-        {
-            if (pLangBarItemButton->_RegisterCompartment(pThreadMgr, tfClientId, guidCompartment))
-            {
-                return TRUE;
-            }
-        }
-    }
-    return FALSE;
 }
 
 void CCompositionProcessorEngine::InitializeSampleIMECompartment(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId)
