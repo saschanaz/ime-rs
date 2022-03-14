@@ -11,7 +11,7 @@ This is a porting project for Microsoft Chinese (Simplified, China) IME sample f
 
 ## Deploy
 
-`regsvr32 cpp/x64/Debug/SampleIME.dll` on an admin priviliged terminal.
+`regsvr32 cpp/x64/Debug/SampleIME.dll` on an admin privilieged terminal.
 
 ## Features
 
