@@ -21,7 +21,7 @@ use crate::compartment_event_sink::CompartmentEventSink;
 #[implement(ITfLangBarItemButton, ITfSource)]
 pub struct LangBarItemButton {
     info: TF_LANGBARITEMINFO,
-    lang_bar_item_sink: Option<ITfLangBarItemSink>,
+    lang_bar_item_sink: std::cell::RefCell<Option<ITfLangBarItemSink>>,
     on_icon_index: u32,
     off_icon_index: u32,
     tooltip: String,
@@ -58,7 +58,9 @@ impl LangBarItemButton {
             },
 
             // Initialize the sink pointer to None.
-            lang_bar_item_sink: None,
+            // Note: windows-rs 0.33+ uses &self for methods, and thus any mutation requires RefCell.
+            // See also https://github.com/microsoft/windows-rs/pull/1511
+            lang_bar_item_sink: std::cell::RefCell::new(None),
 
             // Initialize ICON index.
             on_icon_index,
@@ -182,9 +184,10 @@ impl LangBarItemButton {
             is_change = true;
         }
 
-        if is_change && self.lang_bar_item_sink.is_some() {
+        if is_change && self.lang_bar_item_sink.borrow().is_some() {
             unsafe {
                 self.lang_bar_item_sink
+                    .borrow()
                     .as_ref()
                     .unwrap()
                     .OnUpdate(TF_LBI_STATUS | TF_LBI_ICON)?;
@@ -202,7 +205,7 @@ impl LangBarItemButton {
         let button_impl = button_impl.as_ref().unwrap();
 
         if *compartment_guid == button_impl.compartment.as_ref().unwrap().guid() {
-            if let Some(lang_bar_item_sink) = button_impl.lang_bar_item_sink.as_ref() {
+            if let Some(lang_bar_item_sink) = button_impl.lang_bar_item_sink.borrow().as_ref() {
                 return HRESULT::from(lang_bar_item_sink.OnUpdate(TF_LBI_STATUS | TF_LBI_ICON));
             }
         }
@@ -218,28 +221,29 @@ impl Drop for LangBarItemButton {
 }
 
 impl ITfLangBarItem_Impl for LangBarItemButton {
-    fn GetInfo(&mut self) -> windows::core::Result<TF_LANGBARITEMINFO> {
+    fn GetInfo(&self) -> windows::core::Result<TF_LANGBARITEMINFO> {
         Ok(self.info)
     }
-    fn GetStatus(&mut self) -> windows::core::Result<u32> {
+    fn GetStatus(&self) -> windows::core::Result<u32> {
         Ok(self.status)
     }
-    fn Show(&mut self, _fshow: BOOL) -> windows::core::Result<()> {
+    fn Show(&self, _fshow: BOOL) -> windows::core::Result<()> {
         unsafe {
             self.lang_bar_item_sink
+                .borrow()
                 .as_ref()
                 .unwrap()
                 .OnUpdate(TF_LBI_STATUS)
         }
     }
-    fn GetTooltipString(&mut self) -> windows::core::Result<BSTR> {
+    fn GetTooltipString(&self) -> windows::core::Result<BSTR> {
         Ok(BSTR::from(&self.tooltip))
     }
 }
 
 impl ITfLangBarItemButton_Impl for LangBarItemButton {
     fn OnClick(
-        &mut self,
+        &self,
         _click: TfLBIClick,
         _pt: &POINT,
         _prcarea: *const RECT,
@@ -250,14 +254,14 @@ impl ITfLangBarItemButton_Impl for LangBarItemButton {
         Ok(())
     }
 
-    fn InitMenu(&mut self, _pmenu: &Option<ITfMenu>) -> windows::core::Result<()> {
+    fn InitMenu(&self, _pmenu: &Option<ITfMenu>) -> windows::core::Result<()> {
         Ok(())
     }
 
-    fn OnMenuSelect(&mut self, _wid: u32) -> windows::core::Result<()> {
+    fn OnMenuSelect(&self, _wid: u32) -> windows::core::Result<()> {
         Ok(())
     }
-    fn GetIcon(&mut self) -> windows::core::Result<HICON> {
+    fn GetIcon(&self) -> windows::core::Result<HICON> {
         if self.compartment.is_none() {
             return Err(E_FAIL.ok().unwrap_err());
         }
@@ -278,24 +282,20 @@ impl ITfLangBarItemButton_Impl for LangBarItemButton {
         Ok(ime::icon::get_icon(desired_size, index))
     }
 
-    fn GetText(&mut self) -> windows::core::Result<BSTR> {
+    fn GetText(&self) -> windows::core::Result<BSTR> {
         Ok(BSTR::from(&self.tooltip))
     }
 }
 
 impl ITfSource_Impl for LangBarItemButton {
-    fn AdviseSink(
-        &mut self,
-        riid: *const GUID,
-        punk: &Option<IUnknown>,
-    ) -> windows::core::Result<u32> {
+    fn AdviseSink(&self, riid: *const GUID, punk: &Option<IUnknown>) -> windows::core::Result<u32> {
         // We allow only ITfLangBarItemSink interface.
         if unsafe { &*riid } != &ITfLangBarItemSink::IID {
             return Err(CONNECT_E_CANNOTCONNECT.ok().unwrap_err());
         }
 
         // We support only one sink once.
-        if self.lang_bar_item_sink.is_some() {
+        if self.lang_bar_item_sink.borrow().is_some() {
             return Err(CONNECT_E_ADVISELIMIT.ok().unwrap_err());
         }
 
@@ -303,24 +303,25 @@ impl ITfSource_Impl for LangBarItemButton {
         if punk.is_none() {
             return Err(E_INVALIDARG.ok().unwrap_err());
         }
-        self.lang_bar_item_sink = Some(punk.as_ref().unwrap().cast()?);
+        self.lang_bar_item_sink
+            .replace(Some(punk.as_ref().unwrap().cast()?));
 
         // return our cookie.
         Ok(self.cookie)
     }
 
-    fn UnadviseSink(&mut self, dwcookie: u32) -> windows::core::Result<()> {
+    fn UnadviseSink(&self, dwcookie: u32) -> windows::core::Result<()> {
         // Check the given cookie.
         if dwcookie != self.cookie {
             return Err(CONNECT_E_NOCONNECTION.ok().unwrap_err());
         }
 
         // If there is no connected sink, we just fail.
-        if self.lang_bar_item_sink.is_none() {
+        if self.lang_bar_item_sink.borrow().is_none() {
             return Err(CONNECT_E_NOCONNECTION.ok().unwrap_err());
         }
 
-        self.lang_bar_item_sink = None;
+        self.lang_bar_item_sink.replace(None);
 
         Ok(())
     }

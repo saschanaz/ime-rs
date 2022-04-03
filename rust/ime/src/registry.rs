@@ -4,7 +4,7 @@ use winreg::{enums::HKEY_CLASSES_ROOT, RegKey};
 
 use crate::com::create_instance_inproc;
 use windows::Win32::{
-    Foundation::{HINSTANCE, MAX_PATH, PWSTR},
+    Foundation::{HINSTANCE, MAX_PATH},
     System::LibraryLoader::GetModuleFileNameW,
     System::SystemServices::{LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED},
     UI::TextServices::{
@@ -26,7 +26,7 @@ const TEXTSERVICE_ICON_INDEX: u32 = -12i32 as u32;
 fn get_module_file_name(dll_instance_handle: HINSTANCE) -> String {
     unsafe {
         let mut file_name = [0u16; MAX_PATH as usize];
-        GetModuleFileNameW(dll_instance_handle, PWSTR(file_name.as_mut_ptr()), MAX_PATH);
+        GetModuleFileNameW(dll_instance_handle, &mut file_name);
         String::from_utf16(&file_name).unwrap()
     }
 }
@@ -35,21 +35,19 @@ pub fn register_profile(dll_instance_handle: HINSTANCE) -> windows::core::Result
     let profile_manager: ITfInputProcessorProfileMgr =
         create_instance_inproc(&CLSID_TF_InputProcessorProfiles)?;
 
-    let mut icon_file_name: Vec<u16> = get_module_file_name(dll_instance_handle)
+    let icon_file_name: Vec<u16> = get_module_file_name(dll_instance_handle)
         .encode_utf16()
         .collect();
 
-    let mut description: Vec<u16> = TEXTSERVICE_DESC.encode_utf16().collect();
+    let description: Vec<u16> = TEXTSERVICE_DESC.encode_utf16().collect();
 
     unsafe {
         profile_manager.RegisterProfile(
             &SAMPLEIME_CLSID,
             TEXTSERVICE_LANGID,
             &SAMPLEIME_GUID_PROFILE,
-            PWSTR(description.as_mut_ptr()),
-            description.len() as u32,
-            PWSTR(icon_file_name.as_mut_ptr()),
-            icon_file_name.len() as u32,
+            &description,
+            &icon_file_name,
             TEXTSERVICE_ICON_INDEX as u32,
             HKL::default(),
             0,

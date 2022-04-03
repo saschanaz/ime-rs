@@ -6,7 +6,6 @@ use globals::{
 use windows::{
     core::{Interface, GUID},
     Win32::{
-        Foundation::PWSTR,
         System::Com::{CoCreateInstance, CLSCTX_INPROC_SERVER},
         UI::{
             Input::KeyboardAndMouse::{VK_OEM_PERIOD, VK_SHIFT, VK_SPACE},
@@ -85,16 +84,10 @@ impl PreservedKeys {
     ) -> windows::core::Result<()> {
         debug_assert!(preserved.key_guid != GUID::zeroed());
 
-        let mut desc: Vec<u16> = preserved.desc.encode_utf16().collect();
+        let desc: Vec<u16> = preserved.desc.encode_utf16().collect();
 
         unsafe {
-            keystroke_mgr.PreserveKey(
-                client_id,
-                &preserved.key_guid,
-                &preserved.key,
-                PWSTR(desc.as_mut_ptr()),
-                desc.len() as u32,
-            )
+            keystroke_mgr.PreserveKey(client_id, &preserved.key_guid, &preserved.key, &desc)
         }?;
 
         Ok(())

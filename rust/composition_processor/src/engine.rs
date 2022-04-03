@@ -7,7 +7,7 @@ use crate::test_virtual_key::{
 use windows::{
     core::GUID,
     Win32::{
-        Foundation::{HINSTANCE, MAX_PATH, PWSTR},
+        Foundation::{HINSTANCE, MAX_PATH},
         System::LibraryLoader::GetModuleFileNameW,
         UI::{Input::KeyboardAndMouse::VK_SHIFT, TextServices::ITfThreadMgr},
     },
@@ -102,7 +102,7 @@ impl CompositionProcessorEngine {
     ) {
         let file_name = unsafe {
             let mut file_name = [0u16; MAX_PATH as usize];
-            GetModuleFileNameW(dll_instance_handle, PWSTR(file_name.as_mut_ptr()), MAX_PATH);
+            GetModuleFileNameW(dll_instance_handle, &mut file_name);
             String::from_utf16(&file_name).unwrap()
         };
 

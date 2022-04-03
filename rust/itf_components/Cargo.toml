@@ -15,7 +15,7 @@ globals = { path = "../globals" }
 ruststringrange = { path = "../ruststringrange" }
 
 [dependencies.windows]
-version = "0.32.0"
+version = "0.34.0"
 features = [
   "alloc",
   "implement",
