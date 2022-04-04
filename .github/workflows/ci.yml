@@ -18,7 +18,10 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          # windows-rs 0.31+ uses features from 1.61 for #[implement].
+          # https://github.com/microsoft/windows-rs/pull/1591
+          # And 1.61 is still Nightly at this point.
+          toolchain: nightly
           override: true
 
       - name: Run cargo test
