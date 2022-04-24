@@ -279,7 +279,7 @@ impl ITfLangBarItemButton_Impl for LangBarItemButton {
             self.off_icon_index
         };
 
-        Ok(ime::icon::get_icon(desired_size, index))
+        ime::icon::get_icon(desired_size, index)
     }
 
     fn GetText(&self) -> windows::core::Result<BSTR> {
