@@ -18,10 +18,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          # windows-rs 0.31+ uses features from 1.61 for #[implement].
-          # https://github.com/microsoft/windows-rs/pull/1591
-          # And 1.61 is still beta at this point.
-          toolchain: beta
+          toolchain: stable
           override: true
 
       - name: Run cargo test
