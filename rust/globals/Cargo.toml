@@ -11,4 +11,4 @@ name = "globals"
 crate-type = ["rlib", "staticlib"]
 
 [dependencies]
-windows = "0.36.1"
+windows = "0.37.0"

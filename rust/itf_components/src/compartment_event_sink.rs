@@ -2,9 +2,10 @@
 // https://github.com/microsoft/windows-rs/issues/1506
 #![allow(clippy::not_unsafe_ptr_arg_deref)]
 
+use std::cell::{Cell, RefCell};
 use std::ffi::c_void;
 
-use windows::core::{implement, IUnknown, Interface, ToImpl, GUID, HRESULT};
+use windows::core::{implement, AsImpl, IUnknown, Interface, GUID, HRESULT};
 use windows::Win32::UI::TextServices::{
     ITfCompartment, ITfCompartmentEventSink, ITfCompartmentEventSink_Impl, ITfCompartmentMgr,
     ITfSource,
@@ -16,8 +17,8 @@ pub type CESCALLBACK = unsafe extern "C" fn(pv: *const c_void, guid: *const GUID
 pub struct CompartmentEventSink {
     callback: CESCALLBACK,
     pv: *const c_void,
-    compartment: Option<ITfCompartment>,
-    cookie: u32,
+    compartment: RefCell<Option<ITfCompartment>>,
+    cookie: Cell<u32>,
 }
 
 impl CompartmentEventSink {
@@ -25,8 +26,8 @@ impl CompartmentEventSink {
         CompartmentEventSink {
             callback,
             pv,
-            compartment: None,
-            cookie: 0,
+            compartment: RefCell::new(None),
+            cookie: Cell::new(0),
         }
     }
 
@@ -38,24 +39,28 @@ impl CompartmentEventSink {
         let manager: ITfCompartmentMgr = punk.cast()?;
 
         unsafe {
-            let sink_impl = CompartmentEventSink::to_impl(&sink);
-            sink_impl.compartment = Some(manager.GetCompartment(guid)?);
-            let source: ITfSource = sink_impl.compartment.as_mut().unwrap().cast()?;
-            sink_impl.cookie = source.AdviseSink(&ITfCompartmentEventSink::IID, &sink)?;
+            let sink_impl: &CompartmentEventSink = sink.as_impl();
+            let compartment = manager.GetCompartment(guid)?;
+            let source: ITfSource = compartment.cast()?;
+
+            sink_impl.compartment.replace(Some(compartment));
+            sink_impl
+                .cookie
+                .replace(source.AdviseSink(&ITfCompartmentEventSink::IID, &sink)?);
         }
         Ok(())
     }
 
     pub fn unadvise(sink: ITfCompartmentEventSink) -> windows::core::Result<()> {
-        let sink_impl = unsafe { CompartmentEventSink::to_impl(&sink) };
-        if let Some(ref mut compartment) = sink_impl.compartment {
+        let sink_impl: &CompartmentEventSink = sink.as_impl();
+        if let Some(compartment) = sink_impl.compartment.borrow_mut().as_mut() {
             let source: ITfSource = compartment.cast()?;
             unsafe {
-                source.UnadviseSink(sink_impl.cookie)?;
+                source.UnadviseSink(sink_impl.cookie.get())?;
             }
         }
-        sink_impl.compartment = None;
-        sink_impl.cookie = 0;
+        sink_impl.compartment.replace(None);
+        sink_impl.cookie.replace(0);
         Ok(())
     }
 }

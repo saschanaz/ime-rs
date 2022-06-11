@@ -2,11 +2,12 @@
 // https://github.com/microsoft/windows-rs/issues/1506
 #![allow(clippy::not_unsafe_ptr_arg_deref)]
 
+use std::cell::{Cell, RefCell};
 use std::ffi::c_void;
 
 use globals::SAMPLEIME_CLSID;
 use ruststringrange::RustStringRange;
-use windows::core::{implement, IUnknown, Interface, ToImpl, GUID, HRESULT};
+use windows::core::{implement, AsImpl, IUnknown, Interface, GUID, HRESULT};
 use windows::Win32::Foundation::{BOOL, BSTR, E_FAIL, E_INVALIDARG, POINT, RECT};
 use windows::Win32::System::Com::{CoCreateInstance, CLSCTX_INPROC_SERVER};
 use windows::Win32::System::Ole::{
@@ -21,16 +22,16 @@ use crate::compartment_event_sink::CompartmentEventSink;
 #[implement(ITfLangBarItemButton, ITfSource)]
 pub struct LangBarItemButton {
     info: TF_LANGBARITEMINFO,
-    lang_bar_item_sink: std::cell::RefCell<Option<ITfLangBarItemSink>>,
+    lang_bar_item_sink: RefCell<Option<ITfLangBarItemSink>>,
     on_icon_index: u32,
     off_icon_index: u32,
     tooltip: String,
 
-    added_to_lang_bar: bool,
-    status: u32,
+    added_to_lang_bar: Cell<bool>,
+    status: Cell<u32>,
 
-    compartment: Option<Compartment>,
-    compartment_event_sink: Option<ITfCompartmentEventSink>,
+    compartment: RefCell<Option<Compartment>>,
+    compartment_event_sink: RefCell<Option<ITfCompartmentEventSink>>,
 
     // The cookie for the sink to CLangBarItemButton.
     // Always 0 per the current implementation.
@@ -58,8 +59,6 @@ impl LangBarItemButton {
             },
 
             // Initialize the sink pointer to None.
-            // Note: windows-rs 0.33+ uses &self for methods, and thus any mutation requires RefCell.
-            // See also https://github.com/microsoft/windows-rs/pull/1511
             lang_bar_item_sink: std::cell::RefCell::new(None),
 
             // Initialize ICON index.
@@ -67,11 +66,11 @@ impl LangBarItemButton {
             off_icon_index,
 
             // Initialize compartment.
-            compartment: None,
-            compartment_event_sink: None,
+            compartment: RefCell::new(None),
+            compartment_event_sink: RefCell::new(None),
 
-            added_to_lang_bar: false,
-            status: 0,
+            added_to_lang_bar: Cell::new(false),
+            status: Cell::new(0),
 
             // Initialize Tooltip
             tooltip: tooltip.to_owned(),
@@ -84,14 +83,14 @@ impl LangBarItemButton {
         thread_mgr: ITfThreadMgr,
     ) -> windows::core::Result<()> {
         unsafe {
-            let button_impl = LangBarItemButton::to_impl(&button);
-            if button_impl.added_to_lang_bar {
+            let button_impl: &LangBarItemButton = button.as_impl();
+            if button_impl.added_to_lang_bar.get() {
                 return Ok(());
             }
 
             let lang_bar_item_mgr: ITfLangBarItemMgr = thread_mgr.cast()?;
             lang_bar_item_mgr.AddItem(button.clone())?;
-            button_impl.added_to_lang_bar = true;
+            button_impl.added_to_lang_bar.replace(true);
         }
         Ok(())
     }
@@ -101,14 +100,14 @@ impl LangBarItemButton {
         thread_mgr: ITfThreadMgr,
     ) -> windows::core::Result<()> {
         unsafe {
-            let button_impl = LangBarItemButton::to_impl(&button);
-            if !button_impl.added_to_lang_bar {
+            let button_impl: &LangBarItemButton = button.as_impl();
+            if !button_impl.added_to_lang_bar.get() {
                 return Ok(());
             }
 
             let lang_bar_item_mgr: ITfLangBarItemMgr = thread_mgr.cast()?;
             lang_bar_item_mgr.RemoveItem(button.clone())?;
-            button_impl.added_to_lang_bar = false;
+            button_impl.added_to_lang_bar.replace(false);
         }
         Ok(())
     }
@@ -119,34 +118,33 @@ impl LangBarItemButton {
         tf_client_id: u32,
         compartment_guid: &GUID,
     ) -> windows::core::Result<()> {
-        unsafe {
-            let button_impl = LangBarItemButton::to_impl(&button);
-            button_impl.compartment = Some(Compartment::new(
-                &Some(thread_mgr.cast()?),
-                tf_client_id,
-                *compartment_guid,
-            ));
+        let button_impl: &LangBarItemButton = button.as_impl();
+        button_impl.compartment.replace(Some(Compartment::new(
+            &Some(thread_mgr.cast()?),
+            tf_client_id,
+            *compartment_guid,
+        )));
 
-            // Advise ITfCompartmentEventSink
-            let sink: ITfCompartmentEventSink = CompartmentEventSink::new(
-                Self::compartment_callback,
-                button_impl as *const _ as *const c_void,
-            )
-            .into();
-            CompartmentEventSink::advise(sink.clone(), thread_mgr.cast()?, compartment_guid)?;
-            button_impl.compartment_event_sink = Some(sink);
-        }
+        // Advise ITfCompartmentEventSink
+        let sink: ITfCompartmentEventSink = CompartmentEventSink::new(
+            Self::compartment_callback,
+            button_impl as *const _ as *const c_void,
+        )
+        .into();
+        CompartmentEventSink::advise(sink.clone(), thread_mgr.cast()?, compartment_guid)?;
+        button_impl.compartment_event_sink.replace(Some(sink));
+
         Ok(())
     }
 
     fn unregister_compartment(&self) -> windows::core::Result<()> {
         // Unadvise ITfCompartmentEventSink
-        if let Some(compartment_event_sink) = self.compartment_event_sink.as_ref() {
+        if let Some(compartment_event_sink) = self.compartment_event_sink.borrow().as_ref() {
             CompartmentEventSink::unadvise(compartment_event_sink.clone())?;
         }
 
         // clear ITfCompartment
-        if let Some(compartment) = self.compartment.as_ref() {
+        if let Some(compartment) = self.compartment.borrow().as_ref() {
             compartment.clear()?;
         }
 
@@ -172,15 +170,16 @@ impl LangBarItemButton {
         }
     }
 
-    pub fn set_status(&mut self, status: u32, set: bool) -> windows::core::Result<()> {
+    pub fn set_status(&self, status: u32, set: bool) -> windows::core::Result<()> {
         let mut is_change = false;
+        let current_status = self.status.get();
         if set {
-            if self.status & status == 0 {
-                self.status |= status;
+            if current_status & status == 0 {
+                self.status.replace(current_status | status);
                 is_change = true;
             }
-        } else if self.status & status != 0 {
-            self.status &= !status;
+        } else if current_status & status != 0 {
+            self.status.replace(current_status & !status);
             is_change = true;
         }
 
@@ -204,7 +203,7 @@ impl LangBarItemButton {
         let button_impl = pv as *mut LangBarItemButton;
         let button_impl = button_impl.as_ref().unwrap();
 
-        if *compartment_guid == button_impl.compartment.as_ref().unwrap().guid() {
+        if *compartment_guid == button_impl.compartment.borrow().as_ref().unwrap().guid() {
             if let Some(lang_bar_item_sink) = button_impl.lang_bar_item_sink.borrow().as_ref() {
                 return HRESULT::from(lang_bar_item_sink.OnUpdate(TF_LBI_STATUS | TF_LBI_ICON));
             }
@@ -225,7 +224,7 @@ impl ITfLangBarItem_Impl for LangBarItemButton {
         Ok(self.info)
     }
     fn GetStatus(&self) -> windows::core::Result<u32> {
-        Ok(self.status)
+        Ok(self.status.get())
     }
     fn Show(&self, _fshow: BOOL) -> windows::core::Result<()> {
         unsafe {
@@ -248,7 +247,8 @@ impl ITfLangBarItemButton_Impl for LangBarItemButton {
         _pt: &POINT,
         _prcarea: *const RECT,
     ) -> windows::core::Result<()> {
-        let compartment = self.compartment.as_ref().unwrap();
+        let compartment = self.compartment.borrow();
+        let compartment = compartment.as_ref().unwrap();
         let is_on = compartment.get_bool()?;
         compartment.set_bool(!is_on)?;
         Ok(())
@@ -262,10 +262,10 @@ impl ITfLangBarItemButton_Impl for LangBarItemButton {
         Ok(())
     }
     fn GetIcon(&self) -> windows::core::Result<HICON> {
-        if self.compartment.is_none() {
+        if self.compartment.borrow().is_none() {
             return Err(E_FAIL.ok().unwrap_err());
         }
-        let is_on = self.compartment.as_ref().unwrap().get_bool()?;
+        let is_on = self.compartment.borrow().as_ref().unwrap().get_bool()?;
 
         let status = self.GetStatus()?;
 
@@ -364,16 +364,16 @@ pub unsafe extern "C" fn langbaritembutton_init(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn langbaritembutton_cleanup(button: ITfLangBarItemButton) {
+pub extern "C" fn langbaritembutton_cleanup(button: ITfLangBarItemButton) {
     LangBarItemButton::cleanup(button);
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn langbaritembutton_set_status(
+pub extern "C" fn langbaritembutton_set_status(
     button: ITfLangBarItemButton,
     status: u32,
     set: bool,
 ) -> HRESULT {
-    let button_impl = LangBarItemButton::to_impl(&button);
+    let button_impl: &LangBarItemButton = button.as_impl();
     HRESULT::from(button_impl.set_status(status, set))
 }
