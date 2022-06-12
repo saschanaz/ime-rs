@@ -198,7 +198,7 @@ impl LangBarItemButton {
 
     pub unsafe extern "C" fn compartment_callback(
         pv: *const std::ffi::c_void,
-        compartment_guid: *const windows::core::GUID,
+        compartment_guid: &windows::core::GUID,
     ) -> HRESULT {
         let button_impl = pv as *mut LangBarItemButton;
         let button_impl = button_impl.as_ref().unwrap();

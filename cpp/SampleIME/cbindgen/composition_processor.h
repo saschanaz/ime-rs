@@ -96,6 +96,8 @@ bool compositionprocessorengine_punctuations_has_alternative_punctuation(void *e
 
 void compositionprocessorengine_purge_virtual_key(void *engine);
 
+void compositionprocessorengine_set_language_bar_status(void *engine, uint32_t status, bool set);
+
 bool compositionprocessorengine_setup_language_profile(void *engine,
                                                        ITfThreadMgr* thread_mgr,
                                                        uint32_t client_id);

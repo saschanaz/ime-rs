@@ -11,7 +11,7 @@ use windows::Win32::UI::TextServices::{
     ITfSource,
 };
 
-pub type CESCALLBACK = unsafe extern "C" fn(pv: *const c_void, guid: *const GUID) -> HRESULT;
+pub type CESCALLBACK = unsafe extern "C" fn(pv: *const c_void, guid: &GUID) -> HRESULT;
 
 #[implement(ITfCompartmentEventSink)]
 pub struct CompartmentEventSink {
@@ -67,7 +67,7 @@ impl CompartmentEventSink {
 
 impl ITfCompartmentEventSink_Impl for CompartmentEventSink {
     fn OnChange(&self, guid: *const GUID) -> windows::core::Result<()> {
-        unsafe { (self.callback)(self.pv, guid).ok() }
+        unsafe { (self.callback)(self.pv, &*guid).ok() }
     }
 }
 

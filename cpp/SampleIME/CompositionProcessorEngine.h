@@ -23,7 +23,7 @@ class CCompositionProcessorEngine
 {
 public:
     CCompositionProcessorEngine(ITfThreadMgr* threadMgr, TfClientId clientId);
-    ~CCompositionProcessorEngine(void);
+    ~CCompositionProcessorEngine() = default;
 
     BOOL SetupLanguageProfile(LANGID langid, REFGUID guidLanguageProfile, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
 
@@ -77,7 +77,6 @@ public:
     const uint32_t CandidateWindowWidth = 13;  // * tmMaxCharWidth
 
 private:
-    void SetupLanguageBar(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
 	void InitializeSampleIMECompartment(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
 
     void PrivateCompartmentsUpdated(_In_ ITfThreadMgr *pThreadMgr);
@@ -86,15 +85,6 @@ private:
     LANGID _langid;
     GUID _guidProfile;
     TfClientId  _tfClientId;
-
-    // Language bar data
-    ITfLangBarItemButton* _pLanguageBar_IMEMode;
-
-    // Compartment
-    ITfCompartmentEventSink* _pCompartmentConversionEventSink;
-    ITfCompartmentEventSink* _pCompartmentKeyboardOpenEventSink;
-    ITfCompartmentEventSink* _pCompartmentDoubleSingleByteEventSink;
-    ITfCompartmentEventSink* _pCompartmentPunctuationEventSink;
 
     // Rust port
     class CRustCompositionProcessorEngine {
@@ -132,6 +122,8 @@ private:
         void* CompartmentWrapperRawPtr();
         void ConversionModeCompartmentUpdated(ITfThreadMgr* threadMgr);
         void PrivateCompartmentsUpdated(ITfThreadMgr* threadMgr);
+
+        void SetLanguageBarStatus(uint32_t status, bool set);
     };
 
     CRustCompositionProcessorEngine engine_rust;

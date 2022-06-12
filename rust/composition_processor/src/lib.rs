@@ -242,3 +242,13 @@ pub unsafe extern "C" fn compositionprocessorengine_setup_language_profile(
     let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
     engine.setup_language_profile(thread_mgr, client_id)
 }
+
+#[no_mangle]
+pub unsafe extern "C" fn compositionprocessorengine_set_language_bar_status(
+    engine: *mut c_void,
+    status: u32,
+    set: bool,
+) {
+    let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
+    engine.set_language_bar_status(status, set).ok();
+}

@@ -8,7 +8,6 @@
 #include "Private.h"
 #include "SampleIME.h"
 #include "CompositionProcessorEngine.h"
-#include "LanguageBar.h"
 #include "Globals.h"
 #include "Compartment.h"
 #include "cbindgen/globals.h"
@@ -78,35 +77,5 @@ void CSampleIME::_UpdateLanguageBarOnSetFocus(_In_ ITfDocumentMgr *pDocMgrFocus)
 
 VOID CCompositionProcessorEngine::SetLanguageBarStatus(DWORD status, BOOL isSet)
 {
-    if (_pLanguageBar_IMEMode) {
-        RustLangBarItemButton::SetStatus(_pLanguageBar_IMEMode, status, isSet);
-    }
-}
-
-ITfLangBarItemButton* RustLangBarItemButton::New() {
-    CRustStringRange langbarImeModeDescription(Global::LangbarImeModeDescription, wcslen(Global::LangbarImeModeDescription));
-    CRustStringRange imeModeIconDescription(Global::ImeModeDescription, wcslen(Global::ImeModeDescription));
-    return (ITfLangBarItemButton*)langbaritembutton_new(
-        &GUID_LBI_INPUTMODE,
-        langbarImeModeDescription.GetInternal(),
-        imeModeIconDescription.GetInternal(),
-        Global::ImeModeOnIcoIndex,
-        Global::ImeModeOffIcoIndex
-    );
-}
-
-HRESULT RustLangBarItemButton::Init(ITfLangBarItemButton* button, ITfThreadMgr* threadMgr, TfClientId clientId, const GUID* guidCompartment) {
-    button->AddRef();
-    threadMgr->AddRef();
-    return langbaritembutton_init(button, threadMgr, clientId, guidCompartment);
-}
-
-void RustLangBarItemButton::Cleanup(ITfLangBarItemButton* button) {
-    button->AddRef();
-    langbaritembutton_cleanup(button);
-}
-
-HRESULT RustLangBarItemButton::SetStatus(ITfLangBarItemButton* button, DWORD status, BOOL fSet) {
-    button->AddRef();
-    return langbaritembutton_set_status(button, status, fSet);
+    engine_rust.SetLanguageBarStatus(status, isSet);
 }

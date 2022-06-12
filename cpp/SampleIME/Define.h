@@ -8,13 +8,6 @@
 #pragma once
 #include "resource.h"
 
-#define IME_MODE_ON_ICON_INDEX      IDI_IME_MODE_ON
-#define IME_MODE_OFF_ICON_INDEX     IDI_IME_MODE_OFF
-#define IME_DOUBLE_ON_INDEX         IDI_DOUBLE_SINGLE_BYTE_ON
-#define IME_DOUBLE_OFF_INDEX        IDI_DOUBLE_SINGLE_BYTE_OFF
-#define IME_PUNCTUATION_ON_INDEX    IDI_PUNCTUATION_ON
-#define IME_PUNCTUATION_OFF_INDEX   IDI_PUNCTUATION_OFF
-
 //---------------------------------------------------------------------
 // defined Candidated Window
 //---------------------------------------------------------------------

@@ -47,7 +47,6 @@
     <ClInclude Include="GetTextExtentEditSession.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="KeyHandlerEditSession.h" />
-    <ClInclude Include="LanguageBar.h" />
     <ClInclude Include="Private.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SampleIME.h" />

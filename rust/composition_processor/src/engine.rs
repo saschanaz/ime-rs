@@ -5,7 +5,7 @@ use crate::test_virtual_key::{
     test_virtual_key, CandidateMode, KeystrokeCategory, KeystrokeFunction,
 };
 use windows::{
-    core::GUID,
+    core::{AsImpl, GUID},
     Win32::{
         Foundation::{HINSTANCE, MAX_PATH},
         System::LibraryLoader::GetModuleFileNameW,
@@ -28,6 +28,9 @@ use preserved_keys::PreservedKeys;
 pub mod compartment_update_listener;
 use compartment_update_listener::CompartmentUpdateListener;
 
+mod language_bar;
+use language_bar::LanguageBar;
+
 pub struct CompositionProcessorEngine {
     virtual_key_manager: KeystrokeBuffer,
     table_dictionary_engine: Option<TableDictionaryEngine>,
@@ -35,6 +38,7 @@ pub struct CompositionProcessorEngine {
     punctuation_mapper: PunctuationMapper,
     preserved_keys: PreservedKeys,
     compartment_wrapper: CompartmentUpdateListener,
+    language_bar: LanguageBar,
 }
 
 impl CompositionProcessorEngine {
@@ -46,6 +50,7 @@ impl CompositionProcessorEngine {
             punctuation_mapper: PunctuationMapper::new(),
             preserved_keys: PreservedKeys::new(),
             compartment_wrapper: CompartmentUpdateListener::new(thread_mgr, tf_client_id),
+            language_bar: LanguageBar::new(),
         }
     }
 
@@ -66,9 +71,13 @@ impl CompositionProcessorEngine {
 
         // TODO: fields?
 
-        self.preserved_keys().init_keys(thread_mgr, client_id).ok();
+        self.preserved_keys()
+            .init_keys(thread_mgr.clone(), client_id)
+            .ok();
         // TODO: InitializeSampleIMECompartment
-        // TODO: SetupLanguageBar
+        self.language_bar
+            .init(thread_mgr, client_id, &self.compartment_wrapper)
+            .ok();
         unsafe { ime::font::set_default_candidate_text_font() };
         self.setup_dictionary_file(
             unsafe { ime::dll::DLL_INSTANCE },
@@ -136,6 +145,10 @@ impl CompositionProcessorEngine {
 
         self.table_dictionary_engine =
             Some(TableDictionaryEngine::load(dict_path.to_str().unwrap()).unwrap())
+    }
+
+    pub fn set_language_bar_status(&mut self, status: u32, set: bool) -> windows::core::Result<()> {
+        self.language_bar.button().as_impl().set_status(status, set)
     }
 
     pub fn get_table_dictionary_engine(&self) -> &Option<TableDictionaryEngine> {

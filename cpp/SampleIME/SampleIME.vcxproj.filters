@@ -80,9 +80,6 @@
     <ClInclude Include="KeyHandlerEditSession.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LanguageBar.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Private.h">
       <Filter>Header Files</Filter>
     </ClInclude>

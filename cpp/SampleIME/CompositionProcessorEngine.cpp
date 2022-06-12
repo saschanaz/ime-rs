@@ -11,7 +11,6 @@
 #include "TfInputProcessorProfile.h"
 #include "Globals.h"
 #include "Compartment.h"
-#include "LanguageBar.h"
 #include "cbindgen/globals.h"
 #include "cbindgen/ime.h"
 #include "cbindgen/itf_components.h"
@@ -102,53 +101,6 @@ CCompositionProcessorEngine::CCompositionProcessorEngine(ITfThreadMgr *threadMgr
     _langid = 0xffff;
     _guidProfile = GUID_NULL;
     _tfClientId = TF_CLIENTID_NULL;
-
-    _pLanguageBar_IMEMode = nullptr;
-
-    _pCompartmentKeyboardOpenEventSink = nullptr;
-    _pCompartmentConversionEventSink = nullptr;
-    _pCompartmentDoubleSingleByteEventSink = nullptr;
-    _pCompartmentPunctuationEventSink = nullptr;
-}
-
-//+---------------------------------------------------------------------------
-//
-// dtor
-//
-//----------------------------------------------------------------------------
-
-CCompositionProcessorEngine::~CCompositionProcessorEngine()
-{
-    if (_pLanguageBar_IMEMode)
-    {
-        RustLangBarItemButton::Cleanup(_pLanguageBar_IMEMode);
-        _pLanguageBar_IMEMode = nullptr;
-    }
-
-    if (_pCompartmentKeyboardOpenEventSink)
-    {
-        RustCompartmentSink::Unadvise(_pCompartmentKeyboardOpenEventSink);
-        _pCompartmentKeyboardOpenEventSink->Release();
-        _pCompartmentKeyboardOpenEventSink = nullptr;
-    }
-    if (_pCompartmentConversionEventSink)
-    {
-        RustCompartmentSink::Unadvise(_pCompartmentConversionEventSink);
-        _pCompartmentConversionEventSink->Release();
-        _pCompartmentConversionEventSink = nullptr;
-    }
-    if (_pCompartmentDoubleSingleByteEventSink)
-    {
-        RustCompartmentSink::Unadvise(_pCompartmentDoubleSingleByteEventSink);
-        _pCompartmentDoubleSingleByteEventSink->Release();
-        _pCompartmentDoubleSingleByteEventSink = nullptr;
-    }
-    if (_pCompartmentPunctuationEventSink)
-    {
-        RustCompartmentSink::Unadvise(_pCompartmentPunctuationEventSink);
-        _pCompartmentPunctuationEventSink->Release();
-        _pCompartmentPunctuationEventSink = nullptr;
-    }
 }
 
 //+---------------------------------------------------------------------------
@@ -180,7 +132,6 @@ BOOL CCompositionProcessorEngine::SetupLanguageProfile(LANGID langid, REFGUID gu
     _tfClientId = tfClientId;
 
 	InitializeSampleIMECompartment(pThreadMgr, tfClientId);
-    SetupLanguageBar(pThreadMgr, tfClientId);
 
     engine_rust.SetupLanguageProfile(pThreadMgr, tfClientId);
 
@@ -372,37 +323,6 @@ void CCompositionProcessorEngine::OnPreservedKey(REFGUID rguid, _Out_ BOOL *pIsE
 //
 //----------------------------------------------------------------------------
 
-void CCompositionProcessorEngine::SetupLanguageBar(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId)
-{
-    _pLanguageBar_IMEMode = RustLangBarItemButton::New();
-
-    RustLangBarItemButton::Init(_pLanguageBar_IMEMode, pThreadMgr, tfClientId, &GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
-
-    _pCompartmentKeyboardOpenEventSink = (ITfCompartmentEventSink*)compartmenteventsink_new(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
-    _pCompartmentConversionEventSink = (ITfCompartmentEventSink*)compartmenteventsink_new(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
-    _pCompartmentDoubleSingleByteEventSink = (ITfCompartmentEventSink*)compartmenteventsink_new(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
-    _pCompartmentPunctuationEventSink = (ITfCompartmentEventSink*)compartmenteventsink_new(compartment_callback, engine_rust.CompartmentWrapperRawPtr());
-
-    if (_pCompartmentKeyboardOpenEventSink)
-    {
-        RustCompartmentSink::Advise(_pCompartmentKeyboardOpenEventSink, pThreadMgr, &GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
-    }
-    if (_pCompartmentConversionEventSink)
-    {
-        RustCompartmentSink::Advise(_pCompartmentConversionEventSink, pThreadMgr, &GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION);
-    }
-    if (_pCompartmentDoubleSingleByteEventSink)
-    {
-        RustCompartmentSink::Advise(_pCompartmentDoubleSingleByteEventSink, pThreadMgr, &SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE);
-    }
-    if (_pCompartmentPunctuationEventSink)
-    {
-        RustCompartmentSink::Advise(_pCompartmentPunctuationEventSink, pThreadMgr, &SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION);
-    }
-
-    return;
-}
-
 void CCompositionProcessorEngine::InitializeSampleIMECompartment(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId)
 {
 	// set initial mode
@@ -577,4 +497,8 @@ void CCompositionProcessorEngine::CRustCompositionProcessorEngine::ConversionMod
 void CCompositionProcessorEngine::CRustCompositionProcessorEngine::PrivateCompartmentsUpdated(ITfThreadMgr *threadMgr) {
     threadMgr->AddRef();
     compositionprocessorengine_compartmentwrapper_private_compartments_updated(engine, threadMgr);
+}
+
+void CCompositionProcessorEngine::CRustCompositionProcessorEngine::SetLanguageBarStatus(uint32_t status, bool set) {
+    compositionprocessorengine_set_language_bar_status(engine, status, set);
 }
