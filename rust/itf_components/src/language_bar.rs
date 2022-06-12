@@ -120,7 +120,7 @@ impl LangBarItemButton {
     ) -> windows::core::Result<()> {
         let button_impl: &LangBarItemButton = button.as_impl();
         button_impl.compartment.replace(Some(Compartment::new(
-            &Some(thread_mgr.cast()?),
+            thread_mgr.clone(),
             tf_client_id,
             *compartment_guid,
         )));

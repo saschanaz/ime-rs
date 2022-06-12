@@ -12,7 +12,7 @@
 class CCompartment
 {
 public:
-    CCompartment(_In_ IUnknown *punk, TfClientId tfClientId, _In_ REFGUID guidCompartment);
+    CCompartment(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId, _In_ REFGUID guidCompartment);
     ~CCompartment();
 
     HRESULT _GetCompartment(_Outptr_ ITfCompartment **ppCompartment);
@@ -26,11 +26,4 @@ public:
 
 private:
     void* compartment;
-};
-
-class RustCompartmentSink
-{
-public:
-    static HRESULT Advise(ITfCompartmentEventSink *sink, IUnknown *punk, const GUID *guid);
-    static HRESULT Unadvise(ITfCompartmentEventSink *sink);
 };

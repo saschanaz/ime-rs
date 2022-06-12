@@ -23,12 +23,39 @@ impl CompartmentUpdateListener {
     pub fn new(thread_mgr: ITfThreadMgr, tf_client_id: u32) -> CompartmentUpdateListener {
         CompartmentUpdateListener {
             compartment: Compartment::new(
-                &Some(thread_mgr.into()),
+                thread_mgr,
                 tf_client_id,
                 GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION,
             ),
             tf_client_id,
         }
+    }
+
+    pub fn init(&self, thread_mgr: ITfThreadMgr, tf_client_id: u32) -> windows::core::Result<()> {
+        let keyboard_open = Compartment::new(
+            thread_mgr.clone(),
+            tf_client_id,
+            GUID_COMPARTMENT_KEYBOARD_OPENCLOSE,
+        );
+        keyboard_open.set_bool(true).ok();
+
+        let double_single_byte = Compartment::new(
+            thread_mgr.clone(),
+            tf_client_id,
+            SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE,
+        );
+        double_single_byte.set_bool(false).ok();
+
+        let punctuation = Compartment::new(
+            thread_mgr.clone(),
+            tf_client_id,
+            SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION,
+        );
+        punctuation.set_bool(true).ok();
+
+        self.private_compartments_updated(thread_mgr);
+
+        Ok(())
     }
 
     fn toggle_compartment(
@@ -38,7 +65,7 @@ impl CompartmentUpdateListener {
         guid: windows::core::GUID,
         tf_flag: u32,
     ) -> windows::core::Result<()> {
-        let compartment = Compartment::new(&Some(thread_mgr.into()), tf_client_id, guid);
+        let compartment = Compartment::new(thread_mgr, tf_client_id, guid);
         let value = compartment.get_bool()?;
         if !value && (conversion_mode & tf_flag != 0) {
             compartment.set_bool(true)?;
@@ -90,7 +117,7 @@ impl CompartmentUpdateListener {
         guid: windows::core::GUID,
         tf_flag: u32,
     ) -> windows::core::Result<u32> {
-        let compartment = Compartment::new(&Some(thread_mgr.into()), tf_client_id, guid);
+        let compartment = Compartment::new(thread_mgr, tf_client_id, guid);
         let value = compartment.get_bool()?;
         if !value && (conversion_mode & tf_flag != 0) {
             Ok(conversion_mode & !tf_flag)
@@ -101,7 +128,7 @@ impl CompartmentUpdateListener {
         }
     }
 
-    pub fn private_compartments_updated(&self, thread_mgr: ITfThreadMgr) {
+    fn private_compartments_updated(&self, thread_mgr: ITfThreadMgr) {
         let conversion_mode = self.compartment.get_u32();
         if conversion_mode.is_err() {
             return;

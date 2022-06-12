@@ -131,8 +131,6 @@ BOOL CCompositionProcessorEngine::SetupLanguageProfile(LANGID langid, REFGUID gu
     _guidProfile = guidLanguageProfile;
     _tfClientId = tfClientId;
 
-	InitializeSampleIMECompartment(pThreadMgr, tfClientId);
-
     engine_rust.SetupLanguageProfile(pThreadMgr, tfClientId);
 
 Exit:
@@ -319,27 +317,6 @@ void CCompositionProcessorEngine::OnPreservedKey(REFGUID rguid, _Out_ BOOL *pIsE
 
 //+---------------------------------------------------------------------------
 //
-// SetupLanguageBar
-//
-//----------------------------------------------------------------------------
-
-void CCompositionProcessorEngine::InitializeSampleIMECompartment(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId)
-{
-	// set initial mode
-    CCompartment CompartmentKeyboardOpen(pThreadMgr, tfClientId, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
-    CompartmentKeyboardOpen._SetCompartmentBOOL(TRUE);
-
-    CCompartment CompartmentDoubleSingleByte(pThreadMgr, tfClientId, SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE);
-    CompartmentDoubleSingleByte._SetCompartmentBOOL(FALSE);
-
-    CCompartment CompartmentPunctuation(pThreadMgr, tfClientId, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION);
-    CompartmentPunctuation._SetCompartmentBOOL(TRUE);
-
-    PrivateCompartmentsUpdated(pThreadMgr);
-}
-
-//+---------------------------------------------------------------------------
-//
 // UpdatePrivateCompartments
 //
 //----------------------------------------------------------------------------
@@ -347,17 +324,6 @@ void CCompositionProcessorEngine::InitializeSampleIMECompartment(_In_ ITfThreadM
 void CCompositionProcessorEngine::ConversionModeCompartmentUpdated(_In_ ITfThreadMgr *pThreadMgr)
 {
     engine_rust.ConversionModeCompartmentUpdated(pThreadMgr);
-}
-
-//+---------------------------------------------------------------------------
-//
-// PrivateCompartmentsUpdated()
-//
-//----------------------------------------------------------------------------
-
-void CCompositionProcessorEngine::PrivateCompartmentsUpdated(_In_ ITfThreadMgr *pThreadMgr)
-{
-    engine_rust.PrivateCompartmentsUpdated(pThreadMgr);
 }
 
 void CCompositionProcessorEngine::ShowAllLanguageBarIcons()
@@ -492,11 +458,6 @@ void* CCompositionProcessorEngine::CRustCompositionProcessorEngine::CompartmentW
 void CCompositionProcessorEngine::CRustCompositionProcessorEngine::ConversionModeCompartmentUpdated(ITfThreadMgr *threadMgr) {
     threadMgr->AddRef();
     compositionprocessorengine_compartmentwrapper_conversion_mode_compartment_updated(engine, threadMgr);
-}
-
-void CCompositionProcessorEngine::CRustCompositionProcessorEngine::PrivateCompartmentsUpdated(ITfThreadMgr *threadMgr) {
-    threadMgr->AddRef();
-    compositionprocessorengine_compartmentwrapper_private_compartments_updated(engine, threadMgr);
 }
 
 void CCompositionProcessorEngine::CRustCompositionProcessorEngine::SetLanguageBarStatus(uint32_t status, bool set) {

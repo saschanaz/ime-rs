@@ -2,23 +2,23 @@
 
 use std::ffi::c_void;
 
-use windows::core::{IUnknown, Interface, GUID, HRESULT};
+use windows::core::{Interface, GUID, HRESULT};
 use windows::Win32::System::Com::VARIANT;
 use windows::Win32::System::Ole::VT_I4;
 use windows::Win32::UI::TextServices::{
-    ITfCompartment, ITfCompartmentMgr, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE,
+    ITfCompartment, ITfCompartmentMgr, ITfThreadMgr, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE,
 };
 
 pub struct Compartment {
-    manager: IUnknown,
+    thread_mgr: ITfThreadMgr,
     tf_client_id: u32,
     guid: GUID,
 }
 
 impl Compartment {
-    pub fn new(punk: &Option<IUnknown>, tf_client_id: u32, guid: GUID) -> Compartment {
+    pub fn new(thread_mgr: ITfThreadMgr, tf_client_id: u32, guid: GUID) -> Compartment {
         Compartment {
-            manager: punk.to_owned().unwrap(),
+            thread_mgr,
             tf_client_id,
             guid,
         }
@@ -29,7 +29,7 @@ impl Compartment {
     }
 
     fn get_compartment(&self) -> windows::core::Result<ITfCompartment> {
-        let manager: ITfCompartmentMgr = self.manager.cast()?;
+        let manager: ITfCompartmentMgr = self.thread_mgr.cast()?;
         unsafe { manager.GetCompartment(&self.guid) }
     }
 
@@ -67,7 +67,7 @@ impl Compartment {
         if self.guid == GUID_COMPARTMENT_KEYBOARD_OPENCLOSE {
             return Ok(());
         }
-        let manager: ITfCompartmentMgr = self.manager.cast()?;
+        let manager: ITfCompartmentMgr = self.thread_mgr.cast()?;
         unsafe { manager.ClearCompartment(self.tf_client_id, &self.guid) }
     }
 
@@ -78,14 +78,11 @@ impl Compartment {
 
 #[no_mangle]
 pub unsafe extern "C" fn compartment_new(
-    punk: *mut c_void,
+    thread_mgr: ITfThreadMgr,
     tf_client_id: u32,
     guid: *const GUID,
 ) -> *mut c_void {
-    let punk: Option<IUnknown> = core::mem::transmute(punk);
-    let raw = Box::into_raw(Box::new(Compartment::new(&punk, tf_client_id, *guid))) as *mut c_void;
-    core::mem::forget(punk);
-    raw
+    Box::into_raw(Box::new(Compartment::new(thread_mgr, tf_client_id, *guid))) as *mut c_void
 }
 
 #[no_mangle]

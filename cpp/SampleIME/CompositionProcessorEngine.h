@@ -77,11 +77,6 @@ public:
     const uint32_t CandidateWindowWidth = 13;  // * tmMaxCharWidth
 
 private:
-	void InitializeSampleIMECompartment(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
-
-    void PrivateCompartmentsUpdated(_In_ ITfThreadMgr *pThreadMgr);
-
-private:
     LANGID _langid;
     GUID _guidProfile;
     TfClientId  _tfClientId;
@@ -121,7 +116,6 @@ private:
 
         void* CompartmentWrapperRawPtr();
         void ConversionModeCompartmentUpdated(ITfThreadMgr* threadMgr);
-        void PrivateCompartmentsUpdated(ITfThreadMgr* threadMgr);
 
         void SetLanguageBarStatus(uint32_t status, bool set);
     };

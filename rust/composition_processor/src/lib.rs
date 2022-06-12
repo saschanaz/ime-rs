@@ -215,17 +215,6 @@ pub unsafe extern "C" fn compositionprocessorengine_compartmentwrapper_conversio
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn compositionprocessorengine_compartmentwrapper_private_compartments_updated(
-    engine: *mut c_void,
-    thread_mgr: ITfThreadMgr,
-) {
-    let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
-    engine
-        .compartment_wrapper()
-        .private_compartments_updated(thread_mgr);
-}
-
-#[no_mangle]
 pub unsafe extern "C" fn compositionprocessorengine_compartmentwrapper_raw_ptr(
     engine: *mut c_void,
 ) -> *const c_void {

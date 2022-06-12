@@ -20,9 +20,10 @@
 // ctor
 //----------------------------------------------------------------------------
 
-CCompartment::CCompartment(_In_ IUnknown* punk, TfClientId tfClientId, _In_ REFGUID guidCompartment)
+CCompartment::CCompartment(_In_ ITfThreadMgr* pThreadMgr, TfClientId tfClientId, _In_ REFGUID guidCompartment)
 {
-    compartment = compartment_new(punk, tfClientId, &guidCompartment);
+    pThreadMgr->AddRef();
+    compartment = compartment_new(pThreadMgr, tfClientId, &guidCompartment);
 }
 
 //+---------------------------------------------------------------------------
@@ -83,21 +84,4 @@ HRESULT CCompartment::_ClearCompartment()
 
 void CCompartment::_GetGUID(GUID* pguid) const {
     compartment_guid(compartment, pguid);
-}
-
-//////////////////////////////////////////////////////////////////////
-//
-// RustCompartmentEventSink
-//
-//////////////////////////////////////////////////////////////////////
-
-HRESULT RustCompartmentSink::Advise(ITfCompartmentEventSink *sink, IUnknown *punk, const GUID *guid) {
-    sink->AddRef();
-    punk->AddRef();
-    return compartmenteventsink_advise(sink, punk, guid);
-}
-
-HRESULT RustCompartmentSink::Unadvise(ITfCompartmentEventSink *sink) {
-    sink->AddRef();
-    return compartmenteventsink_unadvise(sink);
 }

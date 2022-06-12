@@ -74,7 +74,9 @@ impl CompositionProcessorEngine {
         self.preserved_keys()
             .init_keys(thread_mgr.clone(), client_id)
             .ok();
-        // TODO: InitializeSampleIMECompartment
+        self.compartment_wrapper
+            .init(thread_mgr.clone(), client_id)
+            .ok();
         self.language_bar
             .init(thread_mgr, client_id, &self.compartment_wrapper)
             .ok();
@@ -118,11 +120,7 @@ impl CompositionProcessorEngine {
             return Ok(false);
         }
 
-        let compartment = Compartment::new(
-            &Some(thread_mgr.into()),
-            client_id,
-            preserved.compartment_guid,
-        );
+        let compartment = Compartment::new(thread_mgr, client_id, preserved.compartment_guid);
         let state = compartment.get_bool()?;
         compartment.set_bool(!state)?;
 
