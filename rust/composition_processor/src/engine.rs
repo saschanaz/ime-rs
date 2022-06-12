@@ -32,7 +32,7 @@ mod language_bar;
 use language_bar::LanguageBar;
 
 pub struct CompositionProcessorEngine {
-    virtual_key_manager: KeystrokeBuffer,
+    keystroke_buffer: KeystrokeBuffer,
     table_dictionary_engine: Option<TableDictionaryEngine>,
     modifiers: Modifiers,
     punctuation_mapper: PunctuationMapper,
@@ -44,7 +44,7 @@ pub struct CompositionProcessorEngine {
 impl CompositionProcessorEngine {
     pub fn new(thread_mgr: ITfThreadMgr, tf_client_id: u32) -> CompositionProcessorEngine {
         CompositionProcessorEngine {
-            virtual_key_manager: KeystrokeBuffer::new(),
+            keystroke_buffer: KeystrokeBuffer::new(),
             table_dictionary_engine: None,
             modifiers: Modifiers::default(),
             punctuation_mapper: PunctuationMapper::new(),
@@ -170,11 +170,11 @@ impl CompositionProcessorEngine {
     }
 
     pub fn keystroke_buffer(&self) -> &KeystrokeBuffer {
-        &self.virtual_key_manager
+        &self.keystroke_buffer
     }
 
     pub fn keystroke_buffer_mut(&mut self) -> &mut KeystrokeBuffer {
-        &mut self.virtual_key_manager
+        &mut self.keystroke_buffer
     }
 
     pub fn compartment_wrapper(&self) -> &CompartmentUpdateListener {
