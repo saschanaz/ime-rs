@@ -78,7 +78,6 @@ public:
 
 private:
     void SetupLanguageBar(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
-    void SetDefaultCandidateTextFont();
 	void InitializeSampleIMECompartment(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
 
     void PrivateCompartmentsUpdated(_In_ ITfThreadMgr *pThreadMgr);
@@ -103,6 +102,8 @@ private:
     public:
         CRustCompositionProcessorEngine(ITfThreadMgr* threadMgr, TfClientId clientId);
         ~CRustCompositionProcessorEngine();
+
+        bool SetupLanguageProfile(ITfThreadMgr *threadMgr, TfClientId clientId);
 
         std::tuple<bool, KeystrokeCategory, KeystrokeFunction> TestVirtualKey(uint16_t code, char16_t ch, bool composing, CandidateMode candidateMode);
 

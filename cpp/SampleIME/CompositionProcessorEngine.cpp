@@ -179,11 +179,10 @@ BOOL CCompositionProcessorEngine::SetupLanguageProfile(LANGID langid, REFGUID gu
     _guidProfile = guidLanguageProfile;
     _tfClientId = tfClientId;
 
-    engine_rust.PreservedKeysInit(pThreadMgr, tfClientId);
 	InitializeSampleIMECompartment(pThreadMgr, tfClientId);
     SetupLanguageBar(pThreadMgr, tfClientId);
-    SetDefaultCandidateTextFont();
-    engine_rust.SetupDictionaryFile(DLL_INSTANCE, TEXTSERVICE_DIC);
+
+    engine_rust.SetupLanguageProfile(pThreadMgr, tfClientId);
 
 Exit:
     return ret;
@@ -451,12 +450,6 @@ void CCompositionProcessorEngine::HideAllLanguageBarIcons()
     SetLanguageBarStatus(TF_LBI_STATUS_HIDDEN, TRUE);
 }
 
-void CCompositionProcessorEngine::SetDefaultCandidateTextFont()
-{
-    // Candidate Text Font
-    set_default_candidate_text_font();
-}
-
 //////////////////////////////////////////////////////////////////////
 //
 //    CCompositionProcessorEngine
@@ -491,6 +484,10 @@ CCompositionProcessorEngine::CRustCompositionProcessorEngine::CRustCompositionPr
 CCompositionProcessorEngine::CRustCompositionProcessorEngine::~CRustCompositionProcessorEngine() {
     compositionprocessorengine_free(engine);
 }
+
+bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::SetupLanguageProfile(ITfThreadMgr *threadMgr, TfClientId clientId) {
+    return compositionprocessorengine_setup_language_profile(engine, threadMgr, clientId);
+};
 
 std::tuple<bool, KeystrokeCategory, KeystrokeFunction> CCompositionProcessorEngine::CRustCompositionProcessorEngine::TestVirtualKey(uint16_t code, char16_t ch, bool composing, CandidateMode candidateMode)
 {
@@ -529,10 +526,6 @@ bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::KeystrokeBuff
 HRESULT CCompositionProcessorEngine::CRustCompositionProcessorEngine::OnPreservedKey(REFGUID rguid, bool* isEaten, ITfThreadMgr* threadMgr, TfClientId clientId) {
     threadMgr->AddRef();
     return compositionprocessorengine_on_preserved_key(engine, &rguid, isEaten, threadMgr, clientId);
-}
-
-void CCompositionProcessorEngine::CRustCompositionProcessorEngine::SetupDictionaryFile(HINSTANCE dllInstanceHandle, const CRustStringRange& dictionaryFileName) {
-    compositionprocessorengine_setup_dictionary_file(engine, dllInstanceHandle, dictionaryFileName.GetInternal());
 }
 
 std::optional<CRustTableDictionaryEngine> CCompositionProcessorEngine::CRustCompositionProcessorEngine::GetTableDictionaryEngine() const {

@@ -96,9 +96,9 @@ bool compositionprocessorengine_punctuations_has_alternative_punctuation(void *e
 
 void compositionprocessorengine_purge_virtual_key(void *engine);
 
-void compositionprocessorengine_setup_dictionary_file(void *engine,
-                                                      HINSTANCE dll_instance_handle,
-                                                      void *dictionary_file_name);
+bool compositionprocessorengine_setup_language_profile(void *engine,
+                                                       ITfThreadMgr* thread_mgr,
+                                                       uint32_t client_id);
 
 void compositionprocessorengine_test_virtual_key(void *engine,
                                                  uint16_t code,
@@ -108,7 +108,5 @@ void compositionprocessorengine_test_virtual_key(void *engine,
                                                  bool *key_eaten,
                                                  KeystrokeCategory *keystroke_category,
                                                  KeystrokeFunction *keystroke_function);
-
-void set_default_candidate_text_font();
 
 } // extern "C"

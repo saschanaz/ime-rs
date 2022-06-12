@@ -7,7 +7,7 @@ use ruststringrange::RustStringRange;
 use windows::{
     core::{GUID, HRESULT},
     Win32::{
-        Foundation::{HINSTANCE, LPARAM, WPARAM},
+        Foundation::{LPARAM, WPARAM},
         UI::TextServices::ITfThreadMgr,
     },
 };
@@ -101,17 +101,6 @@ pub unsafe extern "C" fn compositionprocessorengine_keystroke_buffer_includes_wi
     engine
         .virtual_key_manager()
         .keystroke_buffer_includes_wildcard()
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn compositionprocessorengine_setup_dictionary_file(
-    engine: *mut c_void,
-    dll_instance_handle: HINSTANCE,
-    dictionary_file_name: *mut c_void,
-) {
-    let engine = Box::leak(CompositionProcessorEngine::from_void(engine));
-    let dictionary_file_name = Box::leak(RustStringRange::from_void(dictionary_file_name));
-    engine.setup_dictionary_file(dll_instance_handle, dictionary_file_name.as_slice());
 }
 
 #[no_mangle]
@@ -245,6 +234,11 @@ pub unsafe extern "C" fn compositionprocessorengine_compartmentwrapper_raw_ptr(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn set_default_candidate_text_font() {
-    ime::font::set_default_candidate_text_font();
+pub unsafe extern "C" fn compositionprocessorengine_setup_language_profile(
+    engine: *mut c_void,
+    thread_mgr: ITfThreadMgr,
+    client_id: u32,
+) -> bool {
+    let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
+    engine.setup_language_profile(thread_mgr, client_id)
 }

@@ -53,6 +53,31 @@ impl CompositionProcessorEngine {
         Box::from_raw(engine as *mut CompositionProcessorEngine)
     }
 
+    pub fn setup_language_profile(
+        &mut self,
+        // langid: u16,
+        // language_profile: &GUID,
+        thread_mgr: ITfThreadMgr,
+        client_id: u32,
+    ) -> bool {
+        if client_id == 0 {
+            return false;
+        }
+
+        // TODO: fields?
+
+        self.preserved_keys().init_keys(thread_mgr, client_id).ok();
+        // TODO: InitializeSampleIMECompartment
+        // TODO: SetupLanguageBar
+        unsafe { ime::font::set_default_candidate_text_font() };
+        self.setup_dictionary_file(
+            unsafe { ime::dll::DLL_INSTANCE },
+            ime::resources::TEXTSERVICE_DIC,
+        );
+
+        true
+    }
+
     pub fn test_virtual_key(
         &self,
         code: u16,
@@ -95,7 +120,7 @@ impl CompositionProcessorEngine {
         Ok(true)
     }
 
-    pub fn setup_dictionary_file(
+    fn setup_dictionary_file(
         &mut self,
         dll_instance_handle: HINSTANCE,
         dictionary_file_name: &str,
