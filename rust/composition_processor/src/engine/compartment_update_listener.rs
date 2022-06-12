@@ -47,13 +47,15 @@ impl CompartmentUpdateListener {
         double_single_byte.set_bool(false).ok();
 
         let punctuation = Compartment::new(
-            thread_mgr.clone(),
+            thread_mgr,
             tf_client_id,
             SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION,
         );
         punctuation.set_bool(true).ok();
 
-        self.private_compartments_updated(thread_mgr);
+        // This seems to be intended, but in the original code this was no-op because of a wrong initialization order.
+        // Skipping this as this project wants to keep the original behavior as much as possible.
+        // self.private_compartments_updated(thread_mgr);
 
         Ok(())
     }
