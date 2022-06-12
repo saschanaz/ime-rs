@@ -12,6 +12,7 @@ version = "0.1.0"
 dependencies = [
  "dictionary_parser",
  "globals",
+ "ime",
  "itf_components",
  "numberkey_windows",
  "ruststringrange",

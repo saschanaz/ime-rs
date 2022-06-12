@@ -243,3 +243,8 @@ pub unsafe extern "C" fn compositionprocessorengine_compartmentwrapper_raw_ptr(
     let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
     engine.compartment_wrapper() as *const _ as *const c_void
 }
+
+#[no_mangle]
+pub unsafe extern "C" fn set_default_candidate_text_font() {
+    ime::font::set_default_candidate_text_font();
+}

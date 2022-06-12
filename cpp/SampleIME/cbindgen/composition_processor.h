@@ -109,4 +109,6 @@ void compositionprocessorengine_test_virtual_key(void *engine,
                                                  KeystrokeCategory *keystroke_category,
                                                  KeystrokeFunction *keystroke_function);
 
+void set_default_candidate_text_font();
+
 } // extern "C"

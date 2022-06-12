@@ -11,6 +11,7 @@ crate-type = ["staticlib"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+ime = { path = "../ime" }
 dictionary_parser = { path = "../dictionary_parser" }
 ruststringrange = { path = "../ruststringrange" }
 numberkey_windows = { path = "../numberkey_windows" }

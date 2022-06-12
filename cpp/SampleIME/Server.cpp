@@ -183,7 +183,7 @@ void FreeGlobalObjects(void)
         }
     }
 
-    DeleteObject(Global::defaultlFontHandle);
+    DeleteObject(DEFAULT_FONT_HANDLE);
 }
 
 //+---------------------------------------------------------------------------

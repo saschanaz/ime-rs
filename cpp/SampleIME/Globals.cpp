@@ -15,7 +15,6 @@ namespace Global {
 LONG dllRefCount = -1;
 
 CRITICAL_SECTION CS;
-HFONT defaultlFontHandle;				// Global font object we use everywhere
 
 //---------------------------------------------------------------------
 // Unicode byte order mark
