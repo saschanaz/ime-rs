@@ -54,6 +54,7 @@ impl CompartmentUpdateListener {
         punctuation.set_bool(true).ok();
 
         // This seems to be intended, but in the original code this was no-op because of a wrong initialization order.
+        // Specifically, _pCompartmentConversion was nullptr at this point.
         // Skipping this as this project wants to keep the original behavior as much as possible.
         // (Uncommenting this will make wide punctuation the default behavior, as set above.)
         // self.private_compartments_updated(thread_mgr);
