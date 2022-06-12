@@ -220,7 +220,6 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
         CRustStringRange wildcardSearch = engine_rust.KeystrokeBufferGetReadingString();
 
         // check keystroke buffer already has wildcard char which end user want wildcard serach
-        uint32_t wildcardIndex = 0;
         bool isFindWildcard = wildcardSearch.Contains(u8'*') || wildcardSearch.Contains(u8'?');
 
         if (!isFindWildcard)
@@ -230,11 +229,6 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
         }
 
         engine_rust.GetTableDictionaryEngine()->CollectWordForWildcard(wildcardSearch, pCandidateList);
-
-        if (0 >= pCandidateList->Count())
-        {
-            return;
-        }
     }
     else if (isWildcardSearch)
     {
