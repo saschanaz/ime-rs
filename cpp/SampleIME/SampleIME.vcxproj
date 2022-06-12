@@ -53,7 +53,6 @@
     <ClInclude Include="ScrollBarWindow.h" />
     <ClInclude Include="ShadowWindow.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="TableDictionaryEngine.h" />
     <ClInclude Include="TfInputProcessorProfile.h" />
     <ClInclude Include="TfTextLayoutSink.h" />
     <ClInclude Include="TipCandidateList.h" />
@@ -91,7 +90,6 @@
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="ShadowWindow.cpp" />
     <ClCompile Include="StartComposition.cpp" />
-    <ClCompile Include="TableDictionaryEngine.cpp" />
     <ClCompile Include="SampleIME.cpp" />
     <ClCompile Include="TextEditSink.cpp" />
     <ClCompile Include="TfInputProcessorProfile.cpp" />

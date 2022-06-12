@@ -210,34 +210,7 @@ std::optional<std::tuple<CRustStringRange, bool>> CCompositionProcessorEngine::G
 
 void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCandidateListItem> *pCandidateList, BOOL isIncrementalWordSearch, BOOL isWildcardSearch)
 {
-    if (!IsDictionaryAvailable())
-    {
-        return;
-    }
-
-    if (isIncrementalWordSearch)
-    {
-        CRustStringRange wildcardSearch = engine_rust.KeystrokeBufferGetReadingString();
-
-        // check keystroke buffer already has wildcard char which end user want wildcard serach
-        bool isFindWildcard = wildcardSearch.Contains(u8'*') || wildcardSearch.Contains(u8'?');
-
-        if (!isFindWildcard)
-        {
-            // add wildcard char for incremental search
-            wildcardSearch = wildcardSearch.Concat(u8"*"_rs);
-        }
-
-        engine_rust.GetTableDictionaryEngine()->CollectWordForWildcard(wildcardSearch, pCandidateList);
-    }
-    else if (isWildcardSearch)
-    {
-        engine_rust.GetTableDictionaryEngine()->CollectWordForWildcard(engine_rust.KeystrokeBufferGetReadingString(), pCandidateList);
-    }
-    else
-    {
-        engine_rust.GetTableDictionaryEngine()->CollectWord(engine_rust.KeystrokeBufferGetReadingString(), pCandidateList);
-    }
+    engine_rust.GetCandidateList(pCandidateList, isIncrementalWordSearch, isWildcardSearch);
 }
 
 //+---------------------------------------------------------------------------
@@ -248,15 +221,7 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
 
 void CCompositionProcessorEngine::GetCandidateStringInConverted(const CRustStringRange& searchString, _In_ CSampleImeArray<CCandidateListItem> *pCandidateList)
 {
-    if (!IsDictionaryAvailable())
-    {
-        return;
-    }
-
-    // Search phrase from SECTION_TEXT's converted string list
-    CRustStringRange wildcardSearch = searchString.Concat(u8"*"_rs);
-
-    engine_rust.GetTableDictionaryEngine()->CollectWordFromConvertedStringForWildcard(wildcardSearch, pCandidateList);
+    engine_rust.GetCandidateStringInConverted(searchString, pCandidateList);
 }
 
 //+---------------------------------------------------------------------------
@@ -403,17 +368,34 @@ bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::KeystrokeBuff
     return compositionprocessorengine_keystroke_buffer_includes_wildcard(engine);
 }
 
+static const uintptr_t MAX_BUFFER = 512;
+
+inline void ArraysToArray(void** keys, void** values, uintptr_t length, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList) {
+    for (uintptr_t i = 0; i < length; i++) {
+        CRustStringRange key = CRustStringRange::FromVoid(keys[i]);
+        CRustStringRange value = CRustStringRange::FromVoid(values[i]);
+        CCandidateListItem listItem(value, key);
+        pItemList->Append(listItem);
+    }
+}
+
+void CCompositionProcessorEngine::CRustCompositionProcessorEngine::GetCandidateList(CSampleImeArray<CCandidateListItem> *pCandidateList, bool isIncrementalWordSearch, bool isWildcardSearch) {
+    void* keys[MAX_BUFFER];
+    void* values[MAX_BUFFER];
+    uintptr_t length = compositionprocessorengine_get_candidate_list(this->engine, keys, values, MAX_BUFFER, isIncrementalWordSearch, isWildcardSearch);
+    ArraysToArray(keys, values, length, pCandidateList);
+}
+
+void CCompositionProcessorEngine::CRustCompositionProcessorEngine::GetCandidateStringInConverted(const CRustStringRange& searchString, CSampleImeArray<CCandidateListItem> *pCandidateList) {
+    void* keys[MAX_BUFFER];
+    void* values[MAX_BUFFER];
+    uintptr_t length = compositionprocessorengine_get_candidate_string_in_converted(engine, searchString.GetInternal(), keys, values, MAX_BUFFER);
+    ArraysToArray(keys, values, length, pCandidateList);
+}
+
 HRESULT CCompositionProcessorEngine::CRustCompositionProcessorEngine::OnPreservedKey(REFGUID rguid, bool* isEaten, ITfThreadMgr* threadMgr, TfClientId clientId) {
     threadMgr->AddRef();
     return compositionprocessorengine_on_preserved_key(engine, &rguid, isEaten, threadMgr, clientId);
-}
-
-std::optional<CRustTableDictionaryEngine> CCompositionProcessorEngine::CRustCompositionProcessorEngine::GetTableDictionaryEngine() const {
-    const void* dict = compositionprocessorengine_get_table_dictionary_engine(engine);
-    if (dict) {
-        return CRustTableDictionaryEngine::WeakRef(const_cast<void*>(compositionprocessorengine_get_table_dictionary_engine(engine)));
-    }
-    return std::nullopt;
 }
 
 void CCompositionProcessorEngine::CRustCompositionProcessorEngine::ModifiersUpdate(WPARAM w, LPARAM l) {

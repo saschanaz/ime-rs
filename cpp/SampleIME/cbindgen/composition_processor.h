@@ -55,6 +55,19 @@ const void *compositionprocessorengine_compartmentwrapper_raw_ptr(void *engine);
 
 void compositionprocessorengine_free(void *engine);
 
+uintptr_t compositionprocessorengine_get_candidate_list(const void *engine,
+                                                        void **keys_buffer,
+                                                        void **values_buffer,
+                                                        uintptr_t buffer_length,
+                                                        bool is_incremental_word_search,
+                                                        bool is_wildcard_search);
+
+uintptr_t compositionprocessorengine_get_candidate_string_in_converted(const void *engine,
+                                                                       const void *search_key,
+                                                                       void **keys_buffer,
+                                                                       void **values_buffer,
+                                                                       uintptr_t buffer_length);
+
 const void *compositionprocessorengine_get_table_dictionary_engine(const void *engine);
 
 bool compositionprocessorengine_has_virtual_key(void *engine);

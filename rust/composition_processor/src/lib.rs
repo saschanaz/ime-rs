@@ -239,3 +239,52 @@ pub unsafe extern "C" fn compositionprocessorengine_set_language_bar_status(
     let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
     engine.set_language_bar_status(status, set).ok();
 }
+
+unsafe fn tuples_to_ffi(
+    tuples: Vec<(&str, &str)>,
+    keys_buffer: *mut *mut c_void,
+    values_buffer: *mut *mut c_void,
+    buffer_length: usize,
+) -> usize {
+    let len = std::cmp::min(tuples.len(), buffer_length);
+    for (i, tuple) in tuples.iter().enumerate().take(len) {
+        *keys_buffer.add(i) =
+            Box::into_raw(Box::new(RustStringRange::from_str(tuple.0))) as *mut c_void;
+        *values_buffer.add(i) =
+            Box::into_raw(Box::new(RustStringRange::from_str(tuple.1))) as *mut c_void;
+    }
+
+    len
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn compositionprocessorengine_get_candidate_list(
+    engine: *const c_void,
+    keys_buffer: *mut *mut c_void,
+    values_buffer: *mut *mut c_void,
+    buffer_length: usize,
+    is_incremental_word_search: bool,
+    is_wildcard_search: bool,
+) -> usize {
+    let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
+
+    let result = engine.get_candidate_list(is_incremental_word_search, is_wildcard_search);
+
+    tuples_to_ffi(result, keys_buffer, values_buffer, buffer_length)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn compositionprocessorengine_get_candidate_string_in_converted(
+    engine: *const c_void,
+    search_key: *const c_void,
+    keys_buffer: *mut *mut c_void,
+    values_buffer: *mut *mut c_void,
+    buffer_length: usize,
+) -> usize {
+    let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
+    let search_key = Box::leak(RustStringRange::from_void(search_key as *mut _));
+
+    let result = engine.get_candidate_string_in_converted(search_key.as_slice());
+
+    tuples_to_ffi(result, keys_buffer, values_buffer, buffer_length)
+}

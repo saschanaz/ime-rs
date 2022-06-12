@@ -12,7 +12,6 @@
 #include <tuple>
 
 #include "sal.h"
-#include "TableDictionaryEngine.h"
 #include "KeyHandlerEditSession.h"
 #include "SampleIMEBaseStructure.h"
 #include "Compartment.h"
@@ -61,9 +60,6 @@ public:
     BOOL IsDoubleSingleByte(WCHAR wch);
     BOOL IsWildcardChar(WCHAR wch) { return (wch == u'?' || wch == u'*'); }
 
-    // Dictionary engine
-    BOOL IsDictionaryAvailable() { return !!engine_rust.GetTableDictionaryEngine(); }
-
     // Language bar control
     void SetLanguageBarStatus(DWORD status, BOOL isSet);
 
@@ -99,10 +95,12 @@ private:
         CRustStringRange KeystrokeBufferGetReadingString();
         bool KeystrokeBufferIncludesWildcard();
 
+        void GetCandidateList(CSampleImeArray<CCandidateListItem> *pCandidateList, bool isIncrementalWordSearch, bool isWildcardSearch);
+        void GetCandidateStringInConverted(const CRustStringRange& searchString, CSampleImeArray<CCandidateListItem> *pCandidateList);
+
         HRESULT OnPreservedKey(REFGUID rguid, bool* isEaten, ITfThreadMgr* threadMgr, TfClientId clientId);
 
         void SetupDictionaryFile(HINSTANCE dllInstanceHandle, const CRustStringRange& dictionaryFileName);
-        std::optional<CRustTableDictionaryEngine> GetTableDictionaryEngine() const;
 
         void ModifiersUpdate(WPARAM w, LPARAM l);
         bool ModifiersIsShiftKeyDownOnly() const;

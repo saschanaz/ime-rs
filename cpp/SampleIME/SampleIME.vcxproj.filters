@@ -92,9 +92,6 @@
     <ClInclude Include="ShadowWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TableDictionaryEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TfInputProcessorProfile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -203,9 +200,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StartComposition.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TableDictionaryEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TextEditSink.cpp">
