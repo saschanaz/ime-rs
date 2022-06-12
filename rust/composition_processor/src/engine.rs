@@ -169,11 +169,11 @@ impl CompositionProcessorEngine {
         &self.preserved_keys
     }
 
-    pub fn virtual_key_manager(&self) -> &KeystrokeBuffer {
+    pub fn keystroke_buffer(&self) -> &KeystrokeBuffer {
         &self.virtual_key_manager
     }
 
-    pub fn virtual_key_manager_mut(&mut self) -> &mut KeystrokeBuffer {
+    pub fn keystroke_buffer_mut(&mut self) -> &mut KeystrokeBuffer {
         &mut self.virtual_key_manager
     }
 

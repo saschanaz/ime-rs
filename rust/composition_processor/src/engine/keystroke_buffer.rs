@@ -34,7 +34,7 @@ impl KeystrokeBuffer {
         String::from_utf16(&self.buffer).unwrap()
     }
 
-    pub fn keystroke_buffer_includes_wildcard(&self) -> bool {
+    pub fn includes_wildcard(&self) -> bool {
         self.buffer.contains(&(b'*' as u16)) || self.buffer.contains(&(b'?' as u16))
     }
 }

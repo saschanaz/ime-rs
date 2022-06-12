@@ -96,7 +96,7 @@ private:
         void PopVirtualKey();
         void PurgeVirtualKey();
         bool HasVirtualKey();
-        CRustStringRange GetReadingString();
+        CRustStringRange KeystrokeBufferGetReadingString();
         bool KeystrokeBufferIncludesWildcard();
 
         HRESULT OnPreservedKey(REFGUID rguid, bool* isEaten, ITfThreadMgr* threadMgr, TfClientId clientId);

@@ -196,7 +196,7 @@ std::optional<std::tuple<CRustStringRange, bool>> CCompositionProcessorEngine::G
 {
     if (engine_rust.HasVirtualKey())
     {
-        return std::tuple<CRustStringRange, bool>(engine_rust.GetReadingString(), engine_rust.KeystrokeBufferIncludesWildcard());
+        return std::tuple<CRustStringRange, bool>(engine_rust.KeystrokeBufferGetReadingString(), engine_rust.KeystrokeBufferIncludesWildcard());
     }
 
     return std::nullopt;
@@ -217,7 +217,7 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
 
     if (isIncrementalWordSearch)
     {
-        CRustStringRange wildcardSearch = engine_rust.GetReadingString();
+        CRustStringRange wildcardSearch = engine_rust.KeystrokeBufferGetReadingString();
 
         // check keystroke buffer already has wildcard char which end user want wildcard serach
         uint32_t wildcardIndex = 0;
@@ -238,11 +238,11 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
     }
     else if (isWildcardSearch)
     {
-        engine_rust.GetTableDictionaryEngine()->CollectWordForWildcard(engine_rust.GetReadingString(), pCandidateList);
+        engine_rust.GetTableDictionaryEngine()->CollectWordForWildcard(engine_rust.KeystrokeBufferGetReadingString(), pCandidateList);
     }
     else
     {
-        engine_rust.GetTableDictionaryEngine()->CollectWord(engine_rust.GetReadingString(), pCandidateList);
+        engine_rust.GetTableDictionaryEngine()->CollectWord(engine_rust.KeystrokeBufferGetReadingString(), pCandidateList);
     }
 }
 
@@ -400,8 +400,8 @@ bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::HasVirtualKey
     return compositionprocessorengine_has_virtual_key(engine);
 }
 
-CRustStringRange CCompositionProcessorEngine::CRustCompositionProcessorEngine::GetReadingString() {
-    void* str = compositionprocessorengine_get_reading_string(engine);
+CRustStringRange CCompositionProcessorEngine::CRustCompositionProcessorEngine::KeystrokeBufferGetReadingString() {
+    void* str = compositionprocessorengine_keystroke_buffer_get_reading_string(engine);
     return CRustStringRange::FromVoid(str);
 }
 

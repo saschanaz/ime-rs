@@ -55,11 +55,11 @@ const void *compositionprocessorengine_compartmentwrapper_raw_ptr(void *engine);
 
 void compositionprocessorengine_free(void *engine);
 
-void *compositionprocessorengine_get_reading_string(void *engine);
-
 const void *compositionprocessorengine_get_table_dictionary_engine(const void *engine);
 
 bool compositionprocessorengine_has_virtual_key(void *engine);
+
+void *compositionprocessorengine_keystroke_buffer_get_reading_string(void *engine);
 
 bool compositionprocessorengine_keystroke_buffer_includes_wildcard(void *engine);
 
