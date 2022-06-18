@@ -100,7 +100,6 @@ CCompositionProcessorEngine::CCompositionProcessorEngine(ITfThreadMgr *threadMgr
 {
     _langid = 0xffff;
     _guidProfile = GUID_NULL;
-    _tfClientId = TF_CLIENTID_NULL;
 }
 
 //+---------------------------------------------------------------------------
@@ -129,7 +128,6 @@ BOOL CCompositionProcessorEngine::SetupLanguageProfile(LANGID langid, REFGUID gu
 
     _langid = langid;
     _guidProfile = guidLanguageProfile;
-    _tfClientId = tfClientId;
 
     engine_rust.SetupLanguageProfile(pThreadMgr, tfClientId);
 

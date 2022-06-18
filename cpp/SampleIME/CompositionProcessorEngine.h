@@ -75,7 +75,6 @@ public:
 private:
     LANGID _langid;
     GUID _guidProfile;
-    TfClientId  _tfClientId;
 
     // Rust port
     class CRustCompositionProcessorEngine {
