@@ -32,11 +32,6 @@ public:
         *plangid = _langid;
         return _guidProfile;
     }
-    // Get locale
-    LCID GetLocale()
-    {
-        return MAKELCID(_langid, SORT_DEFAULT);
-    }
 
     std::tuple<bool, KeystrokeCategory, KeystrokeFunction> TestVirtualKey(uint16_t uCode, char16_t wch, bool fComposing, CandidateMode candidateMode);
 

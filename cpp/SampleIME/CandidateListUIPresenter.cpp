@@ -96,9 +96,8 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
     }
 
     _pCompositionProcessorEngine->GetCandidateStringInConverted(candidateString.value(), &candidatePhraseList);
-    LCID locale = _pCompositionProcessorEngine->GetLocale();
 
-    _pCandidateListUIPresenter->RemoveSpecificCandidateFromList(locale, candidatePhraseList, candidateString.value());
+    _pCandidateListUIPresenter->RemoveSpecificCandidateFromList(candidatePhraseList, candidateString.value());
 
     // We have a candidate list if candidatePhraseList.Cnt is not 0
     // If we are showing reverse conversion, use CCandidateListUIPresenter
@@ -1132,7 +1131,7 @@ HRESULT CCandidateListUIPresenter::OnKillThreadFocus()
     return S_OK;
 }
 
-void CCandidateListUIPresenter::RemoveSpecificCandidateFromList(_In_ LCID Locale, _Inout_ CSampleImeArray<CCandidateListItem> &candidateList, const CRustStringRange& candidateString)
+void CCandidateListUIPresenter::RemoveSpecificCandidateFromList(_Inout_ CSampleImeArray<CCandidateListItem> &candidateList, const CRustStringRange& candidateString)
 {
     for (UINT index = 0; index < candidateList.Count();)
     {
