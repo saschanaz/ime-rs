@@ -86,6 +86,9 @@ fn is_keystroke_range(code: u16, modifiers: u32, candidate_mode: CandidateMode) 
     }
 }
 
+/// Test virtual key code need to the Composition Processor Engine.
+/// If engine need this virtual key code, returns true. Otherwise returns false.
+/// Returns function regarding virtual key.
 pub fn test_virtual_key(
     engine: &CompositionProcessorEngine,
     code: u16,

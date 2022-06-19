@@ -97,210 +97,25 @@ BOOL CSampleIME::_AddTextProcessorEngine()
 //
 //----------------------------------------------------------------------------
 
-CCompositionProcessorEngine::CCompositionProcessorEngine(LANGID langid, REFGUID guidLanguageProfile, ITfThreadMgr *threadMgr, TfClientId clientId)
-    : engine_rust(threadMgr, clientId), langid(langid), guidProfile(guidLanguageProfile) {}
-
-//+---------------------------------------------------------------------------
-//
-// SetupLanguageProfile
-//
-// Setup language profile for Composition Processor Engine.
-// param
-//     [in] ITfThreadMgr - pointer ITfThreadMgr.
-//     [in] tfClientId - TfClientId value.
-// returns
-//     If setup succeeded, returns true. Otherwise returns false.
-// N.B. For reverse conversion, ITfThreadMgr is NULL and TfClientId is 0.
-//+---------------------------------------------------------------------------
-
-BOOL CCompositionProcessorEngine::SetupLanguageProfile(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId)
-{
-    BOOL ret = TRUE;
-    if ((tfClientId == 0) && (pThreadMgr == nullptr))
-    {
-        ret = FALSE;
-        goto Exit;
-    }
-
-    engine_rust.SetupLanguageProfile(pThreadMgr, tfClientId);
-
-Exit:
-    return ret;
-}
-
-//+---------------------------------------------------------------------------
-//
-// AddVirtualKey
-// Add virtual key code to Composition Processor Engine for used to parse keystroke data.
-// param
-//     [in] uCode - Specify virtual key code.
-// returns
-//     State of Text Processor Engine.
-//----------------------------------------------------------------------------
-
-BOOL CCompositionProcessorEngine::AddVirtualKey(WCHAR wch)
-{
-    return engine_rust.AddVirtualKey(wch);
-}
-
-//+---------------------------------------------------------------------------
-//
-// PopVirtualKey
-// Remove the last stored virtual key code.
-// returns
-//     none.
-//----------------------------------------------------------------------------
-
-void CCompositionProcessorEngine::PopVirtualKey()
-{
-    engine_rust.PopVirtualKey();
-}
-
-//+---------------------------------------------------------------------------
-//
-// PurgeVirtualKey
-// Purge stored virtual key code.
-// param
-//     none.
-// returns
-//     none.
-//----------------------------------------------------------------------------
-
-void CCompositionProcessorEngine::PurgeVirtualKey()
-{
-    engine_rust.PurgeVirtualKey();
-}
-
-bool CCompositionProcessorEngine::HasVirtualKey()
-{
-    return engine_rust.HasVirtualKey();
-}
-
-//+---------------------------------------------------------------------------
-//
-// GetReadingString
-// Retrieves string from Composition Processor Engine.
-//
-//----------------------------------------------------------------------------
-
-std::optional<std::tuple<CRustStringRange, bool>> CCompositionProcessorEngine::GetReadingString()
-{
-    if (engine_rust.HasVirtualKey())
-    {
-        return std::tuple<CRustStringRange, bool>(engine_rust.KeystrokeBufferGetReadingString(), engine_rust.KeystrokeBufferIncludesWildcard());
-    }
-
-    return std::nullopt;
-}
-
-//+---------------------------------------------------------------------------
-//
-// GetCandidateList
-//
-//----------------------------------------------------------------------------
-
-void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCandidateListItem> *pCandidateList, BOOL isIncrementalWordSearch, BOOL isWildcardSearch)
-{
-    engine_rust.GetCandidateList(pCandidateList, isIncrementalWordSearch, isWildcardSearch);
-}
-
-//+---------------------------------------------------------------------------
-//
-// GetCandidateStringInConverted
-//
-//----------------------------------------------------------------------------
-
-void CCompositionProcessorEngine::GetCandidateStringInConverted(const CRustStringRange& searchString, _In_ CSampleImeArray<CCandidateListItem> *pCandidateList)
-{
-    engine_rust.GetCandidateStringInConverted(searchString, pCandidateList);
-}
-
-//+---------------------------------------------------------------------------
-//
-// IsPunctuation
-//
-//----------------------------------------------------------------------------
-
-bool CCompositionProcessorEngine::IsPunctuation(wchar_t wch)
-{
-    return engine_rust.PunctuationsHasAlternativePunctuation(wch);
-}
-
-//+---------------------------------------------------------------------------
-//
-// GetPunctuationPair
-//
-//----------------------------------------------------------------------------
-
-wchar_t CCompositionProcessorEngine::GetPunctuation(wchar_t wch)
-{
-    return engine_rust.PunctuationsGetAlternativePunctuationCounted(wch);
-}
-
-//+---------------------------------------------------------------------------
-//
-// OnPreservedKey
-//
-//----------------------------------------------------------------------------
-
-void CCompositionProcessorEngine::OnPreservedKey(REFGUID rguid, _Out_ BOOL *pIsEaten, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId)
-{
-    bool isEaten;
-    engine_rust.OnPreservedKey(rguid, &isEaten, pThreadMgr, tfClientId);
-    *pIsEaten = isEaten;
-}
-
-//+---------------------------------------------------------------------------
-//
-// UpdatePrivateCompartments
-//
-//----------------------------------------------------------------------------
-
-void CCompositionProcessorEngine::ConversionModeCompartmentUpdated(_In_ ITfThreadMgr *pThreadMgr)
-{
-    engine_rust.ConversionModeCompartmentUpdated(pThreadMgr);
-}
-
-//////////////////////////////////////////////////////////////////////
-//
-//    CCompositionProcessorEngine
-//
-//////////////////////////////////////////////////////////////////////
-
-//+---------------------------------------------------------------------------
-//
-// CCompositionProcessorEngine::IsVirtualKeyNeed
-//
-// Test virtual key code need to the Composition Processor Engine.
-// param
-//     [in] uCode - Specify virtual key code.
-//     [in/out] pwch       - char code
-//     [in] fComposing     - Specified composing.
-//     [in] fCandidateMode - Specified candidate mode.
-//     [out] pKeyState     - Returns function regarding virtual key.
-// returns
-//     If engine need this virtual key code, returns true. Otherwise returns false.
-//----------------------------------------------------------------------------
-
-std::tuple<bool, KeystrokeCategory, KeystrokeFunction> CCompositionProcessorEngine::TestVirtualKey(uint16_t uCode, char16_t wch, bool fComposing, CandidateMode candidateMode)
-{
-    return engine_rust.TestVirtualKey(uCode, wch, fComposing, candidateMode);
-}
-
-CCompositionProcessorEngine::CRustCompositionProcessorEngine::CRustCompositionProcessorEngine(ITfThreadMgr *threadMgr, TfClientId clientId) {
+CCompositionProcessorEngine::CCompositionProcessorEngine(
+    LANGID langid,
+    REFGUID guidLanguageProfile,
+    ITfThreadMgr *threadMgr,
+    TfClientId clientId
+) : langid(langid), guidProfile(guidLanguageProfile) {
     threadMgr->AddRef();
     engine = compositionprocessorengine_new(threadMgr, clientId);
 }
 
-CCompositionProcessorEngine::CRustCompositionProcessorEngine::~CRustCompositionProcessorEngine() {
+CCompositionProcessorEngine::~CCompositionProcessorEngine() {
     compositionprocessorengine_free(engine);
 }
 
-bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::SetupLanguageProfile(ITfThreadMgr *threadMgr, TfClientId clientId) {
+bool CCompositionProcessorEngine::SetupLanguageProfile(ITfThreadMgr *threadMgr, TfClientId clientId) {
     return compositionprocessorengine_setup_language_profile(engine, threadMgr, clientId);
 };
 
-std::tuple<bool, KeystrokeCategory, KeystrokeFunction> CCompositionProcessorEngine::CRustCompositionProcessorEngine::TestVirtualKey(uint16_t code, char16_t ch, bool composing, CandidateMode candidateMode)
+std::tuple<bool, KeystrokeCategory, KeystrokeFunction> CCompositionProcessorEngine::TestVirtualKey(uint16_t code, char16_t ch, bool composing, CandidateMode candidateMode)
 {
     bool keyEaten;
     KeystrokeCategory keystrokeCategory;
@@ -309,28 +124,28 @@ std::tuple<bool, KeystrokeCategory, KeystrokeFunction> CCompositionProcessorEngi
     return { keyEaten, keystrokeCategory, keystrokeFunction };
 }
 
-bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::AddVirtualKey(char16_t wch) {
+bool CCompositionProcessorEngine::AddVirtualKey(char16_t wch) {
     return compositionprocessorengine_add_virtual_key(engine, wch);
 }
 
-void CCompositionProcessorEngine::CRustCompositionProcessorEngine::PopVirtualKey() {
+void CCompositionProcessorEngine::PopVirtualKey() {
     compositionprocessorengine_pop_virtual_key(engine);
 }
 
-void CCompositionProcessorEngine::CRustCompositionProcessorEngine::PurgeVirtualKey() {
+void CCompositionProcessorEngine::PurgeVirtualKey() {
     compositionprocessorengine_purge_virtual_key(engine);
 }
 
-bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::HasVirtualKey() {
+bool CCompositionProcessorEngine::HasVirtualKey() {
     return compositionprocessorengine_has_virtual_key(engine);
 }
 
-CRustStringRange CCompositionProcessorEngine::CRustCompositionProcessorEngine::KeystrokeBufferGetReadingString() {
+CRustStringRange CCompositionProcessorEngine::KeystrokeBufferGetReadingString() {
     void* str = compositionprocessorengine_keystroke_buffer_get_reading_string(engine);
     return CRustStringRange::FromVoid(str);
 }
 
-bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::KeystrokeBufferIncludesWildcard() {
+bool CCompositionProcessorEngine::KeystrokeBufferIncludesWildcard() {
     return compositionprocessorengine_keystroke_buffer_includes_wildcard(engine);
 }
 
@@ -345,67 +160,70 @@ inline void ArraysToArray(void** keys, void** values, uintptr_t length, _Inout_ 
     }
 }
 
-void CCompositionProcessorEngine::CRustCompositionProcessorEngine::GetCandidateList(CSampleImeArray<CCandidateListItem> *pCandidateList, bool isIncrementalWordSearch, bool isWildcardSearch) {
+void CCompositionProcessorEngine::GetCandidateList(CSampleImeArray<CCandidateListItem> *pCandidateList, bool isIncrementalWordSearch, bool isWildcardSearch) {
     void* keys[MAX_BUFFER];
     void* values[MAX_BUFFER];
     uintptr_t length = compositionprocessorengine_get_candidate_list(this->engine, keys, values, MAX_BUFFER, isIncrementalWordSearch, isWildcardSearch);
     ArraysToArray(keys, values, length, pCandidateList);
 }
 
-void CCompositionProcessorEngine::CRustCompositionProcessorEngine::GetCandidateStringInConverted(const CRustStringRange& searchString, CSampleImeArray<CCandidateListItem> *pCandidateList) {
+void CCompositionProcessorEngine::GetCandidateStringInConverted(const CRustStringRange& searchString, CSampleImeArray<CCandidateListItem> *pCandidateList) {
     void* keys[MAX_BUFFER];
     void* values[MAX_BUFFER];
     uintptr_t length = compositionprocessorengine_get_candidate_string_in_converted(engine, searchString.GetInternal(), keys, values, MAX_BUFFER);
     ArraysToArray(keys, values, length, pCandidateList);
 }
 
-HRESULT CCompositionProcessorEngine::CRustCompositionProcessorEngine::OnPreservedKey(REFGUID rguid, bool* isEaten, ITfThreadMgr* threadMgr, TfClientId clientId) {
+HRESULT CCompositionProcessorEngine::OnPreservedKey(REFGUID rguid, BOOL* isEaten, ITfThreadMgr* threadMgr, TfClientId clientId) {
     threadMgr->AddRef();
-    return compositionprocessorengine_on_preserved_key(engine, &rguid, isEaten, threadMgr, clientId);
+    bool _isEaten = false;
+    HRESULT result = compositionprocessorengine_on_preserved_key(engine, &rguid, &_isEaten, threadMgr, clientId);
+    *isEaten = _isEaten;
+    return result;
 }
 
-void CCompositionProcessorEngine::CRustCompositionProcessorEngine::ModifiersUpdate(WPARAM w, LPARAM l) {
+void CCompositionProcessorEngine::ModifiersUpdate(WPARAM w, LPARAM l) {
     compositionprocessorengine_modifiers_update(engine, w, l);
 }
 
-bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::ModifiersIsShiftKeyDownOnly() const {
+bool CCompositionProcessorEngine::ModifiersIsShiftKeyDownOnly() const {
     return compositionprocessorengine_modifiers_is_shift_key_down_only(engine);
 }
 
-bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::ModifiersIsControlKeyDownOnly() const {
+bool CCompositionProcessorEngine::ModifiersIsControlKeyDownOnly() const {
     return compositionprocessorengine_modifiers_is_control_key_down_only(engine);
 }
 
-bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::ModifiersIsAltKeyDownOnly() const {
+bool CCompositionProcessorEngine::ModifiersIsAltKeyDownOnly() const {
     return compositionprocessorengine_modifiers_is_alt_key_down_only(engine);
 }
 
-bool CCompositionProcessorEngine::CRustCompositionProcessorEngine::PunctuationsHasAlternativePunctuation(WCHAR wch) const {
+bool CCompositionProcessorEngine::PunctuationsHasAlternativePunctuation(WCHAR wch) const {
     return compositionprocessorengine_punctuations_has_alternative_punctuation(engine, wch);
 }
 
-wchar_t CCompositionProcessorEngine::CRustCompositionProcessorEngine::PunctuationsGetAlternativePunctuationCounted(wchar_t wch) {
+wchar_t CCompositionProcessorEngine::PunctuationsGetAlternativePunctuationCounted(wchar_t wch) {
     return compositionprocessorengine_punctuations_get_alternative_punctuation_counted(engine, wch);
 }
 
-HRESULT CCompositionProcessorEngine::CRustCompositionProcessorEngine::PreservedKeysInit(ITfThreadMgr* threadMgr, TfClientId clientId) {
+HRESULT CCompositionProcessorEngine::PreservedKeysInit(ITfThreadMgr* threadMgr, TfClientId clientId) {
     threadMgr->AddRef();
     return compositionprocessorengine_preserved_keys_init(engine, threadMgr, clientId);
 }
 
-void* CCompositionProcessorEngine::CRustCompositionProcessorEngine::CompartmentWrapperRawPtr() {
+void* CCompositionProcessorEngine::CompartmentWrapperRawPtr() {
     return const_cast<void*>(compositionprocessorengine_compartmentwrapper_raw_ptr(engine));
 }
 
-void CCompositionProcessorEngine::CRustCompositionProcessorEngine::ConversionModeCompartmentUpdated(ITfThreadMgr *threadMgr) {
+void CCompositionProcessorEngine::ConversionModeCompartmentUpdated(ITfThreadMgr *threadMgr) {
     threadMgr->AddRef();
     compositionprocessorengine_compartmentwrapper_conversion_mode_compartment_updated(engine, threadMgr);
 }
 
-void CCompositionProcessorEngine::CRustCompositionProcessorEngine::HideLanguageBarButton(bool hide) {
+void CCompositionProcessorEngine::HideLanguageBarButton(bool hide) {
     compositionprocessorengine_hide_language_bar_button(engine, hide);
 }
 
-void CCompositionProcessorEngine::CRustCompositionProcessorEngine::DisableLanguageBarButton(bool disable) {
+void CCompositionProcessorEngine::DisableLanguageBarButton(bool disable) {
     compositionprocessorengine_disable_language_bar_button(engine, disable);
 }

@@ -174,12 +174,12 @@ HRESULT CSampleIME::_HandleCompositionInputWorker(_In_ CCompositionProcessorEngi
     //
     // Get reading string from composition processor engine
     //
-    auto readingString = pCompositionProcessorEngine->GetReadingString();
+    bool hasVirtualKey = pCompositionProcessorEngine->HasVirtualKey();
 
-    if (readingString.has_value())
+    if (hasVirtualKey)
     {
-        auto [item, hasWildcard] = readingString.value();
-        isWildcardIncluded = hasWildcard;
+        CRustStringRange item = pCompositionProcessorEngine->KeystrokeBufferGetReadingString();
+        isWildcardIncluded = pCompositionProcessorEngine->KeystrokeBufferIncludesWildcard();
 
         hr = _AddComposingAndChar(ec, pContext, item);
         if (FAILED(hr))
@@ -208,7 +208,7 @@ HRESULT CSampleIME::_HandleCompositionInputWorker(_In_ CCompositionProcessorEngi
     {
         _pCandidateListUIPresenter->_ClearList();
     }
-    else if (readingString.has_value() && isWildcardIncluded)
+    else if (hasVirtualKey && isWildcardIncluded)
     {
         hr = _CreateAndStartCandidate(pCompositionProcessorEngine, ec, pContext);
         if (SUCCEEDED(hr))
@@ -525,7 +525,7 @@ HRESULT CSampleIME::_HandleCompositionPunctuation(TfEditCookie ec, _In_ ITfConte
     CCompositionProcessorEngine* pCompositionProcessorEngine = nullptr;
     pCompositionProcessorEngine = _pCompositionProcessorEngine;
 
-    WCHAR punctuation = pCompositionProcessorEngine->GetPunctuation(wch);
+    WCHAR punctuation = pCompositionProcessorEngine->PunctuationsGetAlternativePunctuationCounted(wch);
 
     // Finalize character
     hr = _AddCharAndFinalize(ec, pContext, CRustStringRange(CStringRangeUtf16(punctuation)));

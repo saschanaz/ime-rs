@@ -145,7 +145,7 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_ UINT 
     //
     // Punctuation
     //
-    if (pCompositionProcessorEngine->IsPunctuation(wch))
+    if (pCompositionProcessorEngine->PunctuationsHasAlternativePunctuation(wch))
     {
         if ((_candidateMode == CandidateMode::None) && isPunctuation)
         {
