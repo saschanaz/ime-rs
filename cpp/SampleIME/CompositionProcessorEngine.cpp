@@ -246,21 +246,6 @@ wchar_t CCompositionProcessorEngine::GetPunctuation(wchar_t wch)
 
 //+---------------------------------------------------------------------------
 //
-// IsDoubleSingleByte
-//
-//----------------------------------------------------------------------------
-
-BOOL CCompositionProcessorEngine::IsDoubleSingleByte(WCHAR wch)
-{
-    if (L' ' <= wch && wch <= L'~')
-    {
-        return TRUE;
-    }
-    return FALSE;
-}
-
-//+---------------------------------------------------------------------------
-//
 // OnPreservedKey
 //
 //----------------------------------------------------------------------------

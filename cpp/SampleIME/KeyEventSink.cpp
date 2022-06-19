@@ -53,6 +53,11 @@ __inline UINT VKeyFromVKPacketAndWchar(UINT vk, WCHAR wch)
     return vkRet;
 }
 
+bool IsDoubleSingleByte(char16_t wch)
+{
+    return u' ' <= wch && wch <= u'~';
+}
+
 //+---------------------------------------------------------------------------
 //
 // _IsKeyEaten
@@ -152,7 +157,7 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_ UINT 
     //
     // Double/Single byte
     //
-    if (isDoubleSingleByte && pCompositionProcessorEngine->IsDoubleSingleByte(wch))
+    if (isDoubleSingleByte && IsDoubleSingleByte(wch))
     {
         if (_candidateMode == CandidateMode::None)
         {

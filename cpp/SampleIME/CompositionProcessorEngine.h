@@ -52,8 +52,6 @@ public:
     bool IsPunctuation(wchar_t wch);
     wchar_t GetPunctuation(wchar_t wch);
 
-    BOOL IsDoubleSingleByte(WCHAR wch);
-
     // Language bar control
     void SetLanguageBarStatus(DWORD status, BOOL isSet);
 
