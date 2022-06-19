@@ -44,6 +44,10 @@ Not all features are alive, because Windows API support has changed since the in
   1. Even if the "secure mode" was a real thing, it doesn't make sense to use higher resolution based on that.
 * Locale-based sort. Originally [`CompareString`](https://docs.microsoft.com/en-us/windows/win32/api/stringapiset/nf-stringapiset-comparestringw) was used but it's currently replaced by Rust's non-locale-agnostic `str::cmp`. I have no example but this may affect the order in the candidate list. LCID/LANGID is deprecated per the comment inside winnt.h, so the implementation should be different if anyone wants to reintroduce this.
 
+### Doesn't work
+
+* "Compatible with Windows Store apps"; this has been broken from the start. Maybe Windows decided to block old IMEs, I have no idea.
+
 Below is the original README of this sample.
 
 # Input Method Editor (IME) sample
