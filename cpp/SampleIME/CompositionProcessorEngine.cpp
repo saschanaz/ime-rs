@@ -54,10 +54,9 @@ BOOL CSampleIME::_AddTextProcessorEngine()
     // Is this already added?
     if (_pCompositionProcessorEngine != nullptr)
     {
-        LANGID langidProfile = 0;
-        GUID guidLanguageProfile = GUID_NULL;
+        LANGID langidProfile = _pCompositionProcessorEngine->langid;
+        GUID guidLanguageProfile = _pCompositionProcessorEngine->guidProfile;
 
-        guidLanguageProfile = _pCompositionProcessorEngine->GetLanguageProfile(&langidProfile);
         if ((langid == langidProfile) && IsEqualGUID(guidProfile, guidLanguageProfile))
         {
             return TRUE;
@@ -67,7 +66,7 @@ BOOL CSampleIME::_AddTextProcessorEngine()
     // Create composition processor engine
     if (_pCompositionProcessorEngine == nullptr)
     {
-        _pCompositionProcessorEngine = new (std::nothrow) CCompositionProcessorEngine(_GetThreadMgr(), _GetClientId());
+        _pCompositionProcessorEngine = new (std::nothrow) CCompositionProcessorEngine(langid, guidProfile, _GetThreadMgr(), _GetClientId());
     }
     if (!_pCompositionProcessorEngine)
     {
@@ -75,7 +74,7 @@ BOOL CSampleIME::_AddTextProcessorEngine()
     }
 
     // setup composition processor engine
-    if (FALSE == _pCompositionProcessorEngine->SetupLanguageProfile(langid, guidProfile, _GetThreadMgr(), _GetClientId()))
+    if (FALSE == _pCompositionProcessorEngine->SetupLanguageProfile(_GetThreadMgr(), _GetClientId()))
     {
         return FALSE;
     }
@@ -92,15 +91,14 @@ BOOL CSampleIME::_AddTextProcessorEngine()
 //+---------------------------------------------------------------------------
 //
 // ctor
+// param
+//     [in] LANGID langid = Specify language ID
+//     [in] GUID guidLanguageProfile - Specify GUID language profile which GUID is as same as Text Service Framework language profile.
 //
 //----------------------------------------------------------------------------
 
-CCompositionProcessorEngine::CCompositionProcessorEngine(ITfThreadMgr *threadMgr, TfClientId clientId)
-    : engine_rust(threadMgr, clientId)
-{
-    _langid = 0xffff;
-    _guidProfile = GUID_NULL;
-}
+CCompositionProcessorEngine::CCompositionProcessorEngine(LANGID langid, REFGUID guidLanguageProfile, ITfThreadMgr *threadMgr, TfClientId clientId)
+    : engine_rust(threadMgr, clientId), langid(langid), guidProfile(guidLanguageProfile) {}
 
 //+---------------------------------------------------------------------------
 //
@@ -108,8 +106,6 @@ CCompositionProcessorEngine::CCompositionProcessorEngine(ITfThreadMgr *threadMgr
 //
 // Setup language profile for Composition Processor Engine.
 // param
-//     [in] LANGID langid = Specify language ID
-//     [in] GUID guidLanguageProfile - Specify GUID language profile which GUID is as same as Text Service Framework language profile.
 //     [in] ITfThreadMgr - pointer ITfThreadMgr.
 //     [in] tfClientId - TfClientId value.
 // returns
@@ -117,7 +113,7 @@ CCompositionProcessorEngine::CCompositionProcessorEngine(ITfThreadMgr *threadMgr
 // N.B. For reverse conversion, ITfThreadMgr is NULL and TfClientId is 0.
 //+---------------------------------------------------------------------------
 
-BOOL CCompositionProcessorEngine::SetupLanguageProfile(LANGID langid, REFGUID guidLanguageProfile, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId)
+BOOL CCompositionProcessorEngine::SetupLanguageProfile(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId)
 {
     BOOL ret = TRUE;
     if ((tfClientId == 0) && (pThreadMgr == nullptr))
@@ -125,9 +121,6 @@ BOOL CCompositionProcessorEngine::SetupLanguageProfile(LANGID langid, REFGUID gu
         ret = FALSE;
         goto Exit;
     }
-
-    _langid = langid;
-    _guidProfile = guidLanguageProfile;
 
     engine_rust.SetupLanguageProfile(pThreadMgr, tfClientId);
 

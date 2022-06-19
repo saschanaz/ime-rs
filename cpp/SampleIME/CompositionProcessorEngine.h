@@ -21,17 +21,10 @@
 class CCompositionProcessorEngine
 {
 public:
-    CCompositionProcessorEngine(ITfThreadMgr* threadMgr, TfClientId clientId);
+    CCompositionProcessorEngine(LANGID langid, REFGUID guidLanguageProfile, ITfThreadMgr* threadMgr, TfClientId clientId);
     ~CCompositionProcessorEngine() = default;
 
-    BOOL SetupLanguageProfile(LANGID langid, REFGUID guidLanguageProfile, _In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
-
-    // Get language profile.
-    GUID GetLanguageProfile(LANGID *plangid)
-    {
-        *plangid = _langid;
-        return _guidProfile;
-    }
+    BOOL SetupLanguageProfile(_In_ ITfThreadMgr *pThreadMgr, TfClientId tfClientId);
 
     std::tuple<bool, KeystrokeCategory, KeystrokeFunction> TestVirtualKey(uint16_t uCode, char16_t wch, bool fComposing, CandidateMode candidateMode);
 
@@ -62,10 +55,13 @@ public:
 
     void ModifiersUpdate(WPARAM w, LPARAM l) { return engine_rust.ModifiersUpdate(w, l); }
 
-private:
-    LANGID _langid;
-    GUID _guidProfile;
+    // TODO: Ultimately split these fields as tuple<langid, profile, engine>,
+    // since these fields are not used within this class.
+    // For now let's keep them as fields to reduce code change.
+    const LANGID langid;
+    const GUID guidProfile;
 
+private:
     // Rust port
     class CRustCompositionProcessorEngine {
         void* engine;

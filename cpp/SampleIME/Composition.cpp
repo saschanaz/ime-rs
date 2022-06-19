@@ -339,9 +339,6 @@ BOOL CSampleIME::_SetCompositionLanguage(TfEditCookie ec, _In_ ITfContext *pCont
     CCompositionProcessorEngine* pCompositionProcessorEngine = nullptr;
     pCompositionProcessorEngine = _pCompositionProcessorEngine;
 
-    LANGID langidProfile = 0;
-    pCompositionProcessorEngine->GetLanguageProfile(&langidProfile);
-
     ITfRange* pRangeComposition = nullptr;
     ITfProperty* pLanguageProperty = nullptr;
 
@@ -363,7 +360,7 @@ BOOL CSampleIME::_SetCompositionLanguage(TfEditCookie ec, _In_ ITfContext *pCont
 
     VARIANT var;
     var.vt = VT_I4;   // we're going to set DWORD
-    var.lVal = langidProfile;
+    var.lVal = pCompositionProcessorEngine->langid;
 
     hr = pLanguageProperty->SetValue(ec, pRangeComposition, &var);
     if (FAILED(hr))

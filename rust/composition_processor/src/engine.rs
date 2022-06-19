@@ -61,18 +61,10 @@ impl CompositionProcessorEngine {
         Box::from_raw(engine as *mut CompositionProcessorEngine)
     }
 
-    pub fn setup_language_profile(
-        &mut self,
-        // langid: u16,
-        // language_profile: &GUID,
-        thread_mgr: ITfThreadMgr,
-        client_id: u32,
-    ) -> bool {
+    pub fn setup_language_profile(&mut self, thread_mgr: ITfThreadMgr, client_id: u32) -> bool {
         if client_id == 0 {
             return false;
         }
-
-        // TODO: fields?
 
         self.preserved_keys()
             .init_keys(thread_mgr.clone(), client_id)
