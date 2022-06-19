@@ -19,6 +19,8 @@
 #define CANDWND_SELECTED_BK_COLOR		(RGB(0xA6, 0xA6, 0x00))
 #define CANDWND_ITEM_COLOR				(RGB(0x00, 0x00, 0x00))
 
+#define CAND_WIDTH     (13)      // * tmMaxCharWidth
+
 //---------------------------------------------------------------------
 // string length of CLSID
 //---------------------------------------------------------------------

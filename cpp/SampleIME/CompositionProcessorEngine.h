@@ -65,8 +65,6 @@ public:
 
     void ModifiersUpdate(WPARAM w, LPARAM l) { return engine_rust.ModifiersUpdate(w, l); }
 
-    const uint32_t CandidateWindowWidth = 13;  // * tmMaxCharWidth
-
 private:
     LANGID _langid;
     GUID _guidProfile;
