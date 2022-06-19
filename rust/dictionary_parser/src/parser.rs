@@ -38,7 +38,7 @@ pub fn find_items<'a>(
     is_text_search: bool,
     is_wildcard_search: bool,
 ) -> Vec<(&'a str, &'a str)> {
-    use compare_with_wildcard::compare_with_wildcard;
+    use crate::compare_with_wildcard::compare_with_wildcard;
 
     let mut vec: Vec<(&'a str, &'a str)> = Vec::new();
     for line in content.lines() {

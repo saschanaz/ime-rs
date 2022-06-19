@@ -11,5 +11,4 @@ crate-type = ["rlib", "staticlib"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-compare_with_wildcard = { path = "../compare_with_wildcard" }
 ruststringrange = { path = "../ruststringrange" }

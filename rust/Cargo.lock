@@ -3,10 +3,6 @@
 version = 3
 
 [[package]]
-name = "compare_with_wildcard"
-version = "0.1.0"
-
-[[package]]
 name = "composition_processor"
 version = "0.1.0"
 dependencies = [
@@ -23,7 +19,6 @@ dependencies = [
 name = "dictionary_parser"
 version = "0.1.0"
 dependencies = [
- "compare_with_wildcard",
  "ruststringrange",
 ]
 
