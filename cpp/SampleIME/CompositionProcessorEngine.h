@@ -53,7 +53,6 @@ public:
     wchar_t GetPunctuation(wchar_t wch);
 
     BOOL IsDoubleSingleByte(WCHAR wch);
-    BOOL IsWildcardChar(WCHAR wch) { return (wch == u'?' || wch == u'*'); }
 
     // Language bar control
     void SetLanguageBarStatus(DWORD status, BOOL isSet);
