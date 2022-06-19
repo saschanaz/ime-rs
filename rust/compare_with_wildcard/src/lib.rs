@@ -39,111 +39,65 @@ pub fn compare_with_wildcard(input: &str, target: &str) -> bool {
     compare_with_wildcard(&input[input_charlen..], &target[target_charlen.unwrap()..])
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn compare_with_wildcard_utf16(
-    input_buffer: *const u16,
-    input_len: usize,
-    target_buffer: *const u16,
-    target_len: usize,
-) -> bool {
-    let input_slice: &[u16] = std::slice::from_raw_parts(input_buffer, input_len);
-    let target_slice: &[u16] = std::slice::from_raw_parts(target_buffer, target_len);
-
-    let input = String::from_utf16_lossy(input_slice);
-    let target = String::from_utf16_lossy(target_slice);
-
-    compare_with_wildcard(&input, &target)
-}
-
 #[cfg(test)]
 mod tests {
-    fn utf16(s: &str) -> Vec<u16> {
-        s.encode_utf16().collect()
-    }
-
-    unsafe fn wrapped_compare(input: &str, reference: &str) -> bool {
-        let input_enc = utf16(input);
-        let reference_enc = utf16(reference);
-
-        crate::compare_with_wildcard_utf16(
-            input_enc.as_ptr(),
-            input_enc.len(),
-            reference_enc.as_ptr(),
-            reference_enc.len(),
-        )
-    }
+    use super::compare_with_wildcard;
 
     #[test]
     fn compare_empty() {
-        unsafe {
-            assert!(wrapped_compare("", ""));
-        }
+        assert!(compare_with_wildcard("", ""));
     }
 
     #[test]
     fn compare_empty_filled() {
-        unsafe {
-            assert!(!wrapped_compare("", "s"));
-        }
+        assert!(!compare_with_wildcard("", "s"));
     }
 
     #[test]
     fn compare_filled_empty() {
-        unsafe {
-            assert!(!wrapped_compare("s", ""));
-        }
+        assert!(!compare_with_wildcard("s", ""));
     }
 
     #[test]
     fn compare_filled_same() {
-        unsafe {
-            assert!(wrapped_compare("wow", "wow"));
-            assert!(wrapped_compare("wow", "wOw"));
-            assert!(wrapped_compare("사과", "사과"));
-        }
+        assert!(compare_with_wildcard("wow", "wow"));
+        assert!(compare_with_wildcard("wow", "wOw"));
+        assert!(compare_with_wildcard("사과", "사과"));
     }
 
     #[test]
     fn compare_filled_different() {
-        unsafe {
-            assert!(!wrapped_compare("wow", "cow"));
-            assert!(!wrapped_compare("wow", "wot"));
-            assert!(!wrapped_compare("사과", "수박"));
-        }
+        assert!(!compare_with_wildcard("wow", "cow"));
+        assert!(!compare_with_wildcard("wow", "wot"));
+        assert!(!compare_with_wildcard("사과", "수박"));
     }
 
     #[test]
     fn compare_different_length() {
-        unsafe {
-            assert!(!wrapped_compare("wowwow", "wow"));
-            assert!(!wrapped_compare("what", "what?"));
-            assert!(!wrapped_compare("사과", "귤"));
-            assert!(!wrapped_compare("사과", "바나나"));
-        }
+        assert!(!compare_with_wildcard("wowwow", "wow"));
+        assert!(!compare_with_wildcard("what", "what?"));
+        assert!(!compare_with_wildcard("사과", "귤"));
+        assert!(!compare_with_wildcard("사과", "바나나"));
     }
 
     #[test]
     fn compare_wildcard() {
-        unsafe {
-            assert!(wrapped_compare("w*", "w"));
-            assert!(wrapped_compare("w*", "wo"));
-            assert!(wrapped_compare("w*", "wow"));
-            assert!(wrapped_compare("w*t", "wat"));
-            assert!(wrapped_compare("w*t", "what"));
-            assert!(!wrapped_compare("w*t", "wha"));
-            assert!(wrapped_compare("사*", "사과"));
-        }
+        assert!(compare_with_wildcard("w*", "w"));
+        assert!(compare_with_wildcard("w*", "wo"));
+        assert!(compare_with_wildcard("w*", "wow"));
+        assert!(compare_with_wildcard("w*t", "wat"));
+        assert!(compare_with_wildcard("w*t", "what"));
+        assert!(!compare_with_wildcard("w*t", "wha"));
+        assert!(compare_with_wildcard("사*", "사과"));
     }
 
     #[test]
     fn compare_exclamation() {
-        unsafe {
-            assert!(wrapped_compare("w?", "wo"));
-            assert!(!wrapped_compare("w?", "wow"));
-            assert!(wrapped_compare("w?t", "wat"));
-            assert!(!wrapped_compare("w?t", "what"));
-            assert!(!wrapped_compare("w?t", "wha"));
-            assert!(wrapped_compare("사?", "사과"));
-        }
+        assert!(compare_with_wildcard("w?", "wo"));
+        assert!(!compare_with_wildcard("w?", "wow"));
+        assert!(compare_with_wildcard("w?t", "wat"));
+        assert!(!compare_with_wildcard("w?t", "what"));
+        assert!(!compare_with_wildcard("w?t", "wha"));
+        assert!(compare_with_wildcard("사?", "사과"));
     }
 }
