@@ -60,8 +60,8 @@ public:
 
     void ConversionModeCompartmentUpdated(_In_ ITfThreadMgr *pThreadMgr);
 
-    void ShowAllLanguageBarIcons();
-    void HideAllLanguageBarIcons();
+    void HideLanguageBarButton(bool hide) { engine_rust.HideLanguageBarButton(hide); };
+    void DisableLanguageBarButton(bool disable) { engine_rust.DisableLanguageBarButton(disable); };
 
     void ModifiersUpdate(WPARAM w, LPARAM l) { return engine_rust.ModifiersUpdate(w, l); }
 
@@ -109,7 +109,8 @@ private:
         void* CompartmentWrapperRawPtr();
         void ConversionModeCompartmentUpdated(ITfThreadMgr* threadMgr);
 
-        void SetLanguageBarStatus(uint32_t status, bool set);
+        void HideLanguageBarButton(bool hide);
+        void DisableLanguageBarButton(bool disable);
     };
 
     CRustCompositionProcessorEngine engine_rust;

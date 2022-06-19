@@ -231,13 +231,21 @@ pub unsafe extern "C" fn compositionprocessorengine_setup_language_profile(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn compositionprocessorengine_set_language_bar_status(
+pub unsafe extern "C" fn compositionprocessorengine_hide_language_bar_button(
     engine: *mut c_void,
-    status: u32,
-    set: bool,
+    hide: bool,
 ) {
     let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
-    engine.set_language_bar_status(status, set).ok();
+    engine.hide_language_bar_button(hide).ok();
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn compositionprocessorengine_disable_language_bar_button(
+    engine: *mut c_void,
+    disable: bool,
+) {
+    let engine = Box::leak(CompositionProcessorEngine::from_void(engine as *mut _));
+    engine.disable_language_bar_button(disable).ok();
 }
 
 unsafe fn tuples_to_ffi(

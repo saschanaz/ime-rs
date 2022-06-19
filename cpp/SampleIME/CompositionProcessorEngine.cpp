@@ -283,16 +283,6 @@ void CCompositionProcessorEngine::ConversionModeCompartmentUpdated(_In_ ITfThrea
     engine_rust.ConversionModeCompartmentUpdated(pThreadMgr);
 }
 
-void CCompositionProcessorEngine::ShowAllLanguageBarIcons()
-{
-    SetLanguageBarStatus(TF_LBI_STATUS_HIDDEN, FALSE);
-}
-
-void CCompositionProcessorEngine::HideAllLanguageBarIcons()
-{
-    SetLanguageBarStatus(TF_LBI_STATUS_HIDDEN, TRUE);
-}
-
 //////////////////////////////////////////////////////////////////////
 //
 //    CCompositionProcessorEngine
@@ -434,6 +424,10 @@ void CCompositionProcessorEngine::CRustCompositionProcessorEngine::ConversionMod
     compositionprocessorengine_compartmentwrapper_conversion_mode_compartment_updated(engine, threadMgr);
 }
 
-void CCompositionProcessorEngine::CRustCompositionProcessorEngine::SetLanguageBarStatus(uint32_t status, bool set) {
-    compositionprocessorengine_set_language_bar_status(engine, status, set);
+void CCompositionProcessorEngine::CRustCompositionProcessorEngine::HideLanguageBarButton(bool hide) {
+    compositionprocessorengine_hide_language_bar_button(engine, hide);
+}
+
+void CCompositionProcessorEngine::CRustCompositionProcessorEngine::DisableLanguageBarButton(bool disable) {
+    compositionprocessorengine_disable_language_bar_button(engine, disable);
 }

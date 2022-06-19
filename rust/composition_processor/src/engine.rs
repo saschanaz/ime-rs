@@ -9,7 +9,10 @@ use windows::{
     Win32::{
         Foundation::{HINSTANCE, MAX_PATH},
         System::LibraryLoader::GetModuleFileNameW,
-        UI::{Input::KeyboardAndMouse::VK_SHIFT, TextServices::ITfThreadMgr},
+        UI::{
+            Input::KeyboardAndMouse::VK_SHIFT,
+            TextServices::{ITfThreadMgr, TF_LBI_STATUS_DISABLED, TF_LBI_STATUS_HIDDEN},
+        },
     },
 };
 
@@ -190,8 +193,16 @@ impl CompositionProcessorEngine {
             Some(TableDictionaryEngine::load(dict_path.to_str().unwrap()).unwrap())
     }
 
-    pub fn set_language_bar_status(&mut self, status: u32, set: bool) -> windows::core::Result<()> {
+    fn set_language_bar_status(&self, status: u32, set: bool) -> windows::core::Result<()> {
         self.language_bar.button().as_impl().set_status(status, set)
+    }
+
+    pub fn hide_language_bar_button(&self, hide: bool) -> windows::core::Result<()> {
+        self.set_language_bar_status(TF_LBI_STATUS_HIDDEN, hide)
+    }
+
+    pub fn disable_language_bar_button(&self, disable: bool) -> windows::core::Result<()> {
+        self.set_language_bar_status(TF_LBI_STATUS_DISABLED, disable)
     }
 
     pub fn get_table_dictionary_engine(&self) -> &Option<TableDictionaryEngine> {

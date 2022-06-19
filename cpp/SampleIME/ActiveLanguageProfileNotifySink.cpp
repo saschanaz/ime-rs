@@ -48,7 +48,7 @@ STDAPI CSampleIME::OnActivated(_In_ REFCLSID clsid, _In_ REFGUID guidProfile, _I
 
     if (isActivated)
     {
-        _pCompositionProcessorEngine->ShowAllLanguageBarIcons();
+        _pCompositionProcessorEngine->HideLanguageBarButton(false);
 
         _pCompositionProcessorEngine->ConversionModeCompartmentUpdated(_pThreadMgr);
     }
@@ -56,7 +56,7 @@ STDAPI CSampleIME::OnActivated(_In_ REFCLSID clsid, _In_ REFGUID guidProfile, _I
     {
         _DeleteCandidateList(FALSE, nullptr);
 
-        _pCompositionProcessorEngine->HideAllLanguageBarIcons();
+        _pCompositionProcessorEngine->HideLanguageBarButton(true);
     }
 
     return S_OK;

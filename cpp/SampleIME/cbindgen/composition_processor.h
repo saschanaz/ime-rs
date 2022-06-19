@@ -53,6 +53,8 @@ void compositionprocessorengine_compartmentwrapper_conversion_mode_compartment_u
 
 const void *compositionprocessorengine_compartmentwrapper_raw_ptr(void *engine);
 
+void compositionprocessorengine_disable_language_bar_button(void *engine, bool disable);
+
 void compositionprocessorengine_free(void *engine);
 
 uintptr_t compositionprocessorengine_get_candidate_list(const void *engine,
@@ -71,6 +73,8 @@ uintptr_t compositionprocessorengine_get_candidate_string_in_converted(const voi
 const void *compositionprocessorengine_get_table_dictionary_engine(const void *engine);
 
 bool compositionprocessorengine_has_virtual_key(void *engine);
+
+void compositionprocessorengine_hide_language_bar_button(void *engine, bool hide);
 
 void *compositionprocessorengine_keystroke_buffer_get_reading_string(void *engine);
 
@@ -105,8 +109,6 @@ bool compositionprocessorengine_punctuations_has_alternative_punctuation(void *e
                                                                          uint16_t wch);
 
 void compositionprocessorengine_purge_virtual_key(void *engine);
-
-void compositionprocessorengine_set_language_bar_status(void *engine, uint32_t status, bool set);
 
 bool compositionprocessorengine_setup_language_profile(void *engine,
                                                        ITfThreadMgr* thread_mgr,

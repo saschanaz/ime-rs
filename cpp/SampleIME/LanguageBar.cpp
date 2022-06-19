@@ -63,19 +63,5 @@ void CSampleIME::_UpdateLanguageBarOnSetFocus(_In_ ITfDocumentMgr *pDocMgrFocus)
         }
     }
 
-    CCompositionProcessorEngine* pCompositionProcessorEngine = nullptr;
-    pCompositionProcessorEngine = _pCompositionProcessorEngine;
-
-    pCompositionProcessorEngine->SetLanguageBarStatus(TF_LBI_STATUS_DISABLED, needDisableButtons);
-}
-
-//+---------------------------------------------------------------------------
-//
-// CCompositionProcessorEngine::SetLanguageBarStatus
-//
-//----------------------------------------------------------------------------
-
-VOID CCompositionProcessorEngine::SetLanguageBarStatus(DWORD status, BOOL isSet)
-{
-    engine_rust.SetLanguageBarStatus(status, isSet);
+    _pCompositionProcessorEngine->DisableLanguageBarButton(needDisableButtons);
 }
