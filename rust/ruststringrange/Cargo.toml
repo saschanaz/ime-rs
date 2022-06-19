@@ -9,6 +9,3 @@ edition = "2021"
 [lib]
 name = "ruststringrange"
 crate-type = ["rlib", "staticlib"]
-
-[dependencies]
-compare_with_wildcard = { path = "../compare_with_wildcard" }

@@ -6,8 +6,6 @@ use core::ffi::c_void;
 use std::cmp::Ordering;
 use std::rc::Rc;
 
-use compare_with_wildcard::compare_with_wildcard;
-
 // Don't bind the struct itself, instead just expose functions receiving and returning void*
 // The C++ wrapper will care those void pointers
 
@@ -141,42 +139,7 @@ pub unsafe extern "C" fn ruststringrange_compare(x_raw: *mut c_void, y_raw: *mut
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn ruststringrange_compare_with_wildcard(
-    x_raw: *mut c_void,
-    y_raw: *mut c_void,
-) -> bool {
-    let x = Box::leak(RustStringRange::from_void(x_raw));
-    let y = Box::leak(RustStringRange::from_void(y_raw));
-    compare_with_wildcard(x.as_slice(), y.as_slice())
-}
-
-#[no_mangle]
 pub unsafe extern "C" fn ruststringrange_clone(p: *const c_void) -> *mut c_void {
     let rsr = Box::leak(RustStringRange::from_void(p as *mut c_void));
     Box::into_raw(Box::new(rsr.clone())) as *mut c_void
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn ruststringrange_concat(
-    p1: *const c_void,
-    p2: *const c_void,
-) -> *mut c_void {
-    let x = Box::leak(RustStringRange::from_void(p1 as *mut c_void));
-    let y = Box::leak(RustStringRange::from_void(p2 as *mut c_void));
-
-    Box::into_raw(Box::new(x.concat(y))) as *mut c_void
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn ruststringrange_contains(p: *const c_void, ch: u8) -> bool {
-    let sr = Box::leak(RustStringRange::from_void(p as *mut c_void));
-
-    sr.contains(char::from(ch))
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn ruststringrange_cutlast(p: *mut c_void) -> *mut c_void {
-    let sr = Box::leak(RustStringRange::from_void(p as *mut c_void));
-
-    Box::into_raw(Box::new(sr.cut_last())) as *mut c_void
 }

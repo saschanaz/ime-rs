@@ -81,9 +81,6 @@ dependencies = [
 [[package]]
 name = "ruststringrange"
 version = "0.1.0"
-dependencies = [
- "compare_with_wildcard",
-]
 
 [[package]]
 name = "syn"
