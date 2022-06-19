@@ -14,10 +14,6 @@
 #include "Compartment.h"
 #include "cbindgen/globals.h"
 
-// 0xF003, 0xF004 are the keys that the touch keyboard sends for next/previous
-#define THIRDPARTY_NEXTPAGE  static_cast<WORD>(0xF003)
-#define THIRDPARTY_PREVPAGE  static_cast<WORD>(0xF004)
-
 // Because the code mostly works with VKeys, here map a WCHAR back to a VKKey for certain
 // vkeys that the IME handles specially
 __inline UINT VKeyFromVKPacketAndWchar(UINT vk, WCHAR wch)
@@ -40,14 +36,6 @@ __inline UINT VKeyFromVKPacketAndWchar(UINT vk, WCHAR wch)
         else if ((wch >= L'A') && (wch <= L'Z'))
         {
             vkRet = static_cast<UINT>(wch);
-        }
-        else if (wch == THIRDPARTY_NEXTPAGE)
-        {
-            vkRet = VK_NEXT;
-        }
-        else if (wch == THIRDPARTY_PREVPAGE)
-        {
-            vkRet = VK_PRIOR;
         }
     }
     return vkRet;
@@ -97,23 +85,13 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_ UINT 
     //
     // Map virtual key to character code
     //
-    BOOL isTouchKeyboardSpecialKeys = FALSE;
     WCHAR wch = ConvertVKey(codeIn);
     *pCodeOut = VKeyFromVKPacketAndWchar(codeIn, wch);
-    if ((wch == THIRDPARTY_NEXTPAGE) || (wch == THIRDPARTY_PREVPAGE))
-    {
-        // We always eat the above softkeyboard special keys
-        isTouchKeyboardSpecialKeys = TRUE;
-        if (pwch)
-        {
-            *pwch = wch;
-        }
-    }
 
     // if the keyboard is closed, we don't eat keys, with the exception of the touch keyboard specials keys
     if (!isOpen && !isDoubleSingleByte && !isPunctuation)
     {
-        return isTouchKeyboardSpecialKeys;
+        return FALSE;
     }
 
     if (pwch)
@@ -166,7 +144,7 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_ UINT 
         }
     }
 
-    return isTouchKeyboardSpecialKeys;
+    return FALSE;
 }
 
 //+---------------------------------------------------------------------------
@@ -314,7 +292,6 @@ STDAPI CSampleIME::OnKeyDown(ITfContext *pContext, WPARAM wParam, LPARAM lParam,
 
     if (*pIsEaten)
     {
-        bool needInvokeKeyHandler = true;
         //
         // Invoke key handler edit session
         //
@@ -322,24 +299,14 @@ STDAPI CSampleIME::OnKeyDown(ITfContext *pContext, WPARAM wParam, LPARAM lParam,
         {
             KeystrokeState.Category = KeystrokeCategory::Composing;
         }
-
-        // Always eat THIRDPARTY_NEXTPAGE and THIRDPARTY_PREVPAGE keys, but don't always process them.
-        if ((wch == THIRDPARTY_NEXTPAGE) || (wch == THIRDPARTY_PREVPAGE))
-        {
-            needInvokeKeyHandler = !((KeystrokeState.Category == KeystrokeCategory::None) && (KeystrokeState.Function == KeystrokeFunction::None));
-        }
-
-        if (needInvokeKeyHandler)
-        {
-            _InvokeKeyHandler(pContext, wch, (DWORD)lParam, KeystrokeState);
-        }
     }
     else if (KeystrokeState.Category == KeystrokeCategory::InvokeCompositionEditSession)
     {
         // Invoke key handler edit session
         KeystrokeState.Category = KeystrokeCategory::Composing;
-        _InvokeKeyHandler(pContext, wch, (DWORD)lParam, KeystrokeState);
     }
+
+    _InvokeKeyHandler(pContext, wch, (DWORD)lParam, KeystrokeState);
 
     return S_OK;
 }
