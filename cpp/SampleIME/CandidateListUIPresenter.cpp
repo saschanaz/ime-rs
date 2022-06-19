@@ -195,9 +195,9 @@ HRESULT CSampleIME::_HandleCandidateArrowKey(TfEditCookie ec, _In_ ITfContext *p
 //
 //----------------------------------------------------------------------------
 
-HRESULT CSampleIME::_HandleCandidateSelectByNumber(TfEditCookie ec, _In_ ITfContext *pContext, _In_ UINT uCode)
+HRESULT CSampleIME::_HandleCandidateSelectByNumber(TfEditCookie ec, _In_ ITfContext *pContext, _In_ WCHAR wch)
 {
-    int iSelectAsNumber = CCandidateRange::GetIndex(uCode);
+    int iSelectAsNumber = CCandidateRange::GetIndex(wch);
     if (iSelectAsNumber == -1)
     {
         return S_FALSE;
@@ -261,9 +261,9 @@ HRESULT CSampleIME::_HandlePhraseArrowKey(TfEditCookie ec, _In_ ITfContext *pCon
 //
 //----------------------------------------------------------------------------
 
-HRESULT CSampleIME::_HandlePhraseSelectByNumber(TfEditCookie ec, _In_ ITfContext *pContext, _In_ UINT uCode)
+HRESULT CSampleIME::_HandlePhraseSelectByNumber(TfEditCookie ec, _In_ ITfContext *pContext, _In_ WCHAR wch)
 {
-    int iSelectAsNumber = CCandidateRange::GetIndex(uCode);
+    int iSelectAsNumber = CCandidateRange::GetIndex(wch);
     if (iSelectAsNumber == -1)
     {
         return S_FALSE;
@@ -1040,7 +1040,7 @@ HRESULT CCandidateListUIPresenter::_CandidateChangeNotification(_In_ enum CANDWN
         goto Exit;
     }
 
-    CKeyHandlerEditSession *pEditSession = new (std::nothrow) CKeyHandlerEditSession(_pTextService, pContext, 0, 0, KeyState);
+    CKeyHandlerEditSession *pEditSession = new (std::nothrow) CKeyHandlerEditSession(_pTextService, pContext, 0, KeyState);
     if (nullptr != pEditSession)
     {
         HRESULT hrSession = S_OK;

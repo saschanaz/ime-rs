@@ -288,7 +288,7 @@ STDAPI CSampleIME::OnTestKeyDown(ITfContext *pContext, WPARAM wParam, LPARAM lPa
         //
         KeystrokeState.Category = KeystrokeCategory::Composing;
 
-        _InvokeKeyHandler(pContext, code, wch, (DWORD)lParam, KeystrokeState);
+        _InvokeKeyHandler(pContext, wch, (DWORD)lParam, KeystrokeState);
     }
 
     return S_OK;
@@ -331,14 +331,14 @@ STDAPI CSampleIME::OnKeyDown(ITfContext *pContext, WPARAM wParam, LPARAM lParam,
 
         if (needInvokeKeyHandler)
         {
-            _InvokeKeyHandler(pContext, code, wch, (DWORD)lParam, KeystrokeState);
+            _InvokeKeyHandler(pContext, wch, (DWORD)lParam, KeystrokeState);
         }
     }
     else if (KeystrokeState.Category == KeystrokeCategory::InvokeCompositionEditSession)
     {
         // Invoke key handler edit session
         KeystrokeState.Category = KeystrokeCategory::Composing;
-        _InvokeKeyHandler(pContext, code, wch, (DWORD)lParam, KeystrokeState);
+        _InvokeKeyHandler(pContext, wch, (DWORD)lParam, KeystrokeState);
     }
 
     return S_OK;

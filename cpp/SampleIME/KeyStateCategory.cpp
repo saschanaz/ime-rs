@@ -330,7 +330,7 @@ HRESULT CKeyStateCandidate::HandleKeyArrow(KeyHandlerEditSessionDTO dto)
 //_HandleCandidateSelectByNumber
 HRESULT CKeyStateCandidate::HandleKeySelectByNumber(KeyHandlerEditSessionDTO dto)
 {
-    return _pTextService->_HandleCandidateSelectByNumber(dto.ec, dto.pContext, dto.code);
+    return _pTextService->_HandleCandidateSelectByNumber(dto.ec, dto.pContext, dto.wch);
 }
 
 /*
@@ -362,5 +362,5 @@ HRESULT CKeyStatePhrase::HandleKeyArrow(KeyHandlerEditSessionDTO dto)
 //HandleKeySelectByNumber
 HRESULT CKeyStatePhrase::HandleKeySelectByNumber(KeyHandlerEditSessionDTO dto)
 {
-    return _pTextService->_HandlePhraseSelectByNumber(dto.ec, dto.pContext, dto.code);
+    return _pTextService->_HandlePhraseSelectByNumber(dto.ec, dto.pContext, dto.wch);
 }

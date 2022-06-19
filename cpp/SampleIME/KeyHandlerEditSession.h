@@ -13,9 +13,8 @@
 class CKeyHandlerEditSession : public CEditSessionBase
 {
 public:
-    CKeyHandlerEditSession(CSampleIME *pTextService, ITfContext *pContext, UINT uCode, WCHAR wch, _KEYSTROKE_STATE keyState) : CEditSessionBase(pTextService, pContext)
+    CKeyHandlerEditSession(CSampleIME *pTextService, ITfContext *pContext, WCHAR wch, _KEYSTROKE_STATE keyState) : CEditSessionBase(pTextService, pContext)
     {
-        _uCode = uCode;
         _wch = wch;
         _KeyState = keyState;
     }
@@ -24,7 +23,6 @@ public:
     STDMETHODIMP DoEditSession(TfEditCookie ec);
 
 private:
-    UINT _uCode;    // virtual key code
     WCHAR _wch;      // character code
     _KEYSTROKE_STATE _KeyState;     // key function regarding virtual key
 };

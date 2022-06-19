@@ -579,7 +579,7 @@ HRESULT CSampleIME::_HandleCompositionDoubleSingleByte(TfEditCookie ec, _In_ ITf
 //    [in] dwKeyFunction - Function regarding virtual key
 //----------------------------------------------------------------------------
 
-HRESULT CSampleIME::_InvokeKeyHandler(_In_ ITfContext *pContext, UINT code, WCHAR wch, DWORD flags, _KEYSTROKE_STATE keyState)
+HRESULT CSampleIME::_InvokeKeyHandler(_In_ ITfContext *pContext, WCHAR wch, DWORD flags, _KEYSTROKE_STATE keyState)
 {
     flags;
 
@@ -587,7 +587,7 @@ HRESULT CSampleIME::_InvokeKeyHandler(_In_ ITfContext *pContext, UINT code, WCHA
     HRESULT hr = E_FAIL;
 
     // we'll insert a char ourselves in place of this keystroke
-    pEditSession = new (std::nothrow) CKeyHandlerEditSession(this, pContext, code, wch, keyState);
+    pEditSession = new (std::nothrow) CKeyHandlerEditSession(this, pContext, wch, keyState);
     if (pEditSession == nullptr)
     {
         goto Exit;
