@@ -1,9 +1,5 @@
 use windows::Win32::UI::Input::KeyboardAndMouse::{VK_NUMPAD0, VK_NUMPAD9};
 
-pub fn is_number_key(vkey: u16) -> bool {
-    index_from_number_key(vkey) != -1
-}
-
 #[no_mangle]
 pub extern "C" fn index_from_number_key(vkey: u16) -> i16 {
     let value: i16 = if (VK_NUMPAD0.0..=VK_NUMPAD9.0).contains(&vkey) {
@@ -33,15 +29,9 @@ pub extern "C" fn number_key_label_at(index: u32) -> u32 {
 
 #[cfg(test)]
 mod tests {
-    use windows::Win32::UI::Input::KeyboardAndMouse::{VK_DIVIDE, VK_NUMPAD1, VK_NUMPAD2};
+    use windows::Win32::UI::Input::KeyboardAndMouse::VK_NUMPAD2;
 
-    use crate::{index_from_number_key, is_number_key, number_key_label_at};
-
-    #[test]
-    fn check_number_key() {
-        assert!(is_number_key(VK_NUMPAD1.0 as _));
-        assert!(!is_number_key(VK_DIVIDE.0 as _));
-    }
+    use crate::{index_from_number_key, number_key_label_at};
 
     #[test]
     fn index() {
