@@ -58,7 +58,7 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_writes
     //
     WCHAR wch = ConvertVKey(codeIn);
 
-    // if the keyboard is closed, we don't eat keys, with the exception of the touch keyboard specials keys
+    // if the keyboard is closed, we don't eat keys
     if (!isOpen && !isDoubleSingleByte && !isPunctuation)
     {
         return FALSE;
