@@ -14,33 +14,6 @@
 #include "Compartment.h"
 #include "cbindgen/globals.h"
 
-// Because the code mostly works with VKeys, here map a WCHAR back to a VKKey for certain
-// vkeys that the IME handles specially
-__inline UINT VKeyFromVKPacketAndWchar(UINT vk, WCHAR wch)
-{
-    UINT vkRet = vk;
-    if (LOWORD(vk) == VK_PACKET)
-    {
-        if (wch == L' ')
-        {
-            vkRet = VK_SPACE;
-        }
-        else if ((wch >= L'0') && (wch <= L'9'))
-        {
-            vkRet = static_cast<UINT>(wch);
-        }
-        else if ((wch >= L'a') && (wch <= L'z'))
-        {
-            vkRet = (UINT)(L'A') + ((UINT)(L'z') - static_cast<UINT>(wch));
-        }
-        else if ((wch >= L'A') && (wch <= L'Z'))
-        {
-            vkRet = static_cast<UINT>(wch);
-        }
-    }
-    return vkRet;
-}
-
 bool IsDoubleSingleByte(char16_t wch)
 {
     return u' ' <= wch && wch <= u'~';
@@ -52,11 +25,9 @@ bool IsDoubleSingleByte(char16_t wch)
 //
 //----------------------------------------------------------------------------
 
-BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_ UINT *pCodeOut, _Out_writes_(1) WCHAR *pwch, _Out_opt_ _KEYSTROKE_STATE *pKeyState)
+BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_writes_(1) WCHAR *pwch, _Out_opt_ _KEYSTROKE_STATE *pKeyState)
 {
     pContext;
-
-    *pCodeOut = codeIn;
 
     bool isOpen = false;
     CCompartment CompartmentKeyboardOpen(_pThreadMgr, _tfClientId, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
@@ -86,7 +57,6 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_ UINT 
     // Map virtual key to character code
     //
     WCHAR wch = ConvertVKey(codeIn);
-    *pCodeOut = VKeyFromVKPacketAndWchar(codeIn, wch);
 
     // if the keyboard is closed, we don't eat keys, with the exception of the touch keyboard specials keys
     if (!isOpen && !isDoubleSingleByte && !isPunctuation)
@@ -112,7 +82,7 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_ UINT 
         //
         // eat only keys that CKeyHandlerEditSession can handles.
         //
-        auto [needed, category, function] = pCompositionProcessorEngine->TestVirtualKey(*pCodeOut, *pwch, _IsComposing(), _candidateMode);
+        auto [needed, category, function] = pCompositionProcessorEngine->TestVirtualKey(codeIn, *pwch, _IsComposing(), _candidateMode);
         *pKeyState = _KEYSTROKE_STATE { category, function };
         if (needed)
         {
@@ -256,8 +226,7 @@ STDAPI CSampleIME::OnTestKeyDown(ITfContext *pContext, WPARAM wParam, LPARAM lPa
 
     _KEYSTROKE_STATE KeystrokeState;
     WCHAR wch = '\0';
-    UINT code = 0;
-    *pIsEaten = _IsKeyEaten(pContext, (UINT)wParam, &code, &wch, &KeystrokeState);
+    *pIsEaten = _IsKeyEaten(pContext, (UINT)wParam, &wch, &KeystrokeState);
 
     if (KeystrokeState.Category == KeystrokeCategory::InvokeCompositionEditSession)
     {
@@ -286,16 +255,15 @@ STDAPI CSampleIME::OnKeyDown(ITfContext *pContext, WPARAM wParam, LPARAM lParam,
 
     _KEYSTROKE_STATE KeystrokeState;
     WCHAR wch = '\0';
-    UINT code = 0;
 
-    *pIsEaten = _IsKeyEaten(pContext, (UINT)wParam, &code, &wch, &KeystrokeState);
+    *pIsEaten = _IsKeyEaten(pContext, (UINT)wParam, &wch, &KeystrokeState);
 
     if (*pIsEaten)
     {
         //
         // Invoke key handler edit session
         //
-        if (code == VK_ESCAPE)
+        if (wParam == VK_ESCAPE)
         {
             KeystrokeState.Category = KeystrokeCategory::Composing;
         }
@@ -329,9 +297,8 @@ STDAPI CSampleIME::OnTestKeyUp(ITfContext *pContext, WPARAM wParam, LPARAM lPara
 
     _KEYSTROKE_STATE keystrokeState;
     WCHAR wch = '\0';
-    UINT code = 0;
 
-    *pIsEaten = _IsKeyEaten(pContext, (UINT)wParam, &code, &wch, &keystrokeState);
+    *pIsEaten = _IsKeyEaten(pContext, (UINT)wParam, &wch, &keystrokeState);
 
     return S_OK;
 }
@@ -350,9 +317,8 @@ STDAPI CSampleIME::OnKeyUp(ITfContext *pContext, WPARAM wParam, LPARAM lParam, B
 
     _KEYSTROKE_STATE keystrokeState;
     WCHAR wch = '\0';
-    UINT code = 0;
 
-    *pIsEaten = _IsKeyEaten(pContext, (UINT)wParam, &code, &wch, &keystrokeState);
+    *pIsEaten = _IsKeyEaten(pContext, (UINT)wParam, &wch, &keystrokeState);
 
     return S_OK;
 }
