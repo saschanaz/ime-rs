@@ -2,6 +2,7 @@ $scriptDir = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
 pushd $scriptDir/../rust
 cargo build
 cbindgen --crate composition_processor --output ../cpp/SampleIME/cbindgen/composition_processor.h
+cbindgen --crate input_processor --output ../cpp/SampleIME/cbindgen/input_processor.h
 cbindgen --crate itf_components --output ../cpp/SampleIME/cbindgen/itf_components.h
 cbindgen --crate globals --output ../cpp/SampleIME/cbindgen/globals.h
 cbindgen --crate ime --output ../cpp/SampleIME/cbindgen/ime.h

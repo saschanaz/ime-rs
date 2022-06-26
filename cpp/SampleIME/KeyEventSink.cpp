@@ -13,6 +13,7 @@
 #include "KeyHandlerEditSession.h"
 #include "Compartment.h"
 #include "cbindgen/globals.h"
+#include "cbindgen/input_processor.h"
 
 bool IsDoubleSingleByte(char16_t wch)
 {
@@ -160,43 +161,8 @@ WCHAR CSampleIME::ConvertVKey(UINT code)
 
 BOOL CSampleIME::_IsKeyboardDisabled()
 {
-    ITfDocumentMgr* pDocMgrFocus = nullptr;
-    ITfContext* pContext = nullptr;
-    bool isDisabled = false;
-
-    if ((_pThreadMgr->GetFocus(&pDocMgrFocus) != S_OK) ||
-        (pDocMgrFocus == nullptr))
-    {
-        // if there is no focus document manager object, the keyboard
-        // is disabled.
-        isDisabled = true;
-    }
-    else if ((pDocMgrFocus->GetTop(&pContext) != S_OK) ||
-        (pContext == nullptr))
-    {
-        // if there is no context object, the keyboard is disabled.
-        isDisabled = true;
-    }
-    else
-    {
-        CCompartment CompartmentKeyboardDisabled(_pThreadMgr, _tfClientId, GUID_COMPARTMENT_KEYBOARD_DISABLED);
-        CompartmentKeyboardDisabled._GetCompartmentBOOL(isDisabled);
-
-        CCompartment CompartmentEmptyContext(_pThreadMgr, _tfClientId, GUID_COMPARTMENT_EMPTYCONTEXT);
-        CompartmentEmptyContext._GetCompartmentBOOL(isDisabled);
-    }
-
-    if (pContext)
-    {
-        pContext->Release();
-    }
-
-    if (pDocMgrFocus)
-    {
-        pDocMgrFocus->Release();
-    }
-
-    return isDisabled;
+    _pThreadMgr->AddRef();
+    return is_keyboard_disabled(_pThreadMgr, _tfClientId);
 }
 
 //+---------------------------------------------------------------------------

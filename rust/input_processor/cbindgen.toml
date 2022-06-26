@@ -1,0 +1,4 @@
+sys_includes = ["minwindef.h"]
+
+[export.rename]
+"ITfThreadMgr" = "ITfThreadMgr*"

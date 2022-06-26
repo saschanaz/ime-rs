@@ -39,6 +39,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "input_processor"
+version = "0.1.0"
+dependencies = [
+ "itf_components",
+ "windows",
+]
+
+[[package]]
 name = "itf_components"
 version = "0.1.0"
 dependencies = [
