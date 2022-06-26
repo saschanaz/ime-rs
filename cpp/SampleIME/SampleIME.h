@@ -177,8 +177,6 @@ private:
     BOOL _IsRangeCovered(TfEditCookie ec, _In_ ITfRange *pRangeTest, _In_ ITfRange *pRangeCover);
     VOID _DeleteCandidateList(BOOL fForce, _In_opt_ ITfContext *pContext);
 
-    WCHAR ConvertVKey(UINT code);
-
     BOOL _InitThreadFocusSink();
     void _UninitThreadFocusSink();
 

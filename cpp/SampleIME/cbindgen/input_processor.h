@@ -6,6 +6,8 @@
 
 extern "C" {
 
+uint16_t convert_vkey(uint32_t code);
+
 bool is_keyboard_disabled(ITfThreadMgr* thread_mgr, uint32_t tf_client_id);
 
 } // extern "C"

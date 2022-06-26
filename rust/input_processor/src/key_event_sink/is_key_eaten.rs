@@ -1,6 +1,10 @@
 use itf_components::compartment::Compartment;
-use windows::Win32::UI::TextServices::{
-    ITfThreadMgr, GUID_COMPARTMENT_EMPTYCONTEXT, GUID_COMPARTMENT_KEYBOARD_DISABLED,
+use windows::Win32::UI::{
+    Input::KeyboardAndMouse::{GetKeyboardState, MapVirtualKeyW, ToUnicode},
+    TextServices::{
+        ITfThreadMgr, GUID_COMPARTMENT_EMPTYCONTEXT, GUID_COMPARTMENT_KEYBOARD_DISABLED,
+    },
+    WindowsAndMessaging::MAPVK_VK_TO_VSC,
 };
 
 // This copies CSampleIME::_IsKeyboardDisabled from the original demo.
@@ -40,4 +44,21 @@ pub extern "C" fn is_keyboard_disabled(thread_mgr: ITfThreadMgr, tf_client_id: u
     }
 
     false
+}
+
+#[no_mangle]
+pub extern "C" fn convert_vkey(code: u32) -> u16 {
+    let scan_code = unsafe { MapVirtualKeyW(code, MAPVK_VK_TO_VSC) };
+
+    let mut keyboard_state = [0u8; 256];
+    if !unsafe { GetKeyboardState(&mut keyboard_state) }.as_bool() {
+        return 0;
+    }
+
+    let mut wch = [0u16; 1];
+    if unsafe { ToUnicode(code, scan_code, &keyboard_state, &mut wch, 0) } == 1 {
+        return wch[0];
+    }
+
+    0
 }

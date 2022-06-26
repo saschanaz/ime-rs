@@ -57,7 +57,7 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_writes
     //
     // Map virtual key to character code
     //
-    WCHAR wch = ConvertVKey(codeIn);
+    WCHAR wch = convert_vkey(codeIn);
 
     // if the keyboard is closed, we don't eat keys
     if (!isOpen && !isDoubleSingleByte && !isPunctuation)
@@ -116,41 +116,6 @@ BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_writes
     }
 
     return FALSE;
-}
-
-//+---------------------------------------------------------------------------
-//
-// ConvertVKey
-//
-//----------------------------------------------------------------------------
-
-WCHAR CSampleIME::ConvertVKey(UINT code)
-{
-    //
-    // Map virtual key to scan code
-    //
-    UINT scanCode = 0;
-    scanCode = MapVirtualKey(code, 0);
-
-    //
-    // Keyboard state
-    //
-    BYTE abKbdState[256] = {'\0'};
-    if (!GetKeyboardState(abKbdState))
-    {
-        return 0;
-    }
-
-    //
-    // Map virtual key to character code
-    //
-    WCHAR wch = '\0';
-    if (ToUnicode(code, scanCode, abKbdState, &wch, 1, 0) == 1)
-    {
-        return wch;
-    }
-
-    return 0;
 }
 
 //+---------------------------------------------------------------------------
