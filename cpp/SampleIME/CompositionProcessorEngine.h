@@ -31,9 +31,9 @@ public:
     CCompositionProcessorEngine(LANGID langid, REFGUID guidLanguageProfile, ITfThreadMgr* threadMgr, TfClientId clientId);
     ~CCompositionProcessorEngine();
 
-    bool SetupLanguageProfile(ITfThreadMgr *threadMgr, TfClientId clientId);
+    void* GetRaw() { return engine; }
 
-    std::tuple<bool, KeystrokeCategory, KeystrokeFunction> TestVirtualKey(uint16_t code, char16_t ch, bool composing, CandidateMode candidateMode);
+    bool SetupLanguageProfile(ITfThreadMgr *threadMgr, TfClientId clientId);
 
     bool AddVirtualKey(char16_t wch);
     void PopVirtualKey();

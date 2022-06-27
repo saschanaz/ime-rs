@@ -45,7 +45,7 @@ pub enum KeystrokeFunction {
 }
 
 #[repr(C)]
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone, Copy)]
 pub enum CandidateMode {
     None,
     Original,

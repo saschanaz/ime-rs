@@ -10,6 +10,8 @@ crate-type = ["staticlib"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+composition_processor = { path = "../composition_processor" }
+globals = { path = "../globals" }
 itf_components = { path = "../itf_components" }
 
 [dependencies.windows]

@@ -24,6 +24,12 @@ impl Compartment {
         }
     }
 
+    pub fn read_bool(thread_mgr: ITfThreadMgr, tf_client_id: u32, guid: GUID) -> bool {
+        Compartment::new(thread_mgr, tf_client_id, guid)
+            .get_bool()
+            .unwrap_or(false)
+    }
+
     pub unsafe fn from_void(engine: *mut c_void) -> Box<Compartment> {
         Box::from_raw(engine as *mut Compartment)
     }

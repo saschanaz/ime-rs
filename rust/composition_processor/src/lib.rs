@@ -13,10 +13,10 @@ use windows::{
 };
 
 mod engine;
-use engine::CompositionProcessorEngine;
+pub use engine::CompositionProcessorEngine;
 
 mod test_virtual_key;
-use test_virtual_key::{CandidateMode, KeystrokeCategory, KeystrokeFunction};
+pub use test_virtual_key::{CandidateMode, KeystrokeCategory, KeystrokeFunction};
 
 #[no_mangle]
 pub extern "C" fn compositionprocessorengine_new(
@@ -32,29 +32,6 @@ pub extern "C" fn compositionprocessorengine_new(
 #[no_mangle]
 pub unsafe extern "C" fn compositionprocessorengine_free(engine: *mut c_void) {
     CompositionProcessorEngine::from_void(engine); // implicit cleanup
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn compositionprocessorengine_test_virtual_key(
-    engine: *mut c_void,
-    code: u16,
-    ch: u16,
-    composing: bool,
-    candidate_mode: CandidateMode,
-    key_eaten: *mut bool,
-    keystroke_category: *mut KeystrokeCategory,
-    keystroke_function: *mut KeystrokeFunction,
-) {
-    let engine = Box::leak(CompositionProcessorEngine::from_void(engine));
-    let (eaten, category, function) = engine.test_virtual_key(
-        code,
-        char::from_u32(ch as u32).unwrap(),
-        composing,
-        candidate_mode,
-    );
-    *key_eaten = eaten;
-    *keystroke_category = category;
-    *keystroke_function = function;
 }
 
 #[no_mangle]

@@ -28,94 +28,18 @@ bool IsDoubleSingleByte(char16_t wch)
 
 BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_writes_(1) WCHAR *pwch, _Out_opt_ _KEYSTROKE_STATE *pKeyState)
 {
-    pContext;
-
-    bool isOpen = false;
-    CCompartment CompartmentKeyboardOpen(_pThreadMgr, _tfClientId, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE);
-    CompartmentKeyboardOpen._GetCompartmentBOOL(isOpen);
-
-    bool isDoubleSingleByte = false;
-    CCompartment CompartmentDoubleSingleByte(_pThreadMgr, _tfClientId, SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE);
-    CompartmentDoubleSingleByte._GetCompartmentBOOL(isDoubleSingleByte);
-
-    bool isPunctuation = false;
-    CCompartment CompartmentPunctuation(_pThreadMgr, _tfClientId, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION);
-    CompartmentPunctuation._GetCompartmentBOOL(isPunctuation);
-
-    *pKeyState = { KeystrokeCategory::None, KeystrokeFunction::None };
-    if (pwch)
-    {
-        *pwch = L'\0';
-    }
-
-    // if the keyboard is disabled, we don't eat keys.
-    if (_IsKeyboardDisabled())
-    {
-        return FALSE;
-    }
-
-    //
-    // Map virtual key to character code
-    //
-    WCHAR wch = convert_vkey(codeIn);
-
-    // if the keyboard is closed, we don't eat keys
-    if (!isOpen && !isDoubleSingleByte && !isPunctuation)
-    {
-        return FALSE;
-    }
-
-    if (pwch)
-    {
-        *pwch = wch;
-    }
-
-    //
-    // Get composition engine
-    //
-    CCompositionProcessorEngine *pCompositionProcessorEngine;
-    pCompositionProcessorEngine = _pCompositionProcessorEngine;
-
-    if (isOpen)
-    {
-        //
-        // The candidate or phrase list handles the keys through ITfKeyEventSink.
-        //
-        // eat only keys that CKeyHandlerEditSession can handles.
-        //
-        auto [needed, category, function] = pCompositionProcessorEngine->TestVirtualKey(codeIn, *pwch, _IsComposing(), _candidateMode);
-        *pKeyState = _KEYSTROKE_STATE { category, function };
-        if (needed)
-        {
-            return TRUE;
-        }
-    }
-
-    //
-    // Punctuation
-    //
-    if (pCompositionProcessorEngine->PunctuationsHasAlternativePunctuation(wch))
-    {
-        if ((_candidateMode == CandidateMode::None) && isPunctuation)
-        {
-            *pKeyState = { KeystrokeCategory::Composing, KeystrokeFunction::Punctuation };
-            return TRUE;
-        }
-    }
-
-    //
-    // Double/Single byte
-    //
-    if (isDoubleSingleByte && IsDoubleSingleByte(wch))
-    {
-        if (_candidateMode == CandidateMode::None)
-        {
-            *pKeyState = { KeystrokeCategory::Composing, KeystrokeFunction::DoubleSingleByte };
-            return TRUE;
-        }
-    }
-
-    return FALSE;
+    _pThreadMgr->AddRef();
+    return is_key_eaten(
+        _pThreadMgr,
+        _tfClientId,
+        _pCompositionProcessorEngine->GetRaw(),
+        _IsComposing(),
+        _candidateMode,
+        codeIn,
+        (uint16_t*)pwch,
+        &pKeyState->Category,
+        &pKeyState->Function
+    );
 }
 
 //+---------------------------------------------------------------------------

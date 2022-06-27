@@ -115,15 +115,6 @@ bool CCompositionProcessorEngine::SetupLanguageProfile(ITfThreadMgr *threadMgr, 
     return compositionprocessorengine_setup_language_profile(engine, threadMgr, clientId);
 };
 
-std::tuple<bool, KeystrokeCategory, KeystrokeFunction> CCompositionProcessorEngine::TestVirtualKey(uint16_t code, char16_t ch, bool composing, CandidateMode candidateMode)
-{
-    bool keyEaten;
-    KeystrokeCategory keystrokeCategory;
-    KeystrokeFunction keystrokeFunction;
-    compositionprocessorengine_test_virtual_key(engine, code, ch, composing, candidateMode, &keyEaten, &keystrokeCategory, &keystrokeFunction);
-    return { keyEaten, keystrokeCategory, keystrokeFunction };
-}
-
 bool CCompositionProcessorEngine::AddVirtualKey(char16_t wch) {
     return compositionprocessorengine_add_virtual_key(engine, wch);
 }

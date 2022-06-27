@@ -42,6 +42,8 @@ dependencies = [
 name = "input_processor"
 version = "0.1.0"
 dependencies = [
+ "composition_processor",
+ "globals",
  "itf_components",
  "windows",
 ]

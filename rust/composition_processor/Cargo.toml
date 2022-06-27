@@ -6,7 +6,7 @@ edition = "2021"
 
 [lib]
 name = "composition_processor"
-crate-type = ["staticlib"]
+crate-type = ["staticlib", "rlib"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

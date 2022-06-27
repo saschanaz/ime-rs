@@ -209,6 +209,10 @@ impl CompositionProcessorEngine {
         &mut self.modifiers
     }
 
+    pub fn punctuation_mapper(&self) -> &PunctuationMapper {
+        &self.punctuation_mapper
+    }
+
     pub fn punctuation_mapper_mut(&mut self) -> &mut PunctuationMapper {
         &mut self.punctuation_mapper
     }
