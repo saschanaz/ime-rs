@@ -47,11 +47,11 @@ pub struct CompositionProcessorEngine {
 impl CompositionProcessorEngine {
     pub fn new(thread_mgr: ITfThreadMgr, tf_client_id: u32) -> CompositionProcessorEngine {
         CompositionProcessorEngine {
-            keystroke_buffer: KeystrokeBuffer::new(),
+            keystroke_buffer: KeystrokeBuffer::default(),
             table_dictionary_engine: None,
             modifiers: Modifiers::default(),
-            punctuation_mapper: PunctuationMapper::new(),
-            preserved_keys: PreservedKeys::new(),
+            punctuation_mapper: PunctuationMapper::default(),
+            preserved_keys: PreservedKeys::default(),
             compartment_wrapper: CompartmentUpdateListener::new(thread_mgr, tf_client_id),
             language_bar: LanguageBar::new(),
         }

@@ -30,7 +30,38 @@ pub struct PreservedKeyExtended {
 }
 
 impl PreservedKeys {
-    pub fn new() -> PreservedKeys {
+    pub fn init_keys(&self, thread_mgr: ITfThreadMgr, client_id: u32) -> windows::core::Result<()> {
+        // This function is ignoring the failures to follow the original Microsoft demo behavior.
+        // It's also probably better to make it partially work than to not work at all.
+
+        let keystroke_mgr: ITfKeystrokeMgr = thread_mgr.cast()?;
+
+        for preserved in &self.keys {
+            Self::init_key(preserved, &keystroke_mgr, client_id)?;
+        }
+
+        Ok(())
+    }
+
+    fn init_key(
+        preserved: &PreservedKeyExtended,
+        keystroke_mgr: &ITfKeystrokeMgr,
+        client_id: u32,
+    ) -> windows::core::Result<()> {
+        debug_assert!(preserved.key_guid != GUID::zeroed());
+
+        let desc: Vec<u16> = preserved.desc.encode_utf16().collect();
+
+        unsafe {
+            keystroke_mgr.PreserveKey(client_id, &preserved.key_guid, &preserved.key, &desc)
+        }?;
+
+        Ok(())
+    }
+}
+
+impl Default for PreservedKeys {
+    fn default() -> PreservedKeys {
         PreservedKeys {
             keys: [
                 PreservedKeyExtended {
@@ -62,35 +93,6 @@ impl PreservedKeys {
                 },
             ],
         }
-    }
-
-    pub fn init_keys(&self, thread_mgr: ITfThreadMgr, client_id: u32) -> windows::core::Result<()> {
-        // This function is ignoring the failures to follow the original Microsoft demo behavior.
-        // It's also probably better to make it partially work than to not work at all.
-
-        let keystroke_mgr: ITfKeystrokeMgr = thread_mgr.cast()?;
-
-        for preserved in &self.keys {
-            Self::init_key(preserved, &keystroke_mgr, client_id)?;
-        }
-
-        Ok(())
-    }
-
-    fn init_key(
-        preserved: &PreservedKeyExtended,
-        keystroke_mgr: &ITfKeystrokeMgr,
-        client_id: u32,
-    ) -> windows::core::Result<()> {
-        debug_assert!(preserved.key_guid != GUID::zeroed());
-
-        let desc: Vec<u16> = preserved.desc.encode_utf16().collect();
-
-        unsafe {
-            keystroke_mgr.PreserveKey(client_id, &preserved.key_guid, &preserved.key, &desc)
-        }?;
-
-        Ok(())
     }
 }
 

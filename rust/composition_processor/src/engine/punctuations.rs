@@ -66,7 +66,29 @@ pub struct PunctuationMapper {
 }
 
 impl PunctuationMapper {
-    pub fn new() -> PunctuationMapper {
+    pub fn has_alternative_punctuation(&self, punctuation: char) -> bool {
+        self.punctuation_table.contains_key(&punctuation)
+            || self.quotes.contains_key(&punctuation)
+            || self.angle_brackets.is_angle_bracket(punctuation)
+    }
+
+    pub fn get_alternative_punctuation_counted(&mut self, punctuation: char) -> char {
+        if let Some(alternative) = self.punctuation_table.get(&punctuation) {
+            return alternative.to_owned();
+        }
+        if let Some(quote) = self.quotes.get_mut(&punctuation) {
+            return quote.get_and_toggle();
+        }
+        if let Some(alternative) = self.angle_brackets.get_and_count_by(punctuation) {
+            return alternative.to_owned();
+        }
+
+        '\0'
+    }
+}
+
+impl Default for PunctuationMapper {
+    fn default() -> PunctuationMapper {
         let punctuation_table: HashMap<char, char> = {
             let mut map = HashMap::new();
             map.insert('!', '\u{FF01}');
@@ -127,25 +149,5 @@ impl PunctuationMapper {
             quotes,
             angle_brackets,
         }
-    }
-
-    pub fn has_alternative_punctuation(&self, punctuation: char) -> bool {
-        self.punctuation_table.contains_key(&punctuation)
-            || self.quotes.contains_key(&punctuation)
-            || self.angle_brackets.is_angle_bracket(punctuation)
-    }
-
-    pub fn get_alternative_punctuation_counted(&mut self, punctuation: char) -> char {
-        if let Some(alternative) = self.punctuation_table.get(&punctuation) {
-            return alternative.to_owned();
-        }
-        if let Some(quote) = self.quotes.get_mut(&punctuation) {
-            return quote.get_and_toggle();
-        }
-        if let Some(alternative) = self.angle_brackets.get_and_count_by(punctuation) {
-            return alternative.to_owned();
-        }
-
-        '\0'
     }
 }

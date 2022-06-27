@@ -114,13 +114,4 @@ bool compositionprocessorengine_setup_language_profile(void *engine,
                                                        ITfThreadMgr* thread_mgr,
                                                        uint32_t client_id);
 
-void compositionprocessorengine_test_virtual_key(void *engine,
-                                                 uint16_t code,
-                                                 uint16_t ch,
-                                                 bool composing,
-                                                 CandidateMode candidate_mode,
-                                                 bool *key_eaten,
-                                                 KeystrokeCategory *keystroke_category,
-                                                 KeystrokeFunction *keystroke_function);
-
 } // extern "C"

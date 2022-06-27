@@ -1,4 +1,7 @@
 sys_includes = ["minwindef.h"]
 
+[export]
+include = ["CandidateMode", "KeystrokeCategory", "KeystrokeFunction"]
+
 [export.rename]
 "ITfThreadMgr" = "ITfThreadMgr*"
