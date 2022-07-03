@@ -76,7 +76,7 @@ fn has_wide_version(ch: char) -> bool {
     (' '..='~').contains(&ch)
 }
 
-fn _is_key_eaten(
+pub fn _is_key_eaten(
     thread_mgr: ITfThreadMgr,
     tf_client_id: u32,
     engine: &CompositionProcessorEngine,

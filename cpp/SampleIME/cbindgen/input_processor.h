@@ -22,6 +22,14 @@ bool is_key_eaten(ITfThreadMgr* thread_mgr,
 
 bool is_keyboard_disabled(ITfThreadMgr* thread_mgr, uint32_t tf_client_id);
 
+bool on_key_up(ITfThreadMgr* thread_mgr,
+               uint32_t tf_client_id,
+               void *engine,
+               bool composing,
+               CandidateMode candidate_mode,
+               WPARAM wparam,
+               LPARAM lparam);
+
 void uninit_key_event_sink(ITfThreadMgr* thread_mgr, uint32_t tf_client_id);
 
 } // extern "C"

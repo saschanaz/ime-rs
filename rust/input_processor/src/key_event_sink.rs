@@ -1,13 +1,42 @@
+use composition_processor::{CandidateMode, CompositionProcessorEngine};
 use windows::{
     core::Interface,
-    Win32::UI::TextServices::{ITfKeyEventSink, ITfKeystrokeMgr, ITfThreadMgr},
+    Win32::{
+        Foundation::{LPARAM, WPARAM},
+        UI::TextServices::{ITfKeyEventSink, ITfKeystrokeMgr, ITfThreadMgr},
+    },
 };
+
+use self::is_key_eaten::_is_key_eaten;
 
 pub mod is_key_eaten;
 
 // TODO: Port other functions...
 // Several of them use _InvokeKeyHandler which has complex dependencies.
 // For now port things that don't call it first e.g. OnPreservedKey.
+
+#[no_mangle]
+pub unsafe extern "C" fn on_key_up(
+    thread_mgr: ITfThreadMgr,
+    tf_client_id: u32,
+    engine: &mut CompositionProcessorEngine,
+    composing: bool,
+    candidate_mode: CandidateMode,
+    wparam: WPARAM,
+    lparam: LPARAM,
+) -> bool {
+    engine.modifiers_mut().update(wparam, lparam);
+
+    _is_key_eaten(
+        thread_mgr,
+        tf_client_id,
+        engine,
+        composing,
+        candidate_mode,
+        wparam.0 as u32,
+    )
+    .0
+}
 
 fn _init_key_event_sink(
     thread_mgr: ITfThreadMgr,

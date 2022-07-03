@@ -148,14 +148,7 @@ STDAPI CSampleIME::OnTestKeyUp(ITfContext *pContext, WPARAM wParam, LPARAM lPara
         return E_INVALIDARG;
     }
 
-    GetCompositionProcessorEngine()->ModifiersUpdate(wParam, lParam);
-
-    _KEYSTROKE_STATE keystrokeState;
-    WCHAR wch = '\0';
-
-    *pIsEaten = _IsKeyEaten((UINT)wParam, &wch, &keystrokeState);
-
-    return S_OK;
+    return OnKeyUp(pContext, wParam, lParam, pIsEaten);
 }
 
 //+---------------------------------------------------------------------------
@@ -168,12 +161,16 @@ STDAPI CSampleIME::OnTestKeyUp(ITfContext *pContext, WPARAM wParam, LPARAM lPara
 
 STDAPI CSampleIME::OnKeyUp(ITfContext *pContext, WPARAM wParam, LPARAM lParam, BOOL *pIsEaten)
 {
-    GetCompositionProcessorEngine()->ModifiersUpdate(wParam, lParam);
-
-    _KEYSTROKE_STATE keystrokeState;
-    WCHAR wch = '\0';
-
-    *pIsEaten = _IsKeyEaten((UINT)wParam, &wch, &keystrokeState);
+    _pThreadMgr->AddRef();
+    *pIsEaten = on_key_up(
+        _pThreadMgr,
+        _tfClientId,
+        _pCompositionProcessorEngine->GetRaw(),
+        _IsComposing(),
+        _candidateMode,
+        wParam,
+        lParam
+    );
 
     return S_OK;
 }
