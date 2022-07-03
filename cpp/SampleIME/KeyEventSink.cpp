@@ -26,7 +26,7 @@ bool IsDoubleSingleByte(char16_t wch)
 //
 //----------------------------------------------------------------------------
 
-BOOL CSampleIME::_IsKeyEaten(_In_ ITfContext *pContext, UINT codeIn, _Out_writes_(1) WCHAR *pwch, _Out_opt_ _KEYSTROKE_STATE *pKeyState)
+BOOL CSampleIME::_IsKeyEaten(UINT codeIn, _Out_writes_(1) WCHAR *pwch, _Out_opt_ _KEYSTROKE_STATE *pKeyState)
 {
     _pThreadMgr->AddRef();
     return is_key_eaten(
@@ -81,7 +81,7 @@ STDAPI CSampleIME::OnTestKeyDown(ITfContext *pContext, WPARAM wParam, LPARAM lPa
 
     _KEYSTROKE_STATE KeystrokeState;
     WCHAR wch = '\0';
-    *pIsEaten = _IsKeyEaten(pContext, (UINT)wParam, &wch, &KeystrokeState);
+    *pIsEaten = _IsKeyEaten((UINT)wParam, &wch, &KeystrokeState);
 
     if (KeystrokeState.Category == KeystrokeCategory::InvokeCompositionEditSession)
     {
@@ -111,7 +111,7 @@ STDAPI CSampleIME::OnKeyDown(ITfContext *pContext, WPARAM wParam, LPARAM lParam,
     _KEYSTROKE_STATE KeystrokeState;
     WCHAR wch = '\0';
 
-    *pIsEaten = _IsKeyEaten(pContext, (UINT)wParam, &wch, &KeystrokeState);
+    *pIsEaten = _IsKeyEaten((UINT)wParam, &wch, &KeystrokeState);
 
     if (*pIsEaten)
     {
@@ -153,7 +153,7 @@ STDAPI CSampleIME::OnTestKeyUp(ITfContext *pContext, WPARAM wParam, LPARAM lPara
     _KEYSTROKE_STATE keystrokeState;
     WCHAR wch = '\0';
 
-    *pIsEaten = _IsKeyEaten(pContext, (UINT)wParam, &wch, &keystrokeState);
+    *pIsEaten = _IsKeyEaten((UINT)wParam, &wch, &keystrokeState);
 
     return S_OK;
 }
@@ -173,7 +173,7 @@ STDAPI CSampleIME::OnKeyUp(ITfContext *pContext, WPARAM wParam, LPARAM lParam, B
     _KEYSTROKE_STATE keystrokeState;
     WCHAR wch = '\0';
 
-    *pIsEaten = _IsKeyEaten(pContext, (UINT)wParam, &wch, &keystrokeState);
+    *pIsEaten = _IsKeyEaten((UINT)wParam, &wch, &keystrokeState);
 
     return S_OK;
 }
@@ -189,10 +189,7 @@ STDAPI CSampleIME::OnPreservedKey(ITfContext *pContext, REFGUID rguid, BOOL *pIs
 {
 	pContext;
 
-    CCompositionProcessorEngine *pCompositionProcessorEngine;
-    pCompositionProcessorEngine = _pCompositionProcessorEngine;
-
-    pCompositionProcessorEngine->OnPreservedKey(rguid, pIsEaten, _GetThreadMgr(), _GetClientId());
+    _pCompositionProcessorEngine->OnPreservedKey(rguid, pIsEaten, _GetThreadMgr(), _GetClientId());
 
     return S_OK;
 }
