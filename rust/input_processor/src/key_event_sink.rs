@@ -15,7 +15,7 @@ pub mod is_key_eaten;
 // Several of them use _InvokeKeyHandler which has complex dependencies.
 // For now port things that don't call it first e.g. OnPreservedKey.
 
-#[no_mangle]
+#[export_name = "key_event_sink_on_key_up"]
 pub unsafe extern "C" fn on_key_up(
     thread_mgr: ITfThreadMgr,
     tf_client_id: u32,
@@ -50,7 +50,7 @@ fn _init_key_event_sink(
     Ok(())
 }
 
-#[no_mangle]
+#[export_name = "key_event_sink_init_key_event_sink"]
 pub unsafe extern "C" fn init_key_event_sink(
     thread_mgr: ITfThreadMgr,
     tf_client_id: u32,
@@ -70,7 +70,7 @@ fn _uninit_key_event_sink(
     Ok(())
 }
 
-#[no_mangle]
+#[export_name = "key_event_sink_uninit_key_event_sink"]
 pub unsafe extern "C" fn uninit_key_event_sink(thread_mgr: ITfThreadMgr, tf_client_id: u32) {
     _uninit_key_event_sink(thread_mgr, tf_client_id).ok();
 }

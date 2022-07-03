@@ -29,7 +29,7 @@ bool IsDoubleSingleByte(char16_t wch)
 BOOL CSampleIME::_IsKeyEaten(UINT codeIn, _Out_writes_(1) WCHAR *pwch, _Out_opt_ _KEYSTROKE_STATE *pKeyState)
 {
     _pThreadMgr->AddRef();
-    return is_key_eaten(
+    return key_event_sink_is_key_eaten(
         _pThreadMgr,
         _tfClientId,
         _pCompositionProcessorEngine->GetRaw(),
@@ -150,7 +150,7 @@ STDAPI CSampleIME::OnTestKeyUp(ITfContext *pContext, WPARAM wParam, LPARAM lPara
 STDAPI CSampleIME::OnKeyUp(ITfContext *pContext, WPARAM wParam, LPARAM lParam, BOOL *pIsEaten)
 {
     _pThreadMgr->AddRef();
-    *pIsEaten = on_key_up(
+    *pIsEaten = key_event_sink_on_key_up(
         _pThreadMgr,
         _tfClientId,
         _pCompositionProcessorEngine->GetRaw(),
@@ -190,7 +190,7 @@ BOOL CSampleIME::_InitKeyEventSink()
 {
     _pThreadMgr->AddRef();
     this->AddRef();
-    return init_key_event_sink(_pThreadMgr, _tfClientId, (ITfKeyEventSink *)this);
+    return key_event_sink_init_key_event_sink(_pThreadMgr, _tfClientId, (ITfKeyEventSink *)this);
 }
 
 //+---------------------------------------------------------------------------
@@ -203,5 +203,5 @@ BOOL CSampleIME::_InitKeyEventSink()
 void CSampleIME::_UninitKeyEventSink()
 {
     _pThreadMgr->AddRef();
-    uninit_key_event_sink(_pThreadMgr, _tfClientId);
+    key_event_sink_uninit_key_event_sink(_pThreadMgr, _tfClientId);
 }

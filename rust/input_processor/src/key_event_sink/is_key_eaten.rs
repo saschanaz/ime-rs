@@ -170,7 +170,7 @@ pub fn _is_key_eaten(
     (false, ch, keystroke_state.0, keystroke_state.1)
 }
 
-#[no_mangle]
+#[export_name = "key_event_sink_is_key_eaten"]
 pub unsafe extern "C" fn is_key_eaten(
     thread_mgr: ITfThreadMgr,
     tf_client_id: u32,
