@@ -2,4 +2,5 @@ sys_includes = ["minwindef.h"]
 
 [export.rename]
 "ITfThreadMgr" = "ITfThreadMgr*"
+"ITfKeyEventSink" = "ITfKeyEventSink*"
 "CompositionProcessorEngine" = "void"

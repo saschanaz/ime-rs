@@ -206,19 +206,9 @@ STDAPI CSampleIME::OnPreservedKey(ITfContext *pContext, REFGUID rguid, BOOL *pIs
 
 BOOL CSampleIME::_InitKeyEventSink()
 {
-    ITfKeystrokeMgr* pKeystrokeMgr = nullptr;
-    HRESULT hr = S_OK;
-
-    if (FAILED(_pThreadMgr->QueryInterface(IID_ITfKeystrokeMgr, (void **)&pKeystrokeMgr)))
-    {
-        return FALSE;
-    }
-
-    hr = pKeystrokeMgr->AdviseKeyEventSink(_tfClientId, (ITfKeyEventSink *)this, TRUE);
-
-    pKeystrokeMgr->Release();
-
-    return (hr == S_OK);
+    _pThreadMgr->AddRef();
+    this->AddRef();
+    return init_key_event_sink(_pThreadMgr, _tfClientId, (ITfKeyEventSink *)this);
 }
 
 //+---------------------------------------------------------------------------
@@ -230,14 +220,6 @@ BOOL CSampleIME::_InitKeyEventSink()
 
 void CSampleIME::_UninitKeyEventSink()
 {
-    ITfKeystrokeMgr* pKeystrokeMgr = nullptr;
-
-    if (FAILED(_pThreadMgr->QueryInterface(IID_ITfKeystrokeMgr, (void **)&pKeystrokeMgr)))
-    {
-        return;
-    }
-
-    pKeystrokeMgr->UnadviseKeyEventSink(_tfClientId);
-
-    pKeystrokeMgr->Release();
+    _pThreadMgr->AddRef();
+    uninit_key_event_sink(_pThreadMgr, _tfClientId);
 }
