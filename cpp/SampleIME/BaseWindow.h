@@ -40,12 +40,12 @@ public:
     virtual void _Move(int x, int y);
     virtual void _Resize(int x, int y, int cx, int cy);
     virtual void _Show(BOOL isShowWnd);
-    virtual BOOL _IsWindowVisible();
+    BOOL _IsWindowVisible();
     virtual void _Enable(BOOL enableWindowReceiveInput);
-    virtual BOOL _IsEnabled();
-    virtual void _InvalidateRect();
-    virtual BOOL _GetWindowRect(_Inout_ LPRECT lpRect);
-    virtual BOOL _GetClientRect(_Inout_ LPRECT lpRect);
+    BOOL _IsEnabled();
+    void _InvalidateRect();
+    BOOL _GetWindowRect(_Inout_ LPRECT lpRect);
+    BOOL _GetClientRect(_Inout_ LPRECT lpRect);
 
     virtual LRESULT CALLBACK _WindowProcCallback(_In_ HWND wndHandle, UINT uMsg, _In_ WPARAM wParam, _In_ LPARAM lParam) = 0;
     virtual void _OnPaint(_In_ HDC dcHandle, _In_ PAINTSTRUCT *pps) { dcHandle; pps; }
