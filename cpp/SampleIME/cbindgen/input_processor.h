@@ -6,8 +6,6 @@
 
 extern "C" {
 
-uint16_t convert_vkey(uint32_t code);
-
 bool init_key_event_sink(ITfThreadMgr* thread_mgr, uint32_t tf_client_id, ITfKeyEventSink* sink);
 
 bool is_key_eaten(ITfThreadMgr* thread_mgr,
@@ -19,8 +17,6 @@ bool is_key_eaten(ITfThreadMgr* thread_mgr,
                   uint16_t *ch,
                   KeystrokeCategory *category,
                   KeystrokeFunction *function);
-
-bool is_keyboard_disabled(ITfThreadMgr* thread_mgr, uint32_t tf_client_id);
 
 bool on_key_up(ITfThreadMgr* thread_mgr,
                uint32_t tf_client_id,

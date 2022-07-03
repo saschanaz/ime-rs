@@ -19,8 +19,7 @@ use windows::Win32::UI::{
 // This copies CSampleIME::_IsKeyboardDisabled from the original demo.
 // This theoretically makes sense, but a confirmation is needed whether a real
 // world situation exists where this becomes true.
-#[no_mangle]
-pub extern "C" fn is_keyboard_disabled(thread_mgr: ITfThreadMgr, tf_client_id: u32) -> bool {
+fn is_keyboard_disabled(thread_mgr: ITfThreadMgr, tf_client_id: u32) -> bool {
     let document_mgr = unsafe { thread_mgr.GetFocus() };
     if document_mgr.is_err() {
         // if there is no focus document manager object, the keyboard
@@ -55,8 +54,7 @@ pub extern "C" fn is_keyboard_disabled(thread_mgr: ITfThreadMgr, tf_client_id: u
     false
 }
 
-#[no_mangle]
-pub extern "C" fn convert_vkey(code: u32) -> u16 {
+fn convert_vkey(code: u32) -> u16 {
     let scan_code = unsafe { MapVirtualKeyW(code, MAPVK_VK_TO_VSC) };
 
     let mut keyboard_state = [0u8; 256];

@@ -44,18 +44,6 @@ BOOL CSampleIME::_IsKeyEaten(UINT codeIn, _Out_writes_(1) WCHAR *pwch, _Out_opt_
 
 //+---------------------------------------------------------------------------
 //
-// _IsKeyboardDisabled
-//
-//----------------------------------------------------------------------------
-
-BOOL CSampleIME::_IsKeyboardDisabled()
-{
-    _pThreadMgr->AddRef();
-    return is_keyboard_disabled(_pThreadMgr, _tfClientId);
-}
-
-//+---------------------------------------------------------------------------
-//
 // ITfKeyEventSink::OnSetFocus
 //
 // Called by the system whenever this service gets the keystroke device focus.
