@@ -118,11 +118,6 @@ public:
     HRESULT _HandleCandidateArrowKey(TfEditCookie ec, _In_ ITfContext *pContext, _In_ KeystrokeFunction keyFunction);
     HRESULT _HandleCandidateSelectByNumber(TfEditCookie ec, _In_ ITfContext *pContext, _In_ WCHAR wch);
 
-    // key event handlers for phrase object.
-    HRESULT _HandlePhraseFinalize(TfEditCookie ec, _In_ ITfContext *pContext);
-    HRESULT _HandlePhraseArrowKey(TfEditCookie ec, _In_ ITfContext *pContext, _In_ KeystrokeFunction keyFunction);
-    HRESULT _HandlePhraseSelectByNumber(TfEditCookie ec, _In_ ITfContext *pContext, _In_ WCHAR wch);
-
     BOOL _IsComLess(void) { return (_dwActivateFlags & TF_TMAE_COMLESS) ? TRUE : FALSE; }
     BOOL _IsStoreAppMode(void) { return (_dwActivateFlags & TF_TMF_IMMERSIVEMODE) ? TRUE : FALSE; };
 

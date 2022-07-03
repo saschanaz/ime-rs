@@ -332,35 +332,3 @@ HRESULT CKeyStateCandidate::HandleKeySelectByNumber(KeyHandlerEditSessionDTO dto
 {
     return _pTextService->_HandleCandidateSelectByNumber(dto.ec, dto.pContext, dto.wch);
 }
-
-/*
-class CKeyStatePhrase
-*/
-
-CKeyStatePhrase::CKeyStatePhrase(_In_ CSampleIME *pTextService) : CKeyStateCategory(pTextService)
-{
-}
-
-//HandleKeyFinalizeCandidatelist
-HRESULT CKeyStatePhrase::HandleKeyFinalizeCandidatelist(KeyHandlerEditSessionDTO dto)
-{
-    return _pTextService->_HandlePhraseFinalize(dto.ec, dto.pContext);
-}
-
-//HandleKeyCancel
-HRESULT CKeyStatePhrase::HandleKeyCancel(KeyHandlerEditSessionDTO dto)
-{
-    return _pTextService->_HandleCancel(dto.ec, dto.pContext);
-}
-
-//HandleKeyArrow
-HRESULT CKeyStatePhrase::HandleKeyArrow(KeyHandlerEditSessionDTO dto)
-{
-    return _pTextService->_HandlePhraseArrowKey(dto.ec, dto.pContext, dto.arrowKey);
-}
-
-//HandleKeySelectByNumber
-HRESULT CKeyStatePhrase::HandleKeySelectByNumber(KeyHandlerEditSessionDTO dto)
-{
-    return _pTextService->_HandlePhraseSelectByNumber(dto.ec, dto.pContext, dto.wch);
-}
