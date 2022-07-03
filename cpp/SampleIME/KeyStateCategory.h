@@ -15,16 +15,7 @@ class CKeyStateCategory;
 class CKeyStateCategoryFactory
 {
 public:
-    static CKeyStateCategoryFactory* Instance();
-    CKeyStateCategory* MakeKeyStateCategory(KeystrokeCategory keyCategory, _In_ CSampleIME *pTextService);
-    void Release();
-
-protected:
-    CKeyStateCategoryFactory();
-
-private:
-    static CKeyStateCategoryFactory* _instance;
-
+    static CKeyStateCategory* MakeKeyStateCategory(KeystrokeCategory keyCategory, _In_ CSampleIME *pTextService);
 };
 
 typedef struct KeyHandlerEditSessionDTO

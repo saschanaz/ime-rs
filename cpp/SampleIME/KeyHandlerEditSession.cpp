@@ -30,8 +30,7 @@ STDAPI CKeyHandlerEditSession::DoEditSession(TfEditCookie ec)
 {
     HRESULT hResult = S_OK;
 
-    CKeyStateCategoryFactory* pKeyStateCategoryFactory = CKeyStateCategoryFactory::Instance();
-    CKeyStateCategory* pKeyStateCategory = pKeyStateCategoryFactory->MakeKeyStateCategory(_KeyState.Category, _pTextService);
+    CKeyStateCategory* pKeyStateCategory = CKeyStateCategoryFactory::MakeKeyStateCategory(_KeyState.Category, _pTextService);
 
     if (pKeyStateCategory)
     {
@@ -39,7 +38,6 @@ STDAPI CKeyHandlerEditSession::DoEditSession(TfEditCookie ec)
         hResult = pKeyStateCategory->KeyStateHandler(_KeyState.Function, keyHandlerEditSessioDTO);
 
         pKeyStateCategory->Release();
-        pKeyStateCategoryFactory->Release();
     }
 
     return hResult;

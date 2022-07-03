@@ -7,23 +7,6 @@
 
 #include "KeyStateCategory.h"
 
-CKeyStateCategoryFactory* CKeyStateCategoryFactory::_instance;
-
-CKeyStateCategoryFactory::CKeyStateCategoryFactory()
-{
-    _instance = nullptr;
-}
-
-CKeyStateCategoryFactory* CKeyStateCategoryFactory::Instance()
-{
-    if (nullptr == _instance)
-    {
-        _instance = new (std::nothrow) CKeyStateCategoryFactory();
-    }
-
-    return _instance;
-}
-
 CKeyStateCategory* CKeyStateCategoryFactory::MakeKeyStateCategory(KeystrokeCategory keyCategory, _In_ CSampleIME *pTextService)
 {
     CKeyStateCategory* pKeyState = nullptr;
@@ -47,15 +30,6 @@ CKeyStateCategory* CKeyStateCategoryFactory::MakeKeyStateCategory(KeystrokeCateg
         break;
     }
     return pKeyState;
-}
-
-void CKeyStateCategoryFactory::Release()
-{
-    if (_instance)
-    {
-        delete _instance;
-        _instance = nullptr;
-    }
 }
 
 /*
