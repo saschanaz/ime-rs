@@ -58,34 +58,34 @@ public:
 
     HRESULT _GetWindowExtent(_In_ const RECT *prcTextExtent, _In_opt_ RECT *prcCandidateExtent, _Inout_ POINT *pptCandidate);
 
-    HWND _GetWnd() 
-    { 
-        return _wndHandle; 
+    HWND _GetWnd()
+    {
+        return _wndHandle;
     }
 
-    CBaseWindow *_GetParent() 
-    { 
-        return _pParentWnd; 
+    CBaseWindow *_GetParent()
+    {
+        return _pParentWnd;
     }
 
-    void _SetUIWnd(_In_ CBaseWindow *pUIWnd) 
-    { 
-        _pUIWnd = pUIWnd; 
+    void _SetUIWnd(_In_ CBaseWindow *pUIWnd)
+    {
+        _pUIWnd = pUIWnd;
     }
 
-    CBaseWindow* _GetUIWnd() 
-    { 
-        return _pUIWnd; 
+    CBaseWindow* _GetUIWnd()
+    {
+        return _pUIWnd;
     }
 
-    CBaseWindow *_GetCaptureObject() 
-    { 
-        return _pUIObjCapture; 
+    CBaseWindow *_GetCaptureObject()
+    {
+        return _pUIObjCapture;
     }
 
-    CBaseWindow *_GetTimerObject()   
-    { 
-        return _pTimerUIObj; 
+    CBaseWindow *_GetTimerObject()
+    {
+        return _pTimerUIObj;
     }
 
     UINT _GetScrollDelay()
@@ -101,26 +101,26 @@ public:
 protected:
     LRESULT _NotifyCommand(UINT uMsg, DWORD dwSB, int nPos);
 
-    void _StartCapture() 
-    { 
-        _SetCaptureObject(this); 
+    void _StartCapture()
+    {
+        _SetCaptureObject(this);
     }
 
-    void _EndCapture()   
-    { 
-        _SetCaptureObject(nullptr); 
+    void _EndCapture()
+    {
+        _SetCaptureObject(nullptr);
     }
 
     BOOL _IsCapture();
 
-    void _StartTimer(UINT uElapse) 
-    { 
-        _SetTimerObject(this, uElapse); 
+    void _StartTimer(UINT uElapse)
+    {
+        _SetTimerObject(this, uElapse);
     }
 
-    void _EndTimer()    
-    { 
-        _SetTimerObject(nullptr); 
+    void _EndTimer()
+    {
+        _SetTimerObject(nullptr);
     }
 
     BOOL _IsTimer();
