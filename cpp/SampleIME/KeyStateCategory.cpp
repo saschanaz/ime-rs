@@ -13,10 +13,6 @@ CKeyStateCategory* CKeyStateCategoryFactory::MakeKeyStateCategory(KeystrokeCateg
 
     switch (keyCategory)
     {
-    case KeystrokeCategory::None:
-        pKeyState = new (std::nothrow) CKeyStateNull(pTextService);
-        break;
-
     case KeystrokeCategory::Composing:
         pKeyState = new (std::nothrow) CKeyStateComposing(pTextService);
         break;
@@ -25,6 +21,7 @@ CKeyStateCategory* CKeyStateCategoryFactory::MakeKeyStateCategory(KeystrokeCateg
         pKeyState = new (std::nothrow) CKeyStateCandidate(pTextService);
         break;
 
+    case KeystrokeCategory::None:
     default:
         pKeyState = new (std::nothrow) CKeyStateNull(pTextService);
         break;
