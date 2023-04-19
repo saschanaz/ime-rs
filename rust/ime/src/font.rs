@@ -7,8 +7,7 @@ use windows::{
     Win32::{
         Foundation::HWND,
         Graphics::Gdi::{
-            CreateFontW, GetDC, GetDeviceCaps, FONT_CLIP_PRECISION, FONT_OUTPUT_PRECISION,
-            FONT_PITCH_AND_FAMILY, FONT_QUALITY, FW_MEDIUM, HFONT, LOGFONTW, LOGPIXELSY,
+            CreateFontW, GetDC, GetDeviceCaps, FW_MEDIUM, HFONT, LOGFONTW, LOGPIXELSY,
         },
         System::WindowsProgramming::MulDiv,
         UI::WindowsAndMessaging::{
@@ -38,10 +37,10 @@ pub unsafe fn set_default_candidate_text_font() {
         0,
         0,
         0,
-        FONT_OUTPUT_PRECISION(0),
-        FONT_CLIP_PRECISION(0),
-        FONT_QUALITY(0),
-        FONT_PITCH_AND_FAMILY(0),
+        0,
+        0,
+        0,
+        0,
         PCWSTR(HSTRING::from(DEFAULT_FONT).as_ptr()),
     );
     if DEFAULT_FONT_HANDLE.0 == 0 {
@@ -49,7 +48,7 @@ pub unsafe fn set_default_candidate_text_font() {
         SystemParametersInfoW(
             SPI_GETICONTITLELOGFONT,
             core::mem::size_of::<LOGFONTW>() as _,
-            &mut lf as *mut LOGFONTW as *mut c_void,
+            Some(&mut lf as *mut LOGFONTW as *mut c_void),
             SYSTEM_PARAMETERS_INFO_UPDATE_FLAGS(0),
         );
         // Fall back to the default GUI font on failure.
@@ -63,10 +62,10 @@ pub unsafe fn set_default_candidate_text_font() {
             0,
             0,
             0,
-            FONT_OUTPUT_PRECISION(0),
-            FONT_CLIP_PRECISION(0),
-            FONT_QUALITY(0),
-            FONT_PITCH_AND_FAMILY(0),
+            0,
+            0,
+            0,
+            0,
             PCWSTR(lf.lfFaceName.as_ptr()),
         );
     }
