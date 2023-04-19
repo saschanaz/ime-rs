@@ -1,4 +1,6 @@
 #![allow(clippy::missing_safety_doc)]
+// https://github.com/rust-lang/rust-clippy/issues/9841
+#![allow(clippy::explicit_auto_deref)]
 
 use std::ffi::c_void;
 

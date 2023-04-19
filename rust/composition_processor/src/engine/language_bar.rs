@@ -82,17 +82,17 @@ impl LanguageBar {
 
         CompartmentEventSink::advise(
             self.keyboard_open_event_sink.clone().unwrap(),
-            thread_mgr.clone().cast().unwrap(),
+            thread_mgr.cast().unwrap(),
             &GUID_COMPARTMENT_KEYBOARD_OPENCLOSE,
         )?;
         CompartmentEventSink::advise(
             self.conversion_event_sink.clone().unwrap(),
-            thread_mgr.clone().cast().unwrap(),
+            thread_mgr.cast().unwrap(),
             &GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION,
         )?;
         CompartmentEventSink::advise(
             self.double_single_byte_event_sink.clone().unwrap(),
-            thread_mgr.clone().cast().unwrap(),
+            thread_mgr.cast().unwrap(),
             &SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE,
         )?;
         CompartmentEventSink::advise(
