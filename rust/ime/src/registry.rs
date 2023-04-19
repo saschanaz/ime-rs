@@ -48,7 +48,7 @@ pub fn register_profile(dll_instance_handle: HINSTANCE) -> windows::core::Result
             &SAMPLEIME_GUID_PROFILE,
             &description,
             &icon_file_name,
-            TEXTSERVICE_ICON_INDEX as u32,
+            TEXTSERVICE_ICON_INDEX,
             HKL::default(),
             0,
             true,

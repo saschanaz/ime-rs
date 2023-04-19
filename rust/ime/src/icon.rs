@@ -13,7 +13,7 @@ pub fn get_icon(desired_size: i32, index: u32) -> windows::core::Result<HICON> {
         LoadImageW(
             dll_instance,
             // (Mocking MAKEINTRESOURCE)
-            PCWSTR(core::mem::transmute::<usize, *const u16>(index as usize)),
+            PCWSTR(index as usize as *const u16),
             IMAGE_ICON,
             desired_size,
             desired_size,

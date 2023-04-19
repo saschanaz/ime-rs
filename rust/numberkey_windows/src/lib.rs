@@ -11,7 +11,7 @@ pub extern "C" fn index_from_number_key(vkey: u16) -> i16 {
     if value == 0 {
         9
     } else if value > 0 && value < 10 {
-        value as i16 - 1
+        value - 1
     } else {
         -1
     }
