@@ -198,7 +198,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(MSBuildProgramFiles32)\Windows Kits\8.0\Lib\win8\um\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>shlwapi.lib;$(SolutionDir)../rust/target/debug/compare_with_wildcard.lib;$(SolutionDir)../rust/target/debug/composition_processor.lib;$(SolutionDir)../rust/target/debug/dictionary_parser.lib;$(SolutionDir)../rust/target/debug/globals.lib;$(SolutionDir)../rust/target/debug/ime.lib;$(SolutionDir)../rust/target/debug/input_processor.lib;$(SolutionDir)../rust/target/debug/itf_components.lib;$(SolutionDir)../rust/target/debug/numberkey_windows.lib;$(SolutionDir)../rust/target/debug/ruststringrange.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>shlwapi.lib;$(SolutionDir)../rust/target/debug/composition_processor.lib;$(SolutionDir)../rust/target/debug/dictionary_parser.lib;$(SolutionDir)../rust/target/debug/globals.lib;$(SolutionDir)../rust/target/debug/ime.lib;$(SolutionDir)../rust/target/debug/input_processor.lib;$(SolutionDir)../rust/target/debug/itf_components.lib;$(SolutionDir)../rust/target/debug/numberkey_windows.lib;$(SolutionDir)../rust/target/debug/ruststringrange.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>SampleIME.def</ModuleDefinitionFile>
     </Link>
     <PreBuildEvent>
