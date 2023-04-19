@@ -1,10 +1,10 @@
 use windows::core::HRESULT;
-use windows::Win32::Foundation::{E_FAIL, HINSTANCE, S_OK};
+use windows::Win32::Foundation::{E_FAIL, HMODULE, S_OK};
 
 use crate::registry;
 
 #[no_mangle]
-pub static mut DLL_INSTANCE: HINSTANCE = HINSTANCE(0);
+pub static mut DLL_INSTANCE: HMODULE = HMODULE(0);
 
 #[no_mangle]
 #[allow(non_snake_case)]

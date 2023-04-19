@@ -7,7 +7,7 @@ use crate::test_virtual_key::{
 use windows::{
     core::{AsImpl, GUID},
     Win32::{
-        Foundation::{HINSTANCE, MAX_PATH},
+        Foundation::{HMODULE, MAX_PATH},
         System::LibraryLoader::GetModuleFileNameW,
         UI::{
             Input::KeyboardAndMouse::VK_SHIFT,
@@ -167,11 +167,7 @@ impl CompositionProcessorEngine {
         Ok(true)
     }
 
-    fn setup_dictionary_file(
-        &mut self,
-        dll_instance_handle: HINSTANCE,
-        dictionary_file_name: &str,
-    ) {
+    fn setup_dictionary_file(&mut self, dll_instance_handle: HMODULE, dictionary_file_name: &str) {
         let file_name = unsafe {
             let mut file_name = [0u16; MAX_PATH as usize];
             GetModuleFileNameW(dll_instance_handle, &mut file_name);

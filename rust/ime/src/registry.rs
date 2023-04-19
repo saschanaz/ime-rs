@@ -4,7 +4,7 @@ use winreg::{enums::HKEY_CLASSES_ROOT, RegKey};
 
 use crate::com::create_instance_inproc;
 use windows::Win32::{
-    Foundation::{HINSTANCE, MAX_PATH},
+    Foundation::{HMODULE, MAX_PATH},
     System::LibraryLoader::GetModuleFileNameW,
     System::SystemServices::{LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED},
     UI::TextServices::{
@@ -23,7 +23,7 @@ const TEXTSERVICE_LANGID: u16 = (SUBLANG_CHINESE_SIMPLIFIED << 10 | LANG_CHINESE
 // #define TEXTSERVICE_ICON_INDEX   -IDIS_SAMPLEIME
 const TEXTSERVICE_ICON_INDEX: u32 = -12i32 as u32;
 
-fn get_module_file_name(dll_instance_handle: HINSTANCE) -> String {
+fn get_module_file_name(dll_instance_handle: HMODULE) -> String {
     unsafe {
         let mut file_name = [0u16; MAX_PATH as usize];
         GetModuleFileNameW(dll_instance_handle, &mut file_name);
@@ -31,7 +31,7 @@ fn get_module_file_name(dll_instance_handle: HINSTANCE) -> String {
     }
 }
 
-pub fn register_profile(dll_instance_handle: HINSTANCE) -> windows::core::Result<()> {
+pub fn register_profile(dll_instance_handle: HMODULE) -> windows::core::Result<()> {
     let profile_manager: ITfInputProcessorProfileMgr =
         create_instance_inproc(&CLSID_TF_InputProcessorProfiles)?;
 
@@ -114,7 +114,7 @@ fn get_ime_key() -> String {
     format!("CLSID\\{{{:?}}}", SAMPLEIME_CLSID)
 }
 
-pub fn register_server(dll_instance_handle: HINSTANCE) -> std::io::Result<()> {
+pub fn register_server(dll_instance_handle: HMODULE) -> std::io::Result<()> {
     let module_file_name = get_module_file_name(dll_instance_handle);
 
     let ime_key = get_ime_key();
