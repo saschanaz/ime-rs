@@ -7,5 +7,6 @@ members = [
     "input_processor",
     "itf_components",
     "numberkey_windows",
-    "ruststringrange"
+    "ruststringrange",
+    "window_classes",
 ]
