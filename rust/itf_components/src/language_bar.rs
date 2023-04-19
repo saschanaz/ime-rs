@@ -89,7 +89,7 @@ impl LangBarItemButton {
             }
 
             let lang_bar_item_mgr: ITfLangBarItemMgr = thread_mgr.cast()?;
-            lang_bar_item_mgr.AddItem(button.clone())?;
+            lang_bar_item_mgr.AddItem(&button)?;
             button_impl.added_to_lang_bar.replace(true);
         }
         Ok(())
@@ -106,7 +106,7 @@ impl LangBarItemButton {
             }
 
             let lang_bar_item_mgr: ITfLangBarItemMgr = thread_mgr.cast()?;
-            lang_bar_item_mgr.RemoveItem(button.clone())?;
+            lang_bar_item_mgr.RemoveItem(&button)?;
             button_impl.added_to_lang_bar.replace(false);
         }
         Ok(())

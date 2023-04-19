@@ -3,7 +3,7 @@
 use std::ffi::c_void;
 
 use windows::{
-    core::PCWSTR,
+    core::{PCWSTR, HSTRING},
     Win32::{
         Foundation::HWND,
         Graphics::Gdi::{
@@ -42,7 +42,7 @@ pub unsafe fn set_default_candidate_text_font() {
         FONT_CLIP_PRECISION(0),
         FONT_QUALITY(0),
         FONT_PITCH_AND_FAMILY(0),
-        DEFAULT_FONT,
+        PCWSTR(HSTRING::from(DEFAULT_FONT).as_ptr())
     );
     if DEFAULT_FONT_HANDLE.0 == 0 {
         let mut lf = LOGFONTW::default();

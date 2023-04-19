@@ -45,7 +45,7 @@ fn _init_key_event_sink(
 ) -> windows::core::Result<()> {
     let keystroke_mgr: ITfKeystrokeMgr = thread_mgr.cast()?;
 
-    unsafe { keystroke_mgr.AdviseKeyEventSink(tf_client_id, sink, true) }?;
+    unsafe { keystroke_mgr.AdviseKeyEventSink(tf_client_id, &sink, true) }?;
 
     Ok(())
 }
