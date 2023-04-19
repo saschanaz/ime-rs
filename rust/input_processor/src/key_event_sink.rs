@@ -1,6 +1,6 @@
 use composition_processor::{CandidateMode, CompositionProcessorEngine};
 use windows::{
-    core::Interface,
+    core::ComInterface,
     Win32::{
         Foundation::{LPARAM, WPARAM},
         UI::TextServices::{ITfKeyEventSink, ITfKeystrokeMgr, ITfThreadMgr},

@@ -7,7 +7,7 @@ use std::ffi::c_void;
 
 use globals::SAMPLEIME_CLSID;
 use ruststringrange::RustStringRange;
-use windows::core::{implement, AsImpl, IUnknown, Interface, BSTR, GUID, HRESULT};
+use windows::core::{implement, AsImpl, ComInterface, IUnknown, BSTR, GUID, HRESULT};
 use windows::Win32::Foundation::{BOOL, E_FAIL, E_INVALIDARG, POINT, RECT};
 use windows::Win32::System::Com::{CoCreateInstance, CLSCTX_INPROC_SERVER};
 use windows::Win32::System::Ole::{
@@ -221,7 +221,9 @@ impl Drop for LangBarItemButton {
 
 impl ITfLangBarItem_Impl for LangBarItemButton {
     fn GetInfo(&self, info: *mut TF_LANGBARITEMINFO) -> windows::core::Result<()> {
-        unsafe { *info = self.info; }
+        unsafe {
+            *info = self.info;
+        }
         Ok(())
     }
     fn GetStatus(&self) -> windows::core::Result<u32> {
@@ -255,7 +257,7 @@ impl ITfLangBarItemButton_Impl for LangBarItemButton {
         Ok(())
     }
 
-    fn InitMenu(&self, _pmenu: &Option<ITfMenu>) -> windows::core::Result<()> {
+    fn InitMenu(&self, _pmenu: Option<&ITfMenu>) -> windows::core::Result<()> {
         Ok(())
     }
 
@@ -289,7 +291,7 @@ impl ITfLangBarItemButton_Impl for LangBarItemButton {
 }
 
 impl ITfSource_Impl for LangBarItemButton {
-    fn AdviseSink(&self, riid: *const GUID, punk: &Option<IUnknown>) -> windows::core::Result<u32> {
+    fn AdviseSink(&self, riid: *const GUID, punk: Option<&IUnknown>) -> windows::core::Result<u32> {
         // We allow only ITfLangBarItemSink interface.
         if unsafe { &*riid } != &ITfLangBarItemSink::IID {
             return Err(CONNECT_E_CANNOTCONNECT.ok().unwrap_err());

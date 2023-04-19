@@ -10,10 +10,13 @@ use ime::resources::{
 use itf_components::{
     compartment_event_sink::CompartmentEventSink, language_bar::LangBarItemButton,
 };
-use windows::Win32::UI::TextServices::{
-    ITfCompartmentEventSink, ITfLangBarItemButton, ITfThreadMgr,
-    GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE,
-    GUID_LBI_INPUTMODE,
+use windows::{
+    core::ComInterface,
+    Win32::UI::TextServices::{
+        ITfCompartmentEventSink, ITfLangBarItemButton, ITfThreadMgr,
+        GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE,
+        GUID_LBI_INPUTMODE,
+    },
 };
 
 use super::compartment_update_listener::{compartment_callback, CompartmentUpdateListener};
@@ -79,22 +82,22 @@ impl LanguageBar {
 
         CompartmentEventSink::advise(
             self.keyboard_open_event_sink.clone().unwrap(),
-            thread_mgr.clone().into(),
+            thread_mgr.clone().cast().unwrap(),
             &GUID_COMPARTMENT_KEYBOARD_OPENCLOSE,
         )?;
         CompartmentEventSink::advise(
             self.conversion_event_sink.clone().unwrap(),
-            thread_mgr.clone().into(),
+            thread_mgr.clone().cast().unwrap(),
             &GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION,
         )?;
         CompartmentEventSink::advise(
             self.double_single_byte_event_sink.clone().unwrap(),
-            thread_mgr.clone().into(),
+            thread_mgr.clone().cast().unwrap(),
             &SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE,
         )?;
         CompartmentEventSink::advise(
             self.punctuation_event_sink.clone().unwrap(),
-            thread_mgr.into(),
+            thread_mgr.cast().unwrap(),
             &SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION,
         )?;
 
