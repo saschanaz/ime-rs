@@ -8,12 +8,11 @@ use globals::{
 };
 use itf_components::compartment::Compartment;
 use windows::Win32::UI::{
-    Input::KeyboardAndMouse::{GetKeyboardState, MapVirtualKeyW, ToUnicode},
+    Input::KeyboardAndMouse::{GetKeyboardState, MapVirtualKeyW, ToUnicode, MAPVK_VK_TO_VSC},
     TextServices::{
         ITfThreadMgr, GUID_COMPARTMENT_EMPTYCONTEXT, GUID_COMPARTMENT_KEYBOARD_DISABLED,
         GUID_COMPARTMENT_KEYBOARD_OPENCLOSE,
     },
-    WindowsAndMessaging::MAPVK_VK_TO_VSC,
 };
 
 // This copies CSampleIME::_IsKeyboardDisabled from the original demo.

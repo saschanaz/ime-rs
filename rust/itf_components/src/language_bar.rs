@@ -220,8 +220,9 @@ impl Drop for LangBarItemButton {
 }
 
 impl ITfLangBarItem_Impl for LangBarItemButton {
-    fn GetInfo(&self) -> windows::core::Result<TF_LANGBARITEMINFO> {
-        Ok(self.info)
+    fn GetInfo(&self, info: *mut TF_LANGBARITEMINFO) -> windows::core::Result<()> {
+        unsafe { *info = self.info; }
+        Ok(())
     }
     fn GetStatus(&self) -> windows::core::Result<u32> {
         Ok(self.status.get())
