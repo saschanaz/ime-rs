@@ -3,8 +3,7 @@
 use std::ffi::c_void;
 
 use windows::core::{Interface, GUID, HRESULT};
-use windows::Win32::System::Com::VARIANT;
-use windows::Win32::System::Ole::VT_I4;
+use windows::Win32::System::Com::{VARIANT, VT_I4};
 use windows::Win32::UI::TextServices::{
     ITfCompartment, ITfCompartmentMgr, ITfThreadMgr, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE,
 };
@@ -52,7 +51,7 @@ impl Compartment {
     pub fn get_u32(&self) -> windows::core::Result<u32> {
         unsafe {
             let variant = self.get_compartment()?.GetValue()?;
-            if variant.Anonymous.Anonymous.vt != VT_I4.0 as u16 {
+            if variant.Anonymous.Anonymous.vt != VT_I4 {
                 return Ok(0); // Even VT_EMPTY, GetValue() can succeed
             }
             Ok(variant.Anonymous.Anonymous.Anonymous.lVal as u32)
@@ -62,7 +61,7 @@ impl Compartment {
     pub fn set_u32(&self, data: u32) -> windows::core::Result<()> {
         let mut variant = VARIANT::default();
         unsafe {
-            (*variant.Anonymous.Anonymous).vt = VT_I4.0 as u16;
+            (*variant.Anonymous.Anonymous).vt = VT_I4;
             (*variant.Anonymous.Anonymous).Anonymous.lVal = data as i32;
             self.get_compartment()?
                 .SetValue(self.tf_client_id, &variant)

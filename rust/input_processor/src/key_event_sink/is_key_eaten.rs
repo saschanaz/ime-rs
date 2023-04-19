@@ -63,7 +63,7 @@ fn convert_vkey(code: u32) -> u16 {
     }
 
     let mut wch = [0u16; 1];
-    if unsafe { ToUnicode(code, scan_code, &keyboard_state, &mut wch, 0) } == 1 {
+    if unsafe { ToUnicode(code, scan_code, Some(&keyboard_state), &mut wch, 0) } == 1 {
         return wch[0];
     }
 
