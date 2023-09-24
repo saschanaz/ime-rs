@@ -58,7 +58,7 @@ impl RustStringRange {
     }
 
     pub fn cut_last(&self) -> RustStringRange {
-        let last = self.as_slice().chars().rev().next();
+        let last = self.as_slice().chars().next_back();
         if last.is_none() {
             return self.clone();
         }
