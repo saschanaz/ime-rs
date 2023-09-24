@@ -14,6 +14,10 @@
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "userenv.lib")
 #pragma comment(lib, "bcrypt.lib")
+// Rust 1.70+ needs ntdll
+// https://github.com/rust-lang/rust/issues/115813
+// https://github.com/rust-lang/rust/pull/108262
+#pragma comment(lib, "ntdll.lib")
 
 const DWORD_PTR CStringRangeUtf16::GetLength() const
 {
