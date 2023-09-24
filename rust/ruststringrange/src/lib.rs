@@ -57,18 +57,6 @@ impl RustStringRange {
         self.string.as_ptr().add(self.offset)
     }
 
-    pub fn cut_last(&self) -> RustStringRange {
-        let last = self.as_slice().chars().next_back();
-        if last.is_none() {
-            return self.clone();
-        }
-        RustStringRange {
-            string: Rc::clone(&self.string),
-            offset: self.offset,
-            length: self.length - last.unwrap().len_utf8(),
-        }
-    }
-
     pub fn as_slice(&self) -> &str {
         &self.string[self.offset..self.offset + self.length]
     }
