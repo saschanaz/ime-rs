@@ -13,6 +13,8 @@
 #pragma comment(lib, "advapi32.lib")
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "userenv.lib")
+// Rust 1.57+ needs bcrypt
+// https://github.com/rust-lang/rust/pull/84096
 #pragma comment(lib, "bcrypt.lib")
 // Rust 1.70+ needs ntdll
 // https://github.com/rust-lang/rust/issues/115813
