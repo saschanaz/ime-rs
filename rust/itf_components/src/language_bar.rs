@@ -118,7 +118,7 @@ impl LangBarItemButton {
         tf_client_id: u32,
         compartment_guid: &GUID,
     ) -> windows::core::Result<()> {
-        let button_impl: &LangBarItemButton = button.as_impl();
+        let button_impl: &LangBarItemButton = unsafe { button.as_impl() };
         button_impl.compartment.replace(Some(Compartment::new(
             thread_mgr.clone(),
             tf_client_id,
@@ -377,6 +377,6 @@ pub extern "C" fn langbaritembutton_set_status(
     status: u32,
     set: bool,
 ) -> HRESULT {
-    let button_impl: &LangBarItemButton = button.as_impl();
+    let button_impl: &LangBarItemButton = unsafe { button.as_impl() };
     HRESULT::from(button_impl.set_status(status, set))
 }

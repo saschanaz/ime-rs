@@ -15,11 +15,12 @@ globals = { path = "../globals" }
 ruststringrange = { path = "../ruststringrange" }
 
 [dependencies.windows]
-version = "0.48.0"
+version = "0.51.1"
 features = [
   "implement",
   "Win32_Foundation",
   "Win32_UI_TextServices",
   "Win32_UI_WindowsAndMessaging",
   "Win32_System_Ole",
+  "Win32_System_Variant",
 ]

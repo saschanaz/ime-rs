@@ -182,7 +182,7 @@ impl CompositionProcessorEngine {
     }
 
     fn set_language_bar_status(&self, status: u32, set: bool) -> windows::core::Result<()> {
-        self.language_bar.button().as_impl().set_status(status, set)
+        unsafe { self.language_bar.button().as_impl() }.set_status(status, set)
     }
 
     pub fn hide_language_bar_button(&self, hide: bool) -> windows::core::Result<()> {

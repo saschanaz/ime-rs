@@ -57,7 +57,7 @@ fn convert_vkey(code: u32) -> u16 {
     let scan_code = unsafe { MapVirtualKeyW(code, MAPVK_VK_TO_VSC) };
 
     let mut keyboard_state = [0u8; 256];
-    if !unsafe { GetKeyboardState(&mut keyboard_state) }.as_bool() {
+    if unsafe { GetKeyboardState(&mut keyboard_state) }.is_err() {
         return 0;
     }
 

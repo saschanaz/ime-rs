@@ -52,7 +52,7 @@ impl CompartmentEventSink {
     }
 
     pub fn unadvise(sink: ITfCompartmentEventSink) -> windows::core::Result<()> {
-        let sink_impl: &CompartmentEventSink = sink.as_impl();
+        let sink_impl: &CompartmentEventSink = unsafe { sink.as_impl() };
         if let Some(compartment) = sink_impl.compartment.borrow_mut().as_mut() {
             let source: ITfSource = compartment.cast()?;
             unsafe {
