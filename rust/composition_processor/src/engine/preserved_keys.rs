@@ -4,7 +4,7 @@ use globals::{
     SAMPLEIME_GUID_PUNCTUATION_PRESERVE_KEY,
 };
 use windows::{
-    core::{ComInterface, GUID},
+    core::{Interface, GUID},
     Win32::{
         System::Com::{CoCreateInstance, CLSCTX_INPROC_SERVER},
         UI::{

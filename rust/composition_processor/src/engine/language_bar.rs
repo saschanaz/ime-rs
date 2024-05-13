@@ -11,7 +11,7 @@ use itf_components::{
     compartment_event_sink::CompartmentEventSink, language_bar::LangBarItemButton,
 };
 use windows::{
-    core::ComInterface,
+    core::Interface,
     Win32::UI::TextServices::{
         ITfCompartmentEventSink, ITfLangBarItemButton, ITfThreadMgr,
         GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE,

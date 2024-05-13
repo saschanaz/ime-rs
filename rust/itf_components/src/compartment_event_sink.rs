@@ -5,7 +5,7 @@
 use std::cell::{Cell, RefCell};
 use std::ffi::c_void;
 
-use windows::core::{implement, AsImpl, ComInterface, IUnknown, GUID, HRESULT};
+use windows::core::{implement, AsImpl, IUnknown, Interface, GUID, HRESULT};
 use windows::Win32::UI::TextServices::{
     ITfCompartment, ITfCompartmentEventSink, ITfCompartmentEventSink_Impl, ITfCompartmentMgr,
     ITfSource,

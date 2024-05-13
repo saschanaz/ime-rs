@@ -20,6 +20,11 @@
 // https://github.com/rust-lang/rust/issues/115813
 // https://github.com/rust-lang/rust/pull/108262
 #pragma comment(lib, "ntdll.lib")
+// windows-core 0.53.0 uses Propsys.lib for Variant support
+#pragma comment(lib, "Propsys.lib")
+// windows-result 0.53.0 uses RuntimeObject.lib for RoOriginateErrorW
+// windows-core 0.53.0 uses RuntimeObject.lib for RoGetActivationFactory
+#pragma comment(lib, "RuntimeObject.lib")
 
 const DWORD_PTR CStringRangeUtf16::GetLength() const
 {

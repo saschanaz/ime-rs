@@ -4,8 +4,7 @@
 
 use std::ffi::c_void;
 
-use windows::core::{ComInterface, GUID, HRESULT};
-use windows::Win32::System::Variant::{VARIANT, VT_I4};
+use windows::core::{Interface, GUID, HRESULT, VARIANT};
 use windows::Win32::UI::TextServices::{
     ITfCompartment, ITfCompartmentMgr, ITfThreadMgr, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE,
 };
@@ -41,8 +40,7 @@ impl Compartment {
     }
 
     pub fn get_bool(&self) -> windows::core::Result<bool> {
-        // VT_BOOL also exists and maybe preferrable for better strictness
-        // The Microsoft demo was using VT_I4 here, so this just follows that.
+        // Variant itself directly supports booleans but Windows expects i32 for compartment.
         Ok(self.get_u32()? != 0)
     }
 
@@ -53,18 +51,14 @@ impl Compartment {
     pub fn get_u32(&self) -> windows::core::Result<u32> {
         unsafe {
             let variant = self.get_compartment()?.GetValue()?;
-            if variant.Anonymous.Anonymous.vt != VT_I4 {
-                return Ok(0); // Even VT_EMPTY, GetValue() can succeed
-            }
-            Ok(variant.Anonymous.Anonymous.Anonymous.lVal as u32)
+            // Windows expects i32 for compartment.
+            Ok(i32::try_from(&variant)? as u32)
         }
     }
 
     pub fn set_u32(&self, data: u32) -> windows::core::Result<()> {
-        let mut variant = VARIANT::default();
+        let variant = VARIANT::from(data as i32);
         unsafe {
-            (*variant.Anonymous.Anonymous).vt = VT_I4;
-            (*variant.Anonymous.Anonymous).Anonymous.lVal = data as i32;
             self.get_compartment()?
                 .SetValue(self.tf_client_id, &variant)
         }

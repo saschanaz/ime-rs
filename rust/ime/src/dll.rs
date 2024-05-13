@@ -12,7 +12,7 @@ pub static mut DLL_INSTANCE: HMODULE = HMODULE(0);
 unsafe extern "system" fn DllRegisterServer() -> HRESULT {
     unsafe fn register() -> windows::core::Result<()> {
         registry::register_server(DLL_INSTANCE)
-            .map_err(|_| windows::core::Error::new(E_FAIL, "Failed to register server".into()))?;
+            .map_err(|_| windows::core::Error::new(E_FAIL, "Failed to register server"))?;
         registry::register_profile(DLL_INSTANCE)?;
         registry::register_categories()?;
         Ok(())
