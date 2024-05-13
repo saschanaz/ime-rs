@@ -13,9 +13,10 @@ crate-type = ["rlib", "staticlib"]
 ime = { path = "../ime" }
 globals = { path = "../globals" }
 ruststringrange = { path = "../ruststringrange" }
+windows-core = "0.56.0"
 
 [dependencies.windows]
-version = "0.54.0"
+version = "0.56.0"
 features = [
   "implement",
   "Win32_Foundation",
