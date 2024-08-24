@@ -7,13 +7,14 @@ use windows::Win32::{
     Foundation::{HMODULE, MAX_PATH},
     System::LibraryLoader::GetModuleFileNameW,
     System::SystemServices::{LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED},
+    UI::Input::KeyboardAndMouse::HKL,
     UI::TextServices::{
         CLSID_TF_CategoryMgr, CLSID_TF_InputProcessorProfiles, ITfCategoryMgr,
         ITfInputProcessorProfileMgr, GUID_TFCAT_DISPLAYATTRIBUTEPROVIDER,
         GUID_TFCAT_TIPCAP_COMLESS, GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT,
         GUID_TFCAT_TIPCAP_INPUTMODECOMPARTMENT, GUID_TFCAT_TIPCAP_SECUREMODE,
         GUID_TFCAT_TIPCAP_SYSTRAYSUPPORT, GUID_TFCAT_TIPCAP_UIELEMENTENABLED,
-        GUID_TFCAT_TIP_KEYBOARD, HKL,
+        GUID_TFCAT_TIP_KEYBOARD,
     },
 };
 

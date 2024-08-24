@@ -5,8 +5,8 @@ use crate::dll::DLL_INSTANCE;
 
 pub fn get_icon(desired_size: i32, index: u32) -> windows::core::Result<HICON> {
     let dll_instance = unsafe { DLL_INSTANCE };
-    if dll_instance.0 == 0 {
-        return Ok(HICON(0));
+    if dll_instance.0.is_null() {
+        return Ok(HICON(std::ptr::null_mut()));
     }
 
     let icon = unsafe {

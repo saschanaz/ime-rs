@@ -65,7 +65,7 @@ impl CompartmentEventSink {
     }
 }
 
-impl ITfCompartmentEventSink_Impl for CompartmentEventSink {
+impl ITfCompartmentEventSink_Impl for CompartmentEventSink_Impl {
     fn OnChange(&self, guid: *const GUID) -> windows::core::Result<()> {
         unsafe { (self.callback)(self.pv, &*guid).ok() }
     }

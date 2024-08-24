@@ -219,7 +219,7 @@ impl Drop for LangBarItemButton {
     }
 }
 
-impl ITfLangBarItem_Impl for LangBarItemButton {
+impl ITfLangBarItem_Impl for LangBarItemButton_Impl {
     fn GetInfo(&self, info: *mut TF_LANGBARITEMINFO) -> windows::core::Result<()> {
         unsafe {
             *info = self.info;
@@ -243,7 +243,7 @@ impl ITfLangBarItem_Impl for LangBarItemButton {
     }
 }
 
-impl ITfLangBarItemButton_Impl for LangBarItemButton {
+impl ITfLangBarItemButton_Impl for LangBarItemButton_Impl {
     fn OnClick(
         &self,
         _click: TfLBIClick,
@@ -290,7 +290,7 @@ impl ITfLangBarItemButton_Impl for LangBarItemButton {
     }
 }
 
-impl ITfSource_Impl for LangBarItemButton {
+impl ITfSource_Impl for LangBarItemButton_Impl {
     fn AdviseSink(&self, riid: *const GUID, punk: Option<&IUnknown>) -> windows::core::Result<u32> {
         // We allow only ITfLangBarItemSink interface.
         if unsafe { &*riid } != &ITfLangBarItemSink::IID {
