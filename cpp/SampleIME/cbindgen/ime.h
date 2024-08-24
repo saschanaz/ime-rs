@@ -1,16 +1,17 @@
 #include <cstdarg>
 #include <cstdint>
 #include <cstdlib>
+#include <ostream>
 #include <new>
 
-static const uint32_t IME_MODE_OFF_ICO_INDEX = 22;
+constexpr static const uint32_t IME_MODE_ON_ICO_INDEX = 21;
 
-static const uint32_t IME_MODE_ON_ICO_INDEX = 21;
+constexpr static const uint32_t IME_MODE_OFF_ICO_INDEX = 22;
 
 extern "C" {
 
-extern HFONT DEFAULT_FONT_HANDLE;
-
 extern HMODULE DLL_INSTANCE;
+
+extern HFONT DEFAULT_FONT_HANDLE;
 
 } // extern "C"
