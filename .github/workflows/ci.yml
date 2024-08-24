@@ -6,7 +6,7 @@ name: CI
 
 jobs:
   build:
-    name: Test
+    name: Build
     runs-on: windows-latest
     steps:
       - name: Checkout sources
