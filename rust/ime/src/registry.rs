@@ -27,7 +27,7 @@ const TEXTSERVICE_ICON_INDEX: u32 = -12i32 as u32;
 fn get_module_file_name(dll_instance_handle: HMODULE) -> String {
     unsafe {
         let mut file_name = [0u16; MAX_PATH as usize];
-        GetModuleFileNameW(dll_instance_handle, &mut file_name);
+        GetModuleFileNameW(Some(dll_instance_handle), &mut file_name);
         String::from_utf16(&file_name).unwrap()
     }
 }

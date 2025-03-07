@@ -45,9 +45,10 @@ Not all features are alive, because Windows API support has changed since the in
 * Locale-based sort. Originally [`CompareString`](https://docs.microsoft.com/en-us/windows/win32/api/stringapiset/nf-stringapiset-comparestringw) was used but it's currently replaced by Rust's non-locale-agnostic `str::cmp`. I have no example but this may affect the order in the candidate list. LCID/LANGID is deprecated per the comment inside winnt.h, so the implementation should be different if anyone wants to reintroduce this.
 * Candidate list navigation from touch keyboard. The old navigation buttons described in [the docs](https://docs.microsoft.com/en-us/windows/apps/design/input/input-method-editor-requirements#touch-optimized-layout) don't exist in Windows 10+ as the list is now fully integrated into the keyboard. Unfortunately this demo does not support the new integration.
 
-### Doesn't work by default
+### Known issues
 
-* "Compatible with Windows Store apps": This requires the DLL to be digitally signed per [the docs](https://docs.microsoft.com/en-us/windows/apps/design/input/input-method-editors#requirements-for-imes), which this demo does not provide.
+* "Compatible with Windows Store apps": This requires the DLL to be digitally signed per [the docs](https://docs.microsoft.com/en-us/windows/apps/design/input/input-method-editors#requirements-for-imes), which this demo does not provide. See also #13 to do it yourself.
+* If the main display's scale is anything other than 100%, the candidate list window scales incorrectly and may not show all 10 candidates. See also #19.
 
 Below is the original README of this sample.
 

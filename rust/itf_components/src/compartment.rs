@@ -4,7 +4,8 @@
 
 use std::ffi::c_void;
 
-use windows::core::{Interface, GUID, HRESULT, VARIANT};
+use windows::core::{Interface, GUID, HRESULT};
+use windows::Win32::System::Variant::VARIANT;
 use windows::Win32::UI::TextServices::{
     ITfCompartment, ITfCompartmentMgr, ITfThreadMgr, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE,
 };

@@ -5,9 +5,9 @@ use std::ffi::c_void;
 use windows::{
     core::{HSTRING, PCWSTR},
     Win32::{
-        Foundation::HWND,
         Graphics::Gdi::{
-            CreateFontW, GetDC, GetDeviceCaps, FW_MEDIUM, HFONT, LOGFONTW, LOGPIXELSY,
+            CreateFontW, GetDC, GetDeviceCaps, FONT_CHARSET, FONT_CLIP_PRECISION,
+            FONT_OUTPUT_PRECISION, FONT_QUALITY, FW_MEDIUM, HFONT, LOGFONTW, LOGPIXELSY,
         },
         System::WindowsProgramming::MulDiv,
         UI::WindowsAndMessaging::{
@@ -28,11 +28,7 @@ pub unsafe fn set_default_candidate_text_font() {
     }
 
     DEFAULT_FONT_HANDLE = CreateFontW(
-        -MulDiv(
-            10,
-            GetDeviceCaps(GetDC(HWND(std::ptr::null_mut())), LOGPIXELSY),
-            72,
-        ),
+        -MulDiv(10, GetDeviceCaps(Some(GetDC(None)), LOGPIXELSY), 72),
         0,
         0,
         0,
@@ -40,10 +36,10 @@ pub unsafe fn set_default_candidate_text_font() {
         0,
         0,
         0,
-        0,
-        0,
-        0,
-        0,
+        FONT_CHARSET(0),
+        FONT_OUTPUT_PRECISION(0),
+        FONT_CLIP_PRECISION(0),
+        FONT_QUALITY(0),
         0,
         PCWSTR(HSTRING::from(DEFAULT_FONT).as_ptr()),
     );
@@ -59,11 +55,7 @@ pub unsafe fn set_default_candidate_text_font() {
         )
         .ok();
         DEFAULT_FONT_HANDLE = CreateFontW(
-            -MulDiv(
-                10,
-                GetDeviceCaps(GetDC(HWND(std::ptr::null_mut())), LOGPIXELSY),
-                72,
-            ),
+            -MulDiv(10, GetDeviceCaps(Some(GetDC(None)), LOGPIXELSY), 72),
             0,
             0,
             0,
@@ -71,10 +63,10 @@ pub unsafe fn set_default_candidate_text_font() {
             0,
             0,
             0,
-            0,
-            0,
-            0,
-            0,
+            FONT_CHARSET(0),
+            FONT_OUTPUT_PRECISION(0),
+            FONT_CLIP_PRECISION(0),
+            FONT_QUALITY(0),
             0,
             PCWSTR(lf.lfFaceName.as_ptr()),
         );

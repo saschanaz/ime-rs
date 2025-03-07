@@ -170,7 +170,7 @@ impl CompositionProcessorEngine {
     fn setup_dictionary_file(&mut self, dll_instance_handle: HMODULE, dictionary_file_name: &str) {
         let file_name = unsafe {
             let mut file_name = [0u16; MAX_PATH as usize];
-            GetModuleFileNameW(dll_instance_handle, &mut file_name);
+            GetModuleFileNameW(Some(dll_instance_handle), &mut file_name);
             String::from_utf16(&file_name).unwrap()
         };
 
