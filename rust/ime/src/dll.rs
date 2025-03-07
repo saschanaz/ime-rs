@@ -18,6 +18,8 @@ unsafe extern "system" fn DllRegisterServer() -> HRESULT {
         Ok(())
     }
 
+    // See https://github.com/rust-lang/rust-clippy/issues/13185
+    #[allow(clippy::manual_inspect)]
     register()
         .map_err(|err| {
             DllUnregisterServer().ok().ok();
