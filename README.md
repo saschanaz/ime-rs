@@ -4,11 +4,13 @@ This is a porting project for Microsoft Chinese (Simplified, China) IME sample f
 
 ## Build
 
-* You need to be on 64bit Windows. (Solely because I don't want to complicate the Visual Studio configuration and the build script)
-* Install the latest [Visual Studio](https://visualstudio.microsoft.com/downloads/), [Rust](https://www.rust-lang.org/), and [PowerShell](https://www.microsoft.com/store/productId/9MZ1SNWT0N5D).
-* Install cbindgen by `cargo install cbindgen`.
-* Copy-paste `cpp/SampleIME/Dictionary/SampleIMESimplifiedQuanPinUtf8.txt` into `cpp/x64/Debug`.
-* Run and choose the x64/Debug configuration, as any other configurations are not supported.
+0. Only x86-64 and arm64 targets are supported and being tested.
+1. Install the latest [Build Tools for Visual Studio](https://visualstudio.microsoft.com/downloads/), [Rust](https://www.rust-lang.org/), and [PowerShell](https://www.microsoft.com/store/productId/9MZ1SNWT0N5D).
+   * Alternatively the full Visual Studio also works.
+1. Install cbindgen by `cargo install cbindgen`.
+1. Copy-paste `cpp/SampleIME/Dictionary/SampleIMESimplifiedQuanPinUtf8.txt` into `cpp/arm64/Debug` (or `cpp/x64/Debug`).
+1. Run Developer Command Prompt which is installed together with Build Tools.
+1. Run `msbuild cpp/SampleIME.sln -target:SampleIME /property:Platform=arm64` or (`Platform=x64` for x86-64).
 
 ## Deploy
 

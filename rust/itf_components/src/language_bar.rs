@@ -7,8 +7,8 @@ use std::ffi::c_void;
 
 use globals::SAMPLEIME_CLSID;
 use ruststringrange::RustStringRange;
-use windows::core::{implement, AsImpl, IUnknown, Interface, Ref, BSTR, GUID, HRESULT};
-use windows::Win32::Foundation::{BOOL, E_FAIL, E_INVALIDARG, POINT, RECT};
+use windows::core::{implement, AsImpl, IUnknown, Interface, Ref, BOOL, BSTR, GUID, HRESULT};
+use windows::Win32::Foundation::{E_FAIL, E_INVALIDARG, POINT, RECT};
 use windows::Win32::System::Com::{CoCreateInstance, CLSCTX_INPROC_SERVER};
 use windows::Win32::System::Ole::{
     CONNECT_E_ADVISELIMIT, CONNECT_E_CANNOTCONNECT, CONNECT_E_NOCONNECTION,
